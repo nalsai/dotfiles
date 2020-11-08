@@ -32,10 +32,10 @@ Additionally, you should change what apps get installed in `install-apps.ps1` be
 
 ## Thanks to
 
-- ![](https://avatars.githubusercontent.com/LightArrowsEXE?s=12) 
+- ![](https://avatars.githubusercontent.com/LightArrowsEXE?s=12)
 LightArrowsEXE's [dotfiles](https://github.com/LightArrowsEXE/dotfiles)
-- ![](https://avatars.githubusercontent.com/jayharris?s=12) 
+- ![](https://avatars.githubusercontent.com/jayharris?s=12)
 jayharris's [dotfiles-windows](https://github.com/jayharris/dotfiles-windows)
 - <img src="https://avatars.githubusercontent.com/ndz-v?s=12" width="12"> ndz-v's [windows-dotfiles](https://github.com/ndz-v/windows-dotfiles)
-- ![](https://avatars.githubusercontent.com/Sycnex?s=12) 
+- ![](https://avatars.githubusercontent.com/Sycnex?s=12)
 Sycnex's [Windows10Debloater](https://github.com/Sycnex/Windows10Debloater)

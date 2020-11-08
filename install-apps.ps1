@@ -15,19 +15,21 @@ if ($null -eq (which choco)) {
 choco install git -params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
 choco install googlechrome nomacs plex spotify powershell-core autohotkey curl wget --limit-output
 
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+
 # Customize Spotify using spicetify
 choco install spicetify-cli --limit-output
 spicetify
 spicetify backup apply enable-devtool
 git clone https://github.com/morpheusthewhite/spicetify-themes
 Set-Location spicetify-themes
-Copy-Item -r * $env:USERPROFILE\.spicetify\Themes\
+Copy-Item -r * $HOME\.spicetify\Themes\
 Set-Location ../
 Remove-Item .\spicetify-themes\ -Recurse -Force
 spicetify config current_theme CherryBlossom
 git clone https://github.com/khanhas/spicetify-cli
 Set-Location .\spicetify-cli\Extensions\
-Copy-Item -r * $env:USERPROFILE\.spicetify\Extensions\
+Copy-Item -r * $HOME\.spicetify\Extensions\
 Set-Location ..\..\
 Remove-Item .\spicetify-cli\ -Recurse -Force
 spicetify config extensions fullAppDisplay.js 
@@ -50,6 +52,7 @@ choco pin add --name spotify
 ############################
 # Install VS Code Extensions
 ############################
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
 code --install-extension bungcip.better-toml
 code --install-extension DavidAnson.vscode-markdownlint
 code --install-extension DotJoshJohnson.xml

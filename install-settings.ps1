@@ -414,5 +414,7 @@ Set-ItemProperty "HKCU:\Software\Microsoft\Internet Explorer\Main" "Start Page" 
 # Disable 'Default Browser' check: "yes" or "no"
 Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Internet Explorer\Main" "Check_Associations" "no"
 
+# Refresh Path
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
 
 Write-Host "Done Configuring System" -ForegroundColor Green

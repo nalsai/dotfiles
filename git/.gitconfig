@@ -1,0 +1,8 @@
+[core]
+	editor = code --wait
+	autocrlf = true
+[user]
+        name = nalsai
+        email = contact@nalsai.de
+[credential]
+	helper = manager

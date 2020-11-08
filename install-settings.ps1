@@ -1,6 +1,7 @@
 #Requires -RunAsAdministrator
 
 Write-Host "Configuring System..." -ForegroundColor Green
+Write-Host "There may be some red text, that's safe to ignore" -ForegroundColor Green
 
 # Set Computer Name
 Write-Host "Name of Computer: " -ForegroundColor Yellow -NoNewline
@@ -416,5 +417,7 @@ Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Internet Explorer\Main" "Check_Associ
 
 # Refresh Path
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+# Refresh Profile
+& $profile
 
 Write-Host "Done Configuring System" -ForegroundColor Green

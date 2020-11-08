@@ -15,6 +15,7 @@ $fonts =
     'Montserrat',
     'Quicksand',
     'Merriweather',
+    'Comfortaa',
     'Roboto',
     'Noto Sans',
     'Noto Serif',
@@ -35,10 +36,12 @@ foreach($font in $fonts)
     Expand-Archive -Path $fontsPath\$font.zip -DestinationPath $fontsPath -Force
     Remove-Item $fontsPath\$font.zip -Force
 }
+Remove-Item "$fontsPath\static\" -Recurse -Force
 
 Expand-Archive -Path "$fontsPath\Cascadia Code.zip" -DestinationPath $fontsPath -Force
 Remove-Item "$fontsPath\otf\" -Recurse -Force
 Remove-Item "$fontsPath\woff2\" -Recurse -Force
+Remove-Item "$fontsPath\ttf\static\" -Recurse -Force
 Remove-Item "$fontsPath\Cascadia Code.zip" -Force
 
 # install font files

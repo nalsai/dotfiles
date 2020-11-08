@@ -15,7 +15,7 @@ New-Item -Force -ItemType SymbolicLink -Path $documents\PowerShell -Target $PSSc
 New-Item -Force -ItemType SymbolicLink -Path $documents\WindowsPowerShell -Target $PSScriptRoot\PowerShell
 
 # mpv config
-New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\ -Target $PSScriptRoot\mpv
+New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\mpv -Target $PSScriptRoot\mpv
 
 # Visual Studio Code settings.json and keybindings.json
 New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Code\User\settings.json -Target $PSScriptRoot\vscode\settings.json
@@ -25,6 +25,8 @@ New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Code\User\key
 New-Item -Force -ItemType SymbolicLink -Path $HOME\.gitconfig -Target $PSScriptRoot\git\.gitconfig
 
 # AutoHotkey
-New-Item -Force -ItemType SymbolicLink -Path $env:appdata\Microsoft\Windows\Start Menu\Programs\Startup\myAhk.ahk -Target $PSScriptRoot\ahk\myAhk.ahk
+New-Item -Force -ItemType SymbolicLink -Path "$env:appdata\Microsoft\Windows\Start Menu\Programs\Startup\myAhk.ahk" -Target $PSScriptRoot\ahk\myAhk.ahk
+
+& $profile
 
 Write-Host "Done Making Symlinks" -ForegroundColor Green

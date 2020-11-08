@@ -10,12 +10,17 @@ Write-Host "Installing Apps..." -ForegroundColor Green
 if ($null -eq (which choco)) {
     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     choco feature enable -n=allowGlobalConfirmation
+    & $profile  # Refresh Profile
 }
 
 choco install git -params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
-choco install googlechrome nomacs plex spotify powershell-core autohotkey curl wget --limit-output
+choco install googlechrome nomacs spotify autohotkey curl wget --limit-output
 
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+refreshenv
+& $profile
+
+Write-Host "Please open Spotify and close it again, then press any key" -ForegroundColor Yellow -NoNewline
+Read-Host
 
 # Customize Spotify using spicetify
 choco install spicetify-cli --limit-output
@@ -37,8 +42,11 @@ spicetify config extensions keyboardShortcut.js
 spicetify config extensions shuffle+.js
 spicetify apply
 
-choco install vscodium -params '"/AssociateWithFiles /NoAddContextMenuFiles"' --limit-output
-choco install golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix gmkvextractgui aegisub subtitleedit makemkv mediainfo mediainfo-cli eac audacity audacity-lame cdburnerxp mp3tag burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer 7zip wireshark winmerge --limit-output
+Write-Host "Initializing the installation of .NET 3.5..."
+DISM /Online /Enable-Feature /FeatureName:NetFx3 /All
+Write-Host ".NET 3.5 has been successfully installed!"
+
+choco install plex powershell-core golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv mediainfo mediainfo-cli eac audacity audacity-lame cdburnerxp mp3tag burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer 7zip wireshark winmerge --ignore-checksums --limit-output
 
 # prevent choco upgrade of automatically upgrading packages that upgrade themselves
 choco pin add --name googlechrome
@@ -50,39 +58,29 @@ choco pin add --name discord
 choco pin add --name spotify
 
 ############################
-# Install VS Code Extensions
+# Install VS Code with Extensions
 ############################
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-code --install-extension bungcip.better-toml
-code --install-extension DavidAnson.vscode-markdownlint
-code --install-extension DotJoshJohnson.xml
-code --install-extension ecmel.vscode-html-css
-code --install-extension golang.go
-code --install-extension MikuroXina.cherry-petals-theme
-code --install-extension ms-dotnettools.csharp
-code --install-extension ms-vscode-remote.remote-wsl
-code --install-extension ms-vscode.cpptools
-code --install-extension ms-vscode.powershell
-code --install-extension PKief.material-icon-theme
-code --install-extension platformio.platformio-ide
-code --install-extension ritwickdey.LiveServer
-code --install-extension slevesque.vscode-autohotkey
-code --install-extension Yummygum.city-lights-icon-vsc
-code --install-extension yummygum.city-lights-theme
-code --install-extension Zignd.html-css-class-completion
+choco install vscodium -params '"/AssociateWithFiles /NoAddContextMenuFiles"' --limit-output
+refreshenv
+codium --install-extension bungcip.better-toml
+codium --install-extension DavidAnson.vscode-markdownlint
+codium --install-extension DotJoshJohnson.xml
+codium --install-extension ecmel.vscode-html-css
+codium --install-extension golang.go
+codium --install-extension MikuroXina.cherry-petals-theme
+codium --install-extension ms-dotnettools.csharp
+codium --install-extension ms-vscode-remote.remote-wsl
+codium --install-extension ms-vscode.cpptools
+codium --install-extension ms-vscode.powershell
+codium --install-extension PKief.material-icon-theme
+codium --install-extension platformio.platformio-ide
+codium --install-extension ritwickdey.LiveServer
+codium --install-extension slevesque.vscode-autohotkey
+codium --install-extension Yummygum.city-lights-icon-vsc
+codium --install-extension yummygum.city-lights-theme
+codium --install-extension Zignd.html-css-class-completion
 
-
-# install Windows Terminal & Notepads
-# needs updated Windows App Installer
-# https://github.com/microsoft/winget-cli
-# Apps can alternatively be installed from the Microsoft Store
-#winget install --id=Microsoft.WindowsTerminal -e
-#choco install microsoft-windows-terminal
-#winget install notepads
-
-# TODO: Davinci Resolve, Minion, ESO, TTC
-
-wget -O vs_community-Setup.exe"https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=community&rel=16&utm_medium=microsoft&utm_source=docs.microsoft.com&utm_campaign=link+cta&utm_content=download+commandline+parameters+vs2019+rc"
+wget -O vs_community-Setup.exe "https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=community&rel=16&utm_medium=microsoft&utm_source=docs.microsoft.com&utm_campaign=link+cta&utm_content=download+commandline+parameters+vs2019+rc"
 .\vs_community-Setup.exe --quiet
 
 wget -O CrystalDiskInfo-Setup.exe "https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku"
@@ -139,4 +137,14 @@ Remove-Item ImgReName-Setup.exe
 Remove-Item CrystalDiskInfo-Setup.exe
 Remove-Item CrystalDiskMark-Setup.exe
 
-Write-Host "Done Installing Apps..." -ForegroundColor Green
+
+# install Windows Terminal & Notepads
+# needs updated Windows App Installer
+# https://github.com/microsoft/winget-cli
+# Apps can alternatively be installed from the Microsoft Store
+#winget install --id=Microsoft.WindowsTerminal -e
+#choco install microsoft-windows-terminal
+#winget install notepads
+
+# TODO: Davinci Resolve, Minion, ESO, TTC
+Write-Host "Done Installing Apps" -ForegroundColor Green

@@ -27,6 +27,7 @@ New-Item -Force -ItemType SymbolicLink -Path $HOME\.gitconfig -Target $PSScriptR
 # AutoHotkey
 New-Item -Force -ItemType SymbolicLink -Path "$env:appdata\Microsoft\Windows\Start Menu\Programs\Startup\myAhk.ahk" -Target $PSScriptRoot\ahk\myAhk.ahk
 
+# reload profile
 & $profile
 
 Write-Host "Done Making Symlinks" -ForegroundColor Green

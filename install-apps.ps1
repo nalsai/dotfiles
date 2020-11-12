@@ -4,8 +4,6 @@
 # Install Apps
 ##############
 
-# TODO: additional installation parameters for some apps
-
 Write-Host "Installing Apps..." -ForegroundColor Green
 
 ### Chocolatey
@@ -47,23 +45,27 @@ DISM /Online /Enable-Feature /FeatureName:NetFx3 /All
 Write-Host ".NET 3.5 has been successfully installed!"
 
 choco install powershell-core --install-arguments='"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1"' --limit-output
-choco install vscodium -params '"/NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles"' --limit-output
 choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
-choco install plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv mediainfo mediainfo-cli eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer 7zip wireshark winmerge --ignore-checksums --limit-output
+choco install winmerge --params '"/NoShellIntegration"' --limit-output
+choco install plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv mediainfo mediainfo-cli eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer 7zip wireshark --ignore-checksums --limit-output
 refreshenv
 
 # prevent choco upgrade of automatically upgrading packages that upgrade themselves
 choco pin add --name googlechrome
-choco pin add --name vscodium
 choco pin add --name unity-hub
 choco pin add --name authy-desktop
 choco pin add --name figma
 choco pin add --name discord
 choco pin add --name spotify
 
-############################
-# Install VS Code Extensions
-############################
+#################
+# Install VS Code
+#################
+
+
+wget -O VSCode-Setup.exe -L "https://aka.ms/win32-x64-user-stable"
+.\VSCode-Setup.exe /VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles
+
 $extensions =
     'bungcip.better-toml',
     'DavidAnson.vscode-markdownlint',
@@ -85,11 +87,8 @@ $extensions =
 
 foreach($extension in $extensions)
 {
-    codium --install-extension $extension
+    code --install-extension $extension
 }
-
-wget -O vs_community-Setup.exe "https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=community&rel=16&utm_medium=microsoft&utm_source=docs.microsoft.com&utm_campaign=link+cta&utm_content=download+commandline+parameters+vs2019+rc"
-.\vs_community-Setup.exe --quiet
 
 wget -O CrystalDiskInfo-Setup.exe "https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku"
 .\CrystalDiskInfo-Setup.exe /SP- /VERYSILENT /NORESTART
@@ -105,31 +104,26 @@ Switch (Read-Host)
 { 
     Y {choco install itunes --limit-output}
 } 
-
 Write-Host "Install h2testw? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
 { 
     Y {choco install h2testw --limit-output}
 } 
-
 Write-Host "Install xmind? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
 { 
     Y {choco install xmind --limit-output}
 } 
-
 Write-Host "Install assaultcube? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
 { 
     Y {choco install assaultcube --limit-output}
 } 
-
 Write-Host "Install steam? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
 { 
     Y {choco install steam --limit-output}
 } 
-
 Write-Host "Install bethesdanet? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
 { 
@@ -145,4 +139,4 @@ Remove-Item CrystalDiskMark-Setup.exe
 #winget install notepads
 
 Write-Host "Done Installing Apps" -ForegroundColor Green
-Write-Host "You still need to install Windows Terminal & Notepads from the Microsoft Store and Davinci Resolve, Minion, ESO, TTC from the Internet`nand setup apps like Chrome, Icaros, Authy..." -ForegroundColor Cyan
+Write-Host "You still need to install Windows Terminal & Notepads from the Microsoft Store`nand Visual Studio, Davinci Resolve, Minion, ESO, TTC from the Internet`nand setup apps like Chrome, Icaros, Authy..." -ForegroundColor Cyan

@@ -4,6 +4,7 @@ Write-Host "Configuring System..." -ForegroundColor Green
 
 Write-Host "Enabling Dark Mode"
 $Theme = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+Set-ItemProperty $Theme SystemUsesLightTheme -Value 0
 Set-ItemProperty $Theme AppsUseLightTheme -Value 0
 Start-Sleep 1
 
@@ -63,7 +64,7 @@ Set-ItemProperty $Cortana3 HarvestContacts -Value 0
 
 
 Write-Output "Uninstalling OneDrive"
-New-PSDrive  HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
+New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
 $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
 $ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
 $ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
@@ -76,7 +77,7 @@ Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
 Start-Sleep 2
 Write-Output "Stopping explorer"
 Start-Sleep 1
-.\taskkill.exe /F /IM explorer.exe
+taskkill.exe /F /IM explorer.exe
 Start-Sleep 3
 Write-Output "Removing leftover files"
 Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction Ignore
@@ -94,7 +95,6 @@ If (!(Test-Path $ExplorerReg2)) {
     New-Item $ExplorerReg2
 }
 Set-ItemProperty $ExplorerReg2 System.IsPinnedToNameSpaceTree -Value 0
-Write-Output "Restarting Explorer that was shut down before."
 Start-Process explorer.exe -NoNewWindow
 
 
@@ -120,7 +120,7 @@ foreach ($regAlias in $regAliases){
     $basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
     $keyPath = $basePath + "\Explorer" 
     IF(!(Test-Path -Path $keyPath)) { 
-        New-Item -Path $basePath -Name "Explorer"
+        New-Item -Path $basePath -Name "Explorer" > $null
     }
     Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 1
     Set-ItemProperty -Path $keyPath -Name "StartLayoutFile" -Value $layoutFile
@@ -164,7 +164,7 @@ Set-ItemProperty $WebSearch DisableWebSearch -Value 1
 Write-Output "Stopping the Windows Feedback Experience program"
 $Period = "HKCU:\Software\Microsoft\Siuf\Rules"
 If (!(Test-Path $Period)) { 
-    New-Item $Period
+    New-Item $Period -ErrorAction SilentlyContinue
 }
 Set-ItemProperty $Period PeriodInNanoSeconds -Value 0
 
@@ -272,57 +272,92 @@ foreach ($App in $AppXApps) {
     Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online -ErrorAction Ignore
 }
 
-
-
-# Power: Set standby delay to 24 hours
-powercfg /change /standby-timeout-ac 1440
-
+Write-Output "Setting standby times"
+powercfg /change /monitor-timeout-ac 240    # 4h
+powercfg /change /standby-timeout-ac 720    # 12h
+powercfg /change /monitor-timeout-dc 30     # 30m
+powercfg /change /standby-timeout-dc 60     # 1h
 
 # Ensure necessary registry paths
 if (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Type Folder > $null}
 
-# Explorer: Show file extensions by default
+Write-Output "Explorer: Show file extensions by default"
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0
 
-# Explorer: Avoid creating Thumbs.db files on network volumes
+Write-Output "Explorer: Avoid creating Thumbs.db files on network volumes"
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "DisableThumbnailsOnNetworkFolders" 1
 
-# Disable automatically syncing of settings with other Windows 10 devices
+Write-Output "SysTray: Hide network icon"
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "HideSCANetwork" 1 # Network
+
+Write-Output "Disabling automatic syncing of settings"
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization" "Enabled" 0
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials" "Enabled" 0
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" "Enabled" 0
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" "Enabled" 0
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows" "Enabled" 0
 
-# Uninstall Windows Media Player
+Write-Output "Uninstalling Windows Media Player"
 Disable-WindowsOptionalFeature -Online -FeatureName "WindowsMediaPlayer" -NoRestart -WarningAction SilentlyContinue > $null
 
-################
-# Windows Update
-################
-Write-Host "Configuring Windows Update..." -ForegroundColor Green
-
-# Ensure Windows Update registry paths
+Write-Host "Configuring Windows Update" -ForegroundColor
 if (!(Test-Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate")) {New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Type Folder > $null}
 if (!(Test-Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU")) {New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" -Type Folder > $null}
-
-# Enable Automatic Updates
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
-
-# Disable automatic reboot after install
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" "NoAutoRebootWithLoggedOnUsers" 1
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoRebootWithLoggedOnUsers" 1
-
-# Configure to Auto-Download but not Install: NotConfigured: 0, Disabled: 1, NotifyBeforeDownload: 2, NotifyBeforeInstall: 3, ScheduledInstall: 4
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "AUOptions" 3
-
-# Include Recommended Updates
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "IncludeRecommendedUpdates" 1
-
-# Opt-In to Microsoft Update
 $MU = New-Object -ComObject Microsoft.Update.ServiceManager -Strict
 $MU.AddService2("7971f918-a847-4430-9279-4a52d1efe18d",7,"") > $null
 Remove-Variable MU
+
+Write-Output "Disabling Look for an app in the Store (open with... menu)"
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Explorer" "NoUseStoreOpenWith" 1
+
+Write-Output "Disabling downloaded files from being blocked"
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments" "SaveZoneInformation" 1
+
+Write-Output "Disabling Timeline"
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\System" "EnableActivityFeed" 0
+
+Write-Output "Speeding up menus (changing the menu delay to 200ms)"
+Set-ItemProperty "HKCU:\Control Panel\Desktop" "MenuShowDelay" "200"
+
+Write-Output "Removing Context Menu bloat"
+$Keys = @(
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.bmp\Shell\3D Edit"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.gif\Shell\3D Edit"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpg\Shell\3D Edit"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpeg\Shell\3D Edit"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\3D Edit"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\3D Edit"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\3D Edit"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.bmp\Shell\setdesktopwallpaper"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.gif\Shell\setdesktopwallpaper"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpg\Shell\setdesktopwallpaper"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpeg\Shell\setdesktopwallpaper"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\setdesktopwallpaper"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\setdesktopwallpaper"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\setdesktopwallpaper"
+    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\image\shell\edit"
+    "HKCR:\z\ContextMenuHandlers\ModernSharing"                                     # Share
+    "HKCR:\*\shellex\ContextMenuHandlers\{90AA3A4E-1CBA-4233-B8BB-535773D48449}"    # Pin To Taskbar
+    "HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                            # Scan with Microsoft Defender
+)
+ForEach ($Key in $Keys) {
+    Remove-Item $Key -Recurse -ErrorAction Ignore
+}
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{8A734961-C4AA-4741-AC1E-791ACEBF5B39}" "" # Shop for music online
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" "" # Share
+Set-ItemProperty "HKCR:\AppX43hnxtbyyps62jhe9sqpdzxn1790zetc\Shell\ShellEdit" "ProgrammaticAccessOnly" ""                               # Edit with Photos
+Set-ItemProperty "HKCR:\exefile\shellex\ContextMenuHandlers\PintoStartScreen" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" ""               # Pin To Start
+
+Write-Output "Disabling Start Menu Suggestions"
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryManager" 0
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SilentInstalledAppsEnabled" 0
 
 # Refresh Path & Profile
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 

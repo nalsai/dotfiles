@@ -74,12 +74,7 @@ If (!(Test-Path $onedrive)) {
     $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
 }
 Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
-Start-Sleep 2
-Write-Output "Stopping explorer"
-Start-Sleep 1
-taskkill.exe /F /IM explorer.exe
-Start-Sleep 3
-Write-Output "Removing leftover files"
+Stop-Process -name explorer
 Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction Ignore
 Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction Ignore
 Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction Ignore
@@ -88,14 +83,13 @@ If (Test-Path "$env:SYSTEMDRIVE\OneDriveTemp") {
 }
 Write-Output "Removing OneDrive from windows explorer"
 If (!(Test-Path $ExplorerReg1)) {
-    New-Item $ExplorerReg1
+    New-Item $ExplorerReg1 > $null
 }
 Set-ItemProperty $ExplorerReg1 System.IsPinnedToNameSpaceTree -Value 0 
 If (!(Test-Path $ExplorerReg2)) {
-    New-Item $ExplorerReg2
+    New-Item $ExplorerReg2 > $null
 }
 Set-ItemProperty $ExplorerReg2 System.IsPinnedToNameSpaceTree -Value 0
-Start-Process explorer.exe -NoNewWindow
 
 
 Write-Output "Unpinning all tiles from the start menu"
@@ -161,14 +155,6 @@ If (!(Test-Path $WebSearch)) {
 Set-ItemProperty $WebSearch DisableWebSearch -Value 1
 
 
-Write-Output "Stopping the Windows Feedback Experience program"
-$Period = "HKCU:\Software\Microsoft\Siuf\Rules"
-If (!(Test-Path $Period)) { 
-    New-Item $Period -ErrorAction SilentlyContinue
-}
-Set-ItemProperty $Period PeriodInNanoSeconds -Value 0
-
-
 Write-Output "Adding Registry key to prevent bloatware apps from returning"
 $registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
 $registryOEM = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
@@ -218,7 +204,7 @@ Set-ItemProperty $LocationConfig Status -Value 0
 Write-Output "Disabling People icon on Taskbar"
 $People = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
 If (!(Test-Path $People)) {
-    New-Item $People
+    New-Item $People > $null
 }
 Set-ItemProperty $People  PeopleBand -Value 0
 
@@ -267,9 +253,9 @@ $AppXApps = @(
     "*Spotify*"
 )
 foreach ($App in $AppXApps) {
-    Get-AppxPackage -Name $App | Remove-AppxPackage -ErrorAction Ignore
-    Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction Ignore
-    Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online -ErrorAction Ignore
+    Get-AppxPackage -Name $App | Remove-AppxPackage
+    Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online
 }
 
 Write-Output "Setting standby times"
@@ -300,7 +286,7 @@ Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Gr
 Write-Output "Uninstalling Windows Media Player"
 Disable-WindowsOptionalFeature -Online -FeatureName "WindowsMediaPlayer" -NoRestart -WarningAction SilentlyContinue > $null
 
-Write-Host "Configuring Windows Update" -ForegroundColor
+Write-Host "Configuring Windows Update"
 if (!(Test-Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate")) {New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Type Folder > $null}
 if (!(Test-Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU")) {New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" -Type Folder > $null}
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
@@ -346,8 +332,10 @@ $Keys = @(
     "HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                            # Scan with Microsoft Defender
 )
 ForEach ($Key in $Keys) {
+    Write-Output "Removing $Key"
     Remove-Item $Key -Recurse -ErrorAction Ignore
 }
+Write-Output "Clearing RegKey values"
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{8A734961-C4AA-4741-AC1E-791ACEBF5B39}" "" # Shop for music online

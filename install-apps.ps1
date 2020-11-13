@@ -23,7 +23,7 @@ Read-Host
 # Customize Spotify using spicetify
 choco install spicetify-cli --limit-output
 spicetify
-spicetify backup apply enable-devtool
+spicetify backup enable-devtool
 git clone https://github.com/morpheusthewhite/spicetify-themes
 Set-Location spicetify-themes
 Copy-Item -r * $HOME\.spicetify\Themes\
@@ -40,15 +40,13 @@ spicetify config extensions keyboardShortcut.js
 spicetify config extensions shuffle+.js
 spicetify apply
 
-Write-Host "Initializing the installation of .NET 3.5..."
-DISM /Online /Enable-Feature /FeatureName:NetFx3 /All
-Write-Host ".NET 3.5 has been successfully installed!"
+Write-Host "Installing .NET 3.5"
+Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3"
 
 choco install powershell-core --install-arguments='"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1"' --limit-output
+choco install winmerge --install-arguments='"/NoShellIntegration"' --limit-output
 choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
-choco install winmerge --params '"/NoShellIntegration"' --limit-output
 choco install plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv mediainfo mediainfo-cli eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer 7zip wireshark --ignore-checksums --limit-output
-refreshenv
 
 # prevent choco upgrade of automatically upgrading packages that upgrade themselves
 choco pin add --name googlechrome
@@ -58,11 +56,12 @@ choco pin add --name figma
 choco pin add --name discord
 choco pin add --name spotify
 
+refreshenv
+& $profile
+
 #################
 # Install VS Code
 #################
-
-
 wget -O VSCode-Setup.exe -L "https://aka.ms/win32-x64-user-stable"
 .\VSCode-Setup.exe /VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles
 
@@ -127,7 +126,7 @@ Switch (Read-Host)
 Write-Host "Install bethesdanet? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
 { 
-    Y {choco install bethesdanet --limit-output}
+    Y {choco install bethesdanet --ignore-checksums --limit-output}
 } 
 
 # Remove remaining setup files

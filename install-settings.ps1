@@ -332,8 +332,7 @@ $Keys = @(
     "HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                            # Scan with Microsoft Defender
 )
 ForEach ($Key in $Keys) {
-    Write-Output "Removing $Key"
-    Remove-Item $Key -Recurse -ErrorAction Ignore
+    Remove-Item -LiteralPath $Key -Recurse -ErrorAction Ignore
 }
 Write-Output "Clearing RegKey values"
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions

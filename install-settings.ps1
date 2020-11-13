@@ -6,7 +6,6 @@ Write-Host "Enabling Dark Mode"
 $Theme = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
 Set-ItemProperty $Theme SystemUsesLightTheme -Value 0
 Set-ItemProperty $Theme AppsUseLightTheme -Value 0
-Start-Sleep 1
 
 Write-Host "Removing Bloatware RegKeys"
 $Keys = @(
@@ -75,6 +74,7 @@ If (!(Test-Path $onedrive)) {
 }
 Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
 Stop-Process -name explorer
+
 Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction Ignore
 Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction Ignore
 Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction Ignore
@@ -90,6 +90,13 @@ If (!(Test-Path $ExplorerReg2)) {
     New-Item $ExplorerReg2 > $null
 }
 Set-ItemProperty $ExplorerReg2 System.IsPinnedToNameSpaceTree -Value 0
+
+Start-Sleep 2
+$Running = Get-Process -name explorer -ErrorAction SilentlyContinue
+if($null -eq $Running)
+{
+    Start-Process explorer
+}
 
 
 Write-Output "Unpinning all tiles from the start menu"
@@ -129,7 +136,15 @@ foreach ($regAlias in $regAliases){
     Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 0
 }
 Stop-Process -name explorer
+Start-Sleep 3
 Remove-Item $layoutFile
+
+Start-Sleep 2
+$Running = Get-Process -name explorer -ErrorAction SilentlyContinue
+if($null -eq $Running)
+{
+    Start-Process explorer
+}
 
 
 Write-Output "Disabling Windows Feedback Experience program"
@@ -334,7 +349,9 @@ $Keys = @(
 ForEach ($Key in $Keys) {
     Remove-Item -LiteralPath $Key -Recurse -ErrorAction Ignore
 }
-Write-Output "Clearing RegKey values"
+
+if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked")) {New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" -Type Folder > $null}
+if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager")) {New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Type Folder > $null}
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{8A734961-C4AA-4741-AC1E-791ACEBF5B39}" "" # Shop for music online

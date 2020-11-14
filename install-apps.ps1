@@ -1,9 +1,5 @@
 #Requires -RunAsAdministrator
 
-##############
-# Install Apps
-##############
-
 Write-Host "Installing Apps..." -ForegroundColor Green
 
 ### Chocolatey
@@ -15,19 +11,17 @@ if ($null -eq (which cinst)) {
 
 choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
 choco install googlechrome nomacs spotify autohotkey curl wget --ignore-checksums --limit-output
-Start-Process choco -ArgumentList "install powershell-core --install-arguments='`"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1`"' --limit-output"
-Start-Process choco -ArgumentList "install mp3tag --package-parameters='`"/NoDesktopShortcut /NoContextMenu`"' --limit-output"
-Start-Process choco -ArgumentList "install plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv mediainfo mediainfo-cli eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer 7zip wireshark winmerge --ignore-checksums --limit-output"
-
 refreshenv
-& $profile
+Start-Process choco -ArgumentList "install powershell-core --install-arguments='`"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1`"' --limit-output" -WindowStyle Minimized
+Start-Process choco -ArgumentList "install mp3tag --package-parameters='`"/NoDesktopShortcut /NoContextMenu`"' --limit-output" -WindowStyle Minimized
+$installProcess = Start-Process choco -ArgumentList "install plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv mediainfo mediainfo-cli eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer 7zip wireshark winmerge --ignore-checksums --limit-output" -PassThru
+
 
 # Customize Spotify using spicetify
 if (!(Test-Path $HOME\.spicetify)) {
     Start-Process $env:APPDATA\Spotify\Spotify.exe
     Start-Sleep 3
     Stop-Process -Name Spotify
-
     choco install spicetify-cli --limit-output
     spicetify
     spicetify backup enable-devtool
@@ -53,21 +47,6 @@ if(!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Re
     Write-Host "Installing .NET 3.5"
     Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3"
 }
-
-# prevent choco upgrade of automatically upgrading packages that upgrade themselves
-$pin_block = {
-    $apps =
-    'googlechrome',
-    'unity-hub',
-    'authy-desktop',
-    'figma',
-    'discord',
-    'spotify'
-    for ($i = 0; $i -lt $apps.Count; $i++) {
-        choco pin add --name $apps[$i]
-    } 
-}
-Start-Process powershell -ArgumentList "-command $pin_block"
 
 Start-Process wget -ArgumentList "-O VSCode-Setup.exe https://aka.ms/win32-x64-user-stable" -WorkingDirectory $HOME -Wait
 .\VSCode-Setup.exe /VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles
@@ -104,8 +83,23 @@ $installation_block = {
         code --install-extension $extensions[$i]
     } 
 }
-Start-Process powershell -ArgumentList "-command $installation_block"   # Invoke new poweshell instance so code is in path
+Start-Process powershell -ArgumentList "-command $installation_block" -WindowStyle Minimized    # Invoke new poweshell instance so code is in path
 
+# prevent choco upgrade of automatically upgrading packages that upgrade themselves
+$pin_block = {
+    $apps =
+    'googlechrome',
+    'unity-hub',
+    'authy-desktop',
+    'figma',
+    'discord',
+    'spotify'
+    for ($i = 0; $i -lt $apps.Count; $i++) {
+        choco pin add --name $apps[$i]
+    } 
+}
+$installProcess.WaitForExit()
+Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimized
 
 Write-Host "Install itunes? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
@@ -145,10 +139,10 @@ Switch (Read-Host)
 } 
 
 # Remove remaining setup files
-Remove-Item VSCode-Setup.exe
-Remove-Item ImgReName-Setup.exe
-Remove-Item CrystalDiskInfo-Setup.exe
-Remove-Item CrystalDiskMark-Setup.exe
+Remove-Item VSCode-Setup.exe -ErrorAction SilentlyContinue
+Remove-Item ImgReName-Setup.exe -ErrorAction SilentlyContinue
+Remove-Item CrystalDiskInfo-Setup.exe -ErrorAction SilentlyContinue
+Remove-Item CrystalDiskMark-Setup.exe -ErrorAction SilentlyContinue
 
 #winget install --id=Microsoft.WindowsTerminal -e
 #winget install notepads

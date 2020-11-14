@@ -62,40 +62,42 @@ If (!(Test-Path $Cortana3)) {
 Set-ItemProperty $Cortana3 HarvestContacts -Value 0
 
 
-Write-Output "Uninstalling OneDrive"
-New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
-$onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
-$ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-$ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-Stop-Process -Name "OneDrive*"
-Start-Sleep 2
-If (!(Test-Path $onedrive)) {
-    $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
-}
-Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
-Stop-Process -name explorer
-
-Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction Ignore
-Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction Ignore
-Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction Ignore
-If (Test-Path "$env:SYSTEMDRIVE\OneDriveTemp") {
-    Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse
-}
-Write-Output "Removing OneDrive from windows explorer"
-If (!(Test-Path $ExplorerReg1)) {
-    New-Item $ExplorerReg1 > $null
-}
-Set-ItemProperty $ExplorerReg1 System.IsPinnedToNameSpaceTree -Value 0 
-If (!(Test-Path $ExplorerReg2)) {
-    New-Item $ExplorerReg2 > $null
-}
-Set-ItemProperty $ExplorerReg2 System.IsPinnedToNameSpaceTree -Value 0
-
-Start-Sleep 2
-$Running = Get-Process -name explorer -ErrorAction SilentlyContinue
-if($null -eq $Running)
+if(!($null -eq (Get-Process -name OneDrive -ErrorAction SilentlyContinue)) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive"))
 {
-    Start-Process explorer
+    Write-Output "Uninstalling OneDrive"
+    New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
+    $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
+    $ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+    $ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+    Stop-Process -Name "OneDrive*"
+    Start-Sleep 2
+    If (!(Test-Path $onedrive)) {
+        $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
+    }
+    Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
+    Stop-Process -name explorer
+    
+    Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction Ignore
+    Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction Ignore
+    Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction Ignore
+    If (Test-Path "$env:SYSTEMDRIVE\OneDriveTemp") {
+        Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse
+    }
+    If (!(Test-Path $ExplorerReg1)) {
+        New-Item $ExplorerReg1 > $null
+    }
+    Set-ItemProperty $ExplorerReg1 System.IsPinnedToNameSpaceTree -Value 0 
+    If (!(Test-Path $ExplorerReg2)) {
+        New-Item $ExplorerReg2 > $null
+    }
+    Set-ItemProperty $ExplorerReg2 System.IsPinnedToNameSpaceTree -Value 0
+    
+    Start-Sleep 2
+    $Running = Get-Process -name explorer -ErrorAction SilentlyContinue
+    if($null -eq $Running)
+    {
+        Start-Process explorer
+    }
 }
 
 

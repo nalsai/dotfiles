@@ -1,12 +1,8 @@
 #Requires -RunAsAdministrator
 
-###############
-# Install Fonts
-###############
-
 Write-Host "Installing Fonts..." -ForegroundColor Green
 
-$fontsPath = "$HOME\Fonts"
+$fontsPath = "$HOME\Downloads\Fonts"
 
 New-Item -ItemType directory -Force -Path $fontsPath -ErrorAction SilentlyContinue > $null
 
@@ -46,13 +42,16 @@ Remove-Item "$fontsPath\ttf\static\" -Recurse -Force
 
 # install font files
 foreach($file in $(Get-ChildItem -Path $fontsPath -Include ('*.otf','*.ttf') -Recurse)){
-    If (-Not (Test-Path "c:\windows\fonts\$($File.name)"))
+    If (!(Test-Path "c:\windows\fonts\$($File.name)"))
     {
         $(New-Object -ComObject Shell.Application).Namespace(0x14).CopyHere($file.fullname,  4 + 16);
         New-ItemProperty -Name $file.fullname -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -PropertyType string -Value $file 
     }
 }
 
-Remove-Item $fontsPath -Recurse -Force
+Start-Sleep 3
+
+Remove-Item $fontsPath -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Host "Done Installing Fonts" -ForegroundColor Green
+Write-Host "The folder $HOME\Downloads\Fonts may still be left and can be deleted." -ForegroundColor Cyan

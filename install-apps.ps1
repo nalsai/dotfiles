@@ -21,24 +21,27 @@ Write-Host "Please open Spotify and close it again, then press enter" -Foregroun
 Read-Host
 
 # Customize Spotify using spicetify
+
 choco install spicetify-cli --limit-output
 spicetify
 spicetify backup enable-devtool
+Set-Location $HOME
 git clone https://github.com/morpheusthewhite/spicetify-themes
 Set-Location spicetify-themes
-Copy-Item -r * $HOME\.spicetify\Themes\
-Set-Location ../
+Copy-Item -r * $HOME\.spicetify\Themes\ -ErrorAction Ignore
+Set-Location $HOME
 Remove-Item .\spicetify-themes\ -Recurse -Force
 spicetify config current_theme CherryBlossom
 git clone https://github.com/khanhas/spicetify-cli
 Set-Location .\spicetify-cli\Extensions\
-Copy-Item -r * $HOME\.spicetify\Extensions\
-Set-Location ..\..\
+Copy-Item -r * $HOME\.spicetify\Extensions\ -ErrorAction Ignore
+Set-Location $HOME
 Remove-Item .\spicetify-cli\ -Recurse -Force
 spicetify config extensions fullAppDisplay.js 
 spicetify config extensions keyboardShortcut.js
 spicetify config extensions shuffle+.js
 spicetify apply
+
 
 Write-Host "Installing .NET 3.5"
 Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3"
@@ -56,16 +59,17 @@ choco pin add --name figma
 choco pin add --name discord
 choco pin add --name spotify
 
-refreshenv
-& $profile
-
 #################
 # Install VS Code
 #################
-wget -O VSCode-Setup.exe -L "https://aka.ms/win32-x64-user-stable"
+Start-Process wget -ArgumentList "-O VSCode-Setup.exe https://aka.ms/win32-x64-user-stable" -WorkingDirectory $HOME -Wait
 .\VSCode-Setup.exe /VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles
 
-$extensions =
+refreshenv
+& $profile
+
+$installation_block = {
+    $extensions =
     'bungcip.better-toml',
     'DavidAnson.vscode-markdownlint',
     'DotJoshJohnson.xml',
@@ -84,18 +88,19 @@ $extensions =
     'yummygum.city-lights-theme',
     'Zignd.html-css-class-completion'
 
-foreach($extension in $extensions)
-{
-    code --install-extension $extension
+    for ($i = 0; $i -lt $extensions.Count; $i++) {
+        code --install-extension $extensions[$i]
+    } 
 }
+Start-Process powershell -ArgumentList "-command $installation_block"   # Invoke new poweshell instance so code is in path
 
-wget -O CrystalDiskInfo-Setup.exe "https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku"
+Start-Process wget -ArgumentList "-O CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku" -WorkingDirectory $HOME -Wait
 .\CrystalDiskInfo-Setup.exe /SP- /VERYSILENT /NORESTART
 
-wget -O CrystalDiskMark-Setup.exe "https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku"
+Start-Process wget -ArgumentList "-O CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku" -WorkingDirectory $HOME -Wait
 .\CrystalDiskMark-Setup.exe /SP- /VERYSILENT /NORESTART
 
-wget -O ImgReName-Setup.exe "https://nalsai.de/imgrename/download/Setup.exe"
+Start-Process wget -ArgumentList "-O ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe" -WorkingDirectory $HOME -Wait
 .\ImgReName-Setup.exe --silent
 
 Write-Host "Install itunes? (y/N): " -ForegroundColor Yellow -NoNewline

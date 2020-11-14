@@ -130,12 +130,18 @@ Switch (Read-Host)
 Write-Host "Install steam? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
 { 
-    Y {choco install steam --limit-output}
+    Y {
+        choco install steam --limit-output
+        choco pin add --name steam
+    }
 } 
 Write-Host "Install bethesdanet? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
 { 
-    Y {choco install bethesdanet --ignore-checksums --limit-output}
+    Y {
+        choco install bethesdanet --ignore-checksums --limit-output
+        choco pin add --name bethesdanet
+    }
 } 
 
 # Remove remaining setup files

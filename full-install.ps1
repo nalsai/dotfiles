@@ -1,6 +1,6 @@
 #Requires -RunAsAdministrator
 
-Set-ExecutionPolicy RemoteSigned
+Set-ExecutionPolicy RemoteSigned -ErrorAction Ignore
 
 Write-Host "Install symlinks? (Y/n): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host)

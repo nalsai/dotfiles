@@ -23,7 +23,7 @@ refreshenv
 & $profile
 
 # Customize Spotify using spicetify
-if (!(Test-Path $HOME\spicetify)) {
+if (!(Test-Path $HOME\.spicetify)) {
     Start-Process $env:APPDATA\Spotify\Spotify.exe
     Start-Sleep 3
     Stop-Process -Name Spotify

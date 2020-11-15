@@ -393,10 +393,15 @@ Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliver
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
 & $profile
 
-Write-Host "Name of Computer: " -ForegroundColor Yellow -NoNewline
-$computerName = Read-Host
-(Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
-
+Write-Host "Change Name of Computer? (y/N): " -ForegroundColor Yellow -NoNewline
+Switch (Read-Host) 
+{ 
+    Y {
+        Write-Host "Name: " -ForegroundColor Cyan -NoNewline
+        $computerName = Read-Host
+        (Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
+    }
+}
 
 Write-Host "Enable Developer Mode? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 

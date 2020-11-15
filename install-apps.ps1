@@ -101,6 +101,21 @@ $pin_block = {
 $installProcess.WaitForExit()
 Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimized
 
+# Remove WinMerge from Context Menu & 7zip from Drag Context Menu
+New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
+$Keys = @(
+    "HKCR:\*\shellex\ContextMenuHandlers\WinMerge"
+    "HKCR:\Directory\shellex\ContextMenuHandlers\WinMerge"
+    "HKCR:\Directory\shellex\DragDropHandlers\WinMerge"
+    "HKCR:\Directory\Background\shellex\ContextMenuHandlers\WinMerge"
+    "HKCR:\Directory\shellex\DragDropHandlers\7-Zip"
+)
+ForEach ($Key in $Keys) {
+    Remove-Item -LiteralPath $Key -Recurse #-ErrorAction Ignore
+}
+
+Remove-Item -LiteralPath "" -Recurse -ErrorAction Ignore
+
 Write-Host "Install itunes? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
 { 

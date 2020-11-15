@@ -344,10 +344,26 @@ $Keys = @(
     "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\setdesktopwallpaper"
     "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\setdesktopwallpaper"
     "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\setdesktopwallpaper"
+    "HKCR:\SystemFileAssociations\.bmp\ShellEx\ContextMenuHandlers\ShellImagePreview"   # Rotate Left and Rotate Right in Context Menu
+    "HKCR:\SystemFileAssociations\.dib\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.gif\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.heic\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.heif\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.ico\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.jfif\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.jpe\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.jpeg\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.jpg\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.png\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.rle\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.tif\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.tiff\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\SystemFileAssociations\.webp\ShellEx\ContextMenuHandlers\ShellImagePreview"
+    "HKCR:\Folder\ShellEx\ContextMenuHandlers\Library Location"
     "HKLM:\SOFTWARE\Classes\SystemFileAssociations\image\shell\edit"
-    "HKCR:\z\ContextMenuHandlers\ModernSharing"                                     # Share
-    "HKCR:\*\shellex\ContextMenuHandlers\{90AA3A4E-1CBA-4233-B8BB-535773D48449}"    # Pin To Taskbar
-    "HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                            # Scan with Microsoft Defender
+    "HKCR:\z\ContextMenuHandlers\ModernSharing"                                         # Share
+    "HKCR:\*\shellex\ContextMenuHandlers\{90AA3A4E-1CBA-4233-B8BB-535773D48449}"        # Pin To Taskbar
+    "HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                                # Scan with Microsoft Defender
 )
 ForEach ($Key in $Keys) {
     Remove-Item -LiteralPath $Key -Recurse -ErrorAction Ignore
@@ -355,12 +371,18 @@ ForEach ($Key in $Keys) {
 
 if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked")) {New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" -Type Folder > $null}
 if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager")) {New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Type Folder > $null}
+if (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Type Folder > $null}
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{8A734961-C4AA-4741-AC1E-791ACEBF5B39}" "" # Shop for music online
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" "" # Share
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{f81e9010-6ea4-11ce-a7ff-00aa003ca9f6}" "" # Give Access To
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" "" # Pin To Start
 Set-ItemProperty "HKCR:\AppX43hnxtbyyps62jhe9sqpdzxn1790zetc\Shell\ShellEdit" "ProgrammaticAccessOnly" ""                               # Edit with Photos
-Set-ItemProperty "HKCR:\exefile\shellex\ContextMenuHandlers\PintoStartScreen" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" ""               # Pin To Start
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "NoCustomizeThisFolder" 1                          # Customize This Folder
+
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Start_TrackDocs" 0                                # Disable Recent Files in Explorer
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" 0                             # Disable Task View Button
 
 Write-Output "Disabling Start Menu Suggestions"
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryManager" 0

@@ -1,6 +1,5 @@
 #Requires -RunAsAdministrator
 
-
 try{
     Set-ExecutionPolicy RemoteSigned -Scope LocalMachine
 }

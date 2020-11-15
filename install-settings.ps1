@@ -2,6 +2,8 @@
 
 Write-Host "Configuring System..." -ForegroundColor Green
 
+New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
+
 Write-Host "Enabling Dark Mode"
 $Theme = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
 Set-ItemProperty $Theme SystemUsesLightTheme -Value 0
@@ -65,7 +67,6 @@ Set-ItemProperty $Cortana3 HarvestContacts -Value 0
 if(!($null -eq (Get-Process -name OneDrive -ErrorAction SilentlyContinue)) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive"))
 {
     Write-Output "Uninstalling OneDrive"
-    New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
     $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
     $ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
     $ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"

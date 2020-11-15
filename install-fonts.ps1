@@ -35,10 +35,12 @@ foreach($font in $fonts)
 Remove-Item "$fontsPath\static\" -Recurse -Force
 
 Expand-Archive -Path "$fontsPath\Cascadia Code.zip" -DestinationPath $fontsPath -Force
+Remove-Item "$fontsPath\ttf\static\" -Recurse -Force
+Copy-Item -r  $fontsPath\ttf\* $fontsPath -ErrorAction Ignore
 Remove-Item "$fontsPath\Cascadia Code.zip" -Force
 Remove-Item "$fontsPath\otf\" -Recurse -Force
 Remove-Item "$fontsPath\woff2\" -Recurse -Force
-Remove-Item "$fontsPath\ttf\static\" -Recurse -Force
+Remove-Item "$fontsPath\ttf\" -Recurse -Force
 
 # install font files
 foreach($file in $(Get-ChildItem -Path $fontsPath -Include ('*.otf','*.ttf') -Recurse)){

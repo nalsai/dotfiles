@@ -49,17 +49,18 @@ if(!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Re
 }
 
 Start-Process wget -ArgumentList "-O VSCode-Setup.exe https://aka.ms/win32-x64-user-stable" -WorkingDirectory $HOME -Wait
-.\VSCode-Setup.exe /VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles
+$VSCodeInstall = Start-Process $HOME\VSCode-Setup.exe -ArgumentList "/VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles" -PassThru
 
 Start-Process wget -ArgumentList "-O ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe" -WorkingDirectory $HOME -Wait
-.\ImgReName-Setup.exe --silent
+Start-Process $HOME\ImgReName-Setup.exe -ArgumentList "--silent"
 
 Start-Process wget -ArgumentList "-O CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku" -WorkingDirectory $HOME -Wait
-.\CrystalDiskInfo-Setup.exe /SP- /VERYSILENT /NORESTART
+Start-Process $HOME\CrystalDiskInfo-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
 
 Start-Process wget -ArgumentList "-O CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku" -WorkingDirectory $HOME -Wait
-.\CrystalDiskMark-Setup.exe /SP- /VERYSILENT /NORESTART
+Start-Process $HOME\CrystalDiskMark-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
 
+$VSCodeInstall.WaitForExit()
 $installation_block = {
     $extensions =
     'bungcip.better-toml',
@@ -111,10 +112,9 @@ $Keys = @(
     "HKCR:\Directory\shellex\DragDropHandlers\7-Zip"
 )
 ForEach ($Key in $Keys) {
-    Remove-Item -LiteralPath $Key -Recurse #-ErrorAction Ignore
+    Remove-Item -LiteralPath $Key -Recurse -ErrorAction Ignore
 }
 
-Remove-Item -LiteralPath "" -Recurse -ErrorAction Ignore
 
 Write-Host "Install itunes? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 
@@ -154,10 +154,10 @@ Switch (Read-Host)
 } 
 
 # Remove remaining setup files
-Remove-Item VSCode-Setup.exe -ErrorAction SilentlyContinue
-Remove-Item ImgReName-Setup.exe -ErrorAction SilentlyContinue
-Remove-Item CrystalDiskInfo-Setup.exe -ErrorAction SilentlyContinue
-Remove-Item CrystalDiskMark-Setup.exe -ErrorAction SilentlyContinue
+Remove-Item $HOME\VSCode-Setup.exe -ErrorAction SilentlyContinue
+Remove-Item $HOME\ImgReName-Setup.exe -ErrorAction SilentlyContinue
+Remove-Item $HOME\CrystalDiskInfo-Setup.exe -ErrorAction SilentlyContinue
+Remove-Item $HOME\CrystalDiskMark-Setup.exe -ErrorAction SilentlyContinue
 
 #winget install --id=Microsoft.WindowsTerminal -e
 #winget install notepads

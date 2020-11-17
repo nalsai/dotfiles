@@ -272,9 +272,9 @@ $AppXApps = @(
     "*Spotify*"
 )
 foreach ($App in $AppXApps) {
-    Get-AppxPackage -Name $App | Remove-AppxPackage
-    Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers
-    Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online
+    try {Get-AppxPackage -Name $App | Remove-AppxPackage} catch {}
+    try {Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers} catch {}
+    try {Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online} catch {}
 }
 
 Write-Output "Setting standby times"

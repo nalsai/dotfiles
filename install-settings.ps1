@@ -392,7 +392,7 @@ Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliver
 
 # Refresh Path & Profile
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-& $profile
+. $profile
 
 Write-Host "Change Name of Computer? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 

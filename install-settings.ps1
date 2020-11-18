@@ -380,11 +380,12 @@ Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensio
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{f81e9010-6ea4-11ce-a7ff-00aa003ca9f6}" "" # Give Access To
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" "" # Pin To Start
 Set-ItemProperty "HKCR:\AppX43hnxtbyyps62jhe9sqpdzxn1790zetc\Shell\ShellEdit" "ProgrammaticAccessOnly" ""                               # Edit with Photos
+Set-ItemProperty "HKCR:\AppXk0g4vb8gvt7b93tg50ybcy892pge6jmt\Shell\ShellEdit" "ProgrammaticAccessOnly" ""                               # Edit with Photos
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "NoCustomizeThisFolder" 1                          # Customize This Folder
 
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Start_TrackDocs" 0                                # Disable Recent Files in Explorer
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" 0                             # Disable Task View Button
-Remove-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "SecurityHealth"                                              # Remove Windows Defender Systray
+Remove-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "SecurityHealth"  -ErrorAction SilentlyContinue               # Remove Windows Defender Systray
 
 Write-Output "Disabling Start Menu Suggestions"
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryManager" 0

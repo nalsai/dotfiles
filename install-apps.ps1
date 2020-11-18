@@ -14,7 +14,7 @@ choco install googlechrome nomacs spotify autohotkey curl wget --ignore-checksum
 refreshenv
 Start-Process choco -ArgumentList "install powershell-core --install-arguments='`"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1`"' --limit-output" -WindowStyle Minimized
 Start-Process choco -ArgumentList "install mp3tag --package-parameters='`"/NoDesktopShortcut /NoContextMenu`"' --limit-output" -WindowStyle Minimized
-$installProcess = Start-Process choco -ArgumentList "install plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv mediainfo mediainfo-cli eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer 7zip wireshark winmerge --ignore-checksums --limit-output" -PassThru
+$installProcess = Start-Process choco -ArgumentList "install plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer 7zip wireshark winmerge --ignore-checksums --limit-output" -PassThru
 
 
 # Customize Spotify using spicetify
@@ -25,18 +25,15 @@ if (!(Test-Path $HOME\.spicetify)) {
     choco install spicetify-cli --limit-output
     spicetify
     spicetify backup enable-devtool
-    Set-Location $HOME
-    git clone https://github.com/morpheusthewhite/spicetify-themes
-    Set-Location spicetify-themes
-    Copy-Item -r * $HOME\.spicetify\Themes\ -ErrorAction Ignore
-    Set-Location $HOME
-    Remove-Item .\spicetify-themes\ -Recurse -Force
+    Invoke-WebRequest "https://github.com/morpheusthewhite/spicetify-themes/archive/master.zip" -OutFile $HOME\spicetify-themes.zip
+    Expand-Archive -Path $HOME\spicetify-themes.zip  -DestinationPath $HOME -Force;
+    Copy-Item -r $HOME\spicetify-themes-master\* $HOME\.spicetify\Themes\ -ErrorAction Ignore
+    Remove-Item $HOME\spicetify-themes-master -Recurse -Force
     spicetify config current_theme CherryBlossom
-    git clone https://github.com/khanhas/spicetify-cli
-    Set-Location .\spicetify-cli\Extensions\
-    Copy-Item -r * $HOME\.spicetify\Extensions\ -ErrorAction Ignore
-    Set-Location $HOME
-    Remove-Item .\spicetify-cli\ -Recurse -Force
+    Invoke-WebRequest "https://github.com/khanhas/spicetify-cli/archive/master.zip" -OutFile $HOME\spicetify-cli.zip
+    Expand-Archive -Path $HOME\spicetify-cli.zip  -DestinationPath $HOME -Force;
+    Copy-Item -r $HOME\spicetify-cli-master\Extensions\* $HOME\.spicetify\Extensions\ -ErrorAction Ignore
+    Remove-Item $HOME\spicetify-cli-master -Recurse -Force
     spicetify config extensions fullAppDisplay.js 
     spicetify config extensions keyboardShortcut.js
     spicetify config extensions shuffle+.js
@@ -45,7 +42,7 @@ if (!(Test-Path $HOME\.spicetify)) {
 
 if(!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object {$_.Version -as [System.Version]} | Where-Object {$_.Major -eq 3 -and $_.Minor -eq 5}).Count -ge 1)) {
     Write-Host "Installing .NET 3.5"
-    Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3"
+    Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3" -NoRestart
 }
 
 Start-Process wget -ArgumentList "-O VSCode-Setup.exe https://aka.ms/win32-x64-user-stable" -WorkingDirectory $HOME -Wait
@@ -54,10 +51,10 @@ $VSCodeInstall = Start-Process $HOME\VSCode-Setup.exe -ArgumentList "/VERYSILENT
 Start-Process wget -ArgumentList "-O ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe" -WorkingDirectory $HOME -Wait
 Start-Process $HOME\ImgReName-Setup.exe -ArgumentList "--silent"
 
-Start-Process wget -ArgumentList "-O CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku" -WorkingDirectory $HOME -Wait
+Start-Process wget -ArgumentList "-O CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku --no-check-certificate" -WorkingDirectory $HOME -Wait
 Start-Process $HOME\CrystalDiskInfo-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
 
-Start-Process wget -ArgumentList "-O CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku" -WorkingDirectory $HOME -Wait
+Start-Process wget -ArgumentList "-O CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku --no-check-certificate" -WorkingDirectory $HOME -Wait
 Start-Process $HOME\CrystalDiskMark-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
 
 $VSCodeInstall.WaitForExit()

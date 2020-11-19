@@ -26,6 +26,7 @@ foreach($font in $fonts)
     wget -O $fontsPath\$font.zip "https://fonts.google.com/download?family=$font"
 }
 wget -O "$fontsPath\Cascadia Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/microsoft/cascadia-code/releases/latest").assets | Where-Object name -like CascadiaCode-*.zip ).browser_download_url
+wget -O "$fontsPath\Gandhi Sans.zip" https://www.fontsquirrel.com/fonts/download/gandhi-sans
 
 foreach($font in $fonts)
 {
@@ -34,6 +35,7 @@ foreach($font in $fonts)
 }
 Remove-Item "$fontsPath\static\" -Recurse -Force
 Expand-Archive -Path "$fontsPath\Cascadia Code.zip" -DestinationPath $fontsPath -Force
+Expand-Archive -Path "$fontsPath\Gandhi Sans.zip" -DestinationPath $fontsPath -Force
 Remove-Item "$fontsPath\ttf\static\" -Recurse -Force
 Copy-Item -r  $fontsPath\ttf\* $fontsPath -ErrorAction Ignore
 Remove-Item "$fontsPath\Cascadia Code.zip" -Force

@@ -7,6 +7,7 @@ $fontsPath = "$HOME\Downloads\Fonts"
 New-Item -ItemType directory -Force -Path $fontsPath -ErrorAction SilentlyContinue > $null
 
 $fonts =
+    'Alice',
     'Lato',
     'Montserrat',
     'Quicksand',

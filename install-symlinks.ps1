@@ -13,6 +13,9 @@ New-Item -Force -ItemType SymbolicLink -Path $documents\WindowsPowerShell -Targe
 # mpv config
 New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\mpv -Target $PSScriptRoot\mpv
 
+# MediaInfo.NET
+New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\MediaInfo.NET -Target $PSScriptRoot\MediaInfo.NET
+
 # Visual Studio Code settings.json and keybindings.json
 New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Code\User\settings.json -Target $PSScriptRoot\vscode\settings.json
 New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Code\User\keybindings.json -Target $PSScriptRoot\vscode\keybindings.json

@@ -24,12 +24,12 @@ if (!(Test-Path $HOME\.spicetify)) {
     choco install spicetify-cli --limit-output
     spicetify
     spicetify backup enable-devtool
-    Invoke-WebRequest "https://github.com/morpheusthewhite/spicetify-themes/archive/master.zip" -OutFile $HOME\spicetify-themes.zip
+    wget -O $HOME\spicetify-themes.zip "https://github.com/morpheusthewhite/spicetify-themes/archive/master.zip"
     Expand-Archive -Path $HOME\spicetify-themes.zip  -DestinationPath $HOME -Force;
     Copy-Item -r $HOME\spicetify-themes-master\* $HOME\.spicetify\Themes\ -ErrorAction SilentlyContinue
     Remove-Item $HOME\spicetify-themes-master -Recurse -Force
     spicetify config current_theme CherryBlossom
-    Invoke-WebRequest "https://github.com/khanhas/spicetify-cli/archive/master.zip" -OutFile $HOME\spicetify-cli.zip
+    wget -O $HOME\spicetify-cli.zip "https://github.com/khanhas/spicetify-cli/archive/master.zip"
     Expand-Archive -Path $HOME\spicetify-cli.zip  -DestinationPath $HOME -Force;
     Copy-Item -r $HOME\spicetify-cli-master\Extensions\* $HOME\.spicetify\Extensions\ -ErrorAction SilentlyContinue
     Remove-Item $HOME\spicetify-cli-master -Recurse -Force

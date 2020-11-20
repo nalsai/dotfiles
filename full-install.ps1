@@ -1,35 +1,30 @@
 #Requires -RunAsAdministrator
 
-try{
-    Set-ExecutionPolicy RemoteSigned -Scope LocalMachine
-}
-catch {}
-
 Write-Host "Install symlinks? (Y/n): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host)
 {
-    Default {Invoke-Expression -Command "$PSScriptRoot\install-symlinks.ps1"}
+    Default {. $PSScriptRoot\install-symlinks.ps1}
     N {}
 }
 
 Write-Host "Install settings? (Y/n): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host)
 {
-    Default {Invoke-Expression -Command "$PSScriptRoot\install-settings.ps1"}
+    Default {. $PSScriptRoot\install-settings.ps1}
     N {}
 }
 
 Write-Host "Install apps? (Y/n): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host)
 {
-    Default {Invoke-Expression -Command "$PSScriptRoot\install-apps.ps1"}
+    Default {. $PSScriptRoot\install-apps.ps1}
     N {}
 }
 
 Write-Host "Install fonts? (Y/n): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host)
 {
-    Default {Invoke-Expression -Command "$PSScriptRoot\install-fonts.ps1"}
+    Default {. $PSScriptRoot\install-fonts.ps1}
     N {}
 }
 

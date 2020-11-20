@@ -7,7 +7,7 @@ A collection of PowerShell files for Windows, including application installation
 To install these dotfiles from PowerShell without any prerequisites, copy this command into your elevated PowerShell instance and run it:
 
 ```ps1
-Set-ExecutionPolicy Bypass; Invoke-WebRequest "https://git.nalsai.de/dotfiles/archive/master.zip" -OutFile $HOME\dotfiles.zip; Expand-Archive -Path $HOME\dotfiles.zip  -DestinationPath "$HOME" -Force; Remove-Item $HOME\dotfiles.zip; Remove-Item $HOME\.dotfiles -Recurse -ErrorAction Ignore; Rename-Item -Path $HOME\dotfiles-master -NewName $HOME\.dotfiles -Force; Invoke-Expression -Command $HOME\.dotfiles\full-install.ps1
+Set-ExecutionPolicy RemoteSigned; Invoke-WebRequest "https://git.nalsai.de/dotfiles/archive/master.zip" -OutFile $HOME\dotfiles.zip; Expand-Archive -Path $HOME\dotfiles.zip  -DestinationPath "$HOME" -Force; Remove-Item $HOME\dotfiles.zip; Remove-Item $HOME\.dotfiles -Recurse -ErrorAction Ignore; Rename-Item -Path $HOME\dotfiles-master -NewName $HOME\.dotfiles -Force; Invoke-Expression -Command $HOME\.dotfiles\full-install.ps1
 ```
 
 The command will download this repository to `$HOME` and run `full-install.ps1`

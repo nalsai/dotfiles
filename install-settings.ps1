@@ -391,9 +391,6 @@ Write-Output "Disabling Start Menu Suggestions"
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryManager" 0
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SilentInstalledAppsEnabled" 0
 
-# Refresh Path & Profile
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-. $profile
 
 Write-Host "Change Name of Computer? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) 

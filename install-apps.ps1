@@ -80,7 +80,12 @@ $installProcess.WaitForExit()
 Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimized
 
 # remove WinMerge from Context Menu & 7zip from Drag & Drop Context Menu
-New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
+try {
+    New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
+}
+catch {
+    # the drive has already been created
+}
 $Keys = @(
     "HKCR:\*\shellex\ContextMenuHandlers\WinMerge"
     "HKCR:\Directory\shellex\ContextMenuHandlers\WinMerge"

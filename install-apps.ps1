@@ -10,29 +10,18 @@ if ($null -eq (which cinst)) {
 
 choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
 choco install googlechrome nomacs spotify autohotkey curl wget 7zip --ignore-checksums --limit-output
+Remove-Item alias:wget -ErrorAction SilentlyContinue
 
-# https://stackoverflow.com/a/46760714
-# Make `refreshenv` available right away, by defining the $env:ChocolateyInstall
-# variable and importing the Chocolatey profile module.
-# Note: Using `. $PROFILE` instead *may* work, but isn't guaranteed to.
-$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."   
-Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-# refreshenv is now an alias for Update-SessionEnvironment
-# (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)
-refreshenv
-
-Start-Process choco -ArgumentList "install powershell-core --install-arguments='`"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1`"' --limit-output" -WindowStyle Minimized
-Start-Process choco -ArgumentList "install mp3tag --package-parameters='`"/NoDesktopShortcut /NoContextMenu`"' --limit-output" -WindowStyle Minimized
 $installProcess = Start-Process choco -ArgumentList "install synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer wireshark winmerge --ignore-checksums --limit-output" -PassThru
 
 # customize Spotify using spicetify
 if (!(Test-Path $HOME\.spicetify)) {
+    choco install spicetify-cli --limit-output
     $spotifyInstance = [Diagnostics.Process]::Start("$env:APPDATA\Spotify\Spotify.exe")
     while ($spotifyInstance.MainWindowHandle -eq 0) {
-        Start-Sleep -Milliseconds 1000
+        Start-Sleep 1
     }
     Stop-Process -Name Spotify
-    choco install spicetify-cli --limit-output
     spicetify
     spicetify backup enable-devtool
     wget -O $HOME\spicetify-themes.zip "https://github.com/morpheusthewhite/spicetify-themes/archive/master.zip"
@@ -70,6 +59,9 @@ Start-Process $HOME\CrystalDiskMark-Setup.exe -ArgumentList "/SP- /VERYSILENT /N
 wget -O $HOME\MediaInfoNET.7z ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/stax76/MediaInfo.NET/releases/latest").assets | Where-Object name -like MediaInfo.NET-*.7z).browser_download_url
 7z x $HOME\MediaInfoNET.7z -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
 Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
+
+choco install powershell-core --install-arguments='`"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1`"' --limit-output
+choco install mp3tag --package-parameters='`"/NoDesktopShortcut /NoContextMenu`"' --limit-output
 
 # prevent choco from upgrading packages that upgrade themselves
 $pin_block = {

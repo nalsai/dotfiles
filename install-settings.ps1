@@ -407,6 +407,7 @@ Switch (Read-Host)
 { 
     Y {
         Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" "AllowDevelopmentWithoutDevLicense" 1
+        Write-Output "Done"
     }
 }
 

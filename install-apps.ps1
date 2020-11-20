@@ -18,8 +18,10 @@ $installProcess = Start-Process choco -ArgumentList "install synctrayzor plex go
 
 # customize Spotify using spicetify
 if (!(Test-Path $HOME\.spicetify)) {
-    Start-Process $env:APPDATA\Spotify\Spotify.exe
-    Start-Sleep 3
+    $spotifyInstance = [Diagnostics.Process]::Start("$env:APPDATA\Spotify\Spotify.exe")
+    while ($spotifyInstance.MainWindowHandle -eq 0) {
+        Start-Sleep -Milliseconds 1000
+    }
     Stop-Process -Name Spotify
     choco install spicetify-cli --limit-output
     spicetify

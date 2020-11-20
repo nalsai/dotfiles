@@ -42,7 +42,7 @@ $Keys = @(
     "HKCR:\Extensions\ContractId\Windows.ShareTarget\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
 )
 ForEach ($Key in $Keys) {
-    Remove-Item $Key -Recurse -ErrorAction Ignore
+    Remove-Item $Key -Recurse -ErrorAction SilentlyContinue
 }
 
 Write-Host "Disabling Cortana"
@@ -78,9 +78,9 @@ if(!($null -eq (Get-Process -name OneDrive -ErrorAction SilentlyContinue)) -Or (
     Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
     Stop-Process -name explorer
     
-    Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction Ignore
-    Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction Ignore
-    Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction Ignore
+    Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+    Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+    Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
     If (Test-Path "$env:SYSTEMDRIVE\OneDriveTemp") {
         Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse
     }
@@ -362,12 +362,12 @@ $Keys = @(
     "HKCR:\SystemFileAssociations\.webp\ShellEx\ContextMenuHandlers\ShellImagePreview"
     "HKCR:\Folder\ShellEx\ContextMenuHandlers\Library Location"
     "HKLM:\SOFTWARE\Classes\SystemFileAssociations\image\shell\edit"
-    "HKCR:\z\ContextMenuHandlers\ModernSharing"                                         # Share
+    "HKCR:\*\shellex\ContextMenuHandlers\ModernSharing"                                 # Share
     "HKCR:\*\shellex\ContextMenuHandlers\{90AA3A4E-1CBA-4233-B8BB-535773D48449}"        # Pin To Taskbar
     "HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                                # Scan with Microsoft Defender
 )
 ForEach ($Key in $Keys) {
-    Remove-Item -LiteralPath $Key -Recurse -ErrorAction Ignore
+    Remove-Item -LiteralPath $Key -Recurse -ErrorAction SilentlyContinue
 }
 
 if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked")) {New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" -Type Folder > $null}
@@ -379,8 +379,8 @@ Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensio
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" "" # Share
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{f81e9010-6ea4-11ce-a7ff-00aa003ca9f6}" "" # Give Access To
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" "" # Pin To Start
-Set-ItemProperty "HKCR:\AppX43hnxtbyyps62jhe9sqpdzxn1790zetc\Shell\ShellEdit" "ProgrammaticAccessOnly" ""                               # Edit with Photos
-Set-ItemProperty "HKCR:\AppXk0g4vb8gvt7b93tg50ybcy892pge6jmt\Shell\ShellEdit" "ProgrammaticAccessOnly" ""                               # Edit with Photos
+Set-ItemProperty "HKCR:\AppX43hnxtbyyps62jhe9sqpdzxn1790zetc\Shell\ShellEdit" "ProgrammaticAccessOnly" "" -ErrorAction SilentlyContinue # Edit with Photos
+Set-ItemProperty "HKCR:\AppXk0g4vb8gvt7b93tg50ybcy892pge6jmt\Shell\ShellEdit" "ProgrammaticAccessOnly" "" -ErrorAction SilentlyContinue # Edit with Photos
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "NoCustomizeThisFolder" 1                          # Customize This Folder
 
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Start_TrackDocs" 0                                # Disable Recent Files in Explorer

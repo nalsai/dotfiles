@@ -41,7 +41,7 @@ Expand-Archive -Path "$fontsPath\Gandhi Sans.zip" -DestinationPath $fontsPath -F
 Remove-Item "$fontsPath\Cascadia Code.zip" -Force
 Remove-Item "$fontsPath\Gandhi Sans.zip" -Force
 Remove-Item "$fontsPath\ttf\static\" -Recurse -Force
-Copy-Item -r  $fontsPath\ttf\* $fontsPath -ErrorAction Ignore
+Copy-Item -r  $fontsPath\ttf\* $fontsPath -ErrorAction SilentlyContinue
 Remove-Item "$fontsPath\otf" -Recurse -Force
 Remove-Item "$fontsPath\static" -Recurse -Force
 Remove-Item "$fontsPath\ttf" -Recurse -Force

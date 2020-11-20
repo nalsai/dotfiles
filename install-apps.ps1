@@ -26,12 +26,12 @@ if (!(Test-Path $HOME\.spicetify)) {
     spicetify backup enable-devtool
     Invoke-WebRequest "https://github.com/morpheusthewhite/spicetify-themes/archive/master.zip" -OutFile $HOME\spicetify-themes.zip
     Expand-Archive -Path $HOME\spicetify-themes.zip  -DestinationPath $HOME -Force;
-    Copy-Item -r $HOME\spicetify-themes-master\* $HOME\.spicetify\Themes\ -ErrorAction Ignore
+    Copy-Item -r $HOME\spicetify-themes-master\* $HOME\.spicetify\Themes\ -ErrorAction SilentlyContinue
     Remove-Item $HOME\spicetify-themes-master -Recurse -Force
     spicetify config current_theme CherryBlossom
     Invoke-WebRequest "https://github.com/khanhas/spicetify-cli/archive/master.zip" -OutFile $HOME\spicetify-cli.zip
     Expand-Archive -Path $HOME\spicetify-cli.zip  -DestinationPath $HOME -Force;
-    Copy-Item -r $HOME\spicetify-cli-master\Extensions\* $HOME\.spicetify\Extensions\ -ErrorAction Ignore
+    Copy-Item -r $HOME\spicetify-cli-master\Extensions\* $HOME\.spicetify\Extensions\ -ErrorAction SilentlyContinue
     Remove-Item $HOME\spicetify-cli-master -Recurse -Force
     spicetify config extensions fullAppDisplay.js 
     spicetify config extensions keyboardShortcut.js
@@ -45,7 +45,7 @@ if(!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Re
 }
 
 wget -O $HOME\VSCode-Setup.exe https://aka.ms/win32-x64-user-stable
-$VSCodeInstall = Start-Process $HOME\VSCode-Setup.exe -ArgumentList "/VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles" -PassThru
+Start-Process $HOME\VSCode-Setup.exe -ArgumentList "/VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles"
 
 wget -O $HOME\ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe
 Start-Process $HOME\ImgReName-Setup.exe -ArgumentList "--silent"
@@ -89,10 +89,9 @@ $Keys = @(
     "HKCR:\Directory\shellex\DragDropHandlers\7-Zip"
 )
 ForEach ($Key in $Keys) {
-    Remove-Item -LiteralPath $Key -Recurse -ErrorAction Ignore
+    Remove-Item -LiteralPath $Key -Recurse -ErrorAction SilentlyContinue
 }
 
-$VSCodeInstall.WaitForExit()
 $installation_block = {
     $extensions =
     'bungcip.better-toml',

@@ -9,8 +9,16 @@ if ($null -eq (which cinst)) {
 }
 
 choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
-choco install googlechrome nomacs spotify autohotkey curl wget 7zip --ignore-checksums --limit-output
-Remove-Item alias:wget -ErrorAction SilentlyContinue
+choco install googlechrome nomacs spotify autohotkey curl wget.exe 7zip --ignore-checksums --limit-output
+# https://stackoverflow.com/a/46760714	
+# Make `refreshenv` available right away, by defining the $env:ChocolateyInstall	
+# variable and importing the Chocolatey profile module.	
+# Note: Using `. $PROFILE` instead *may* work, but isn't guaranteed to.	
+$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."   	
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"	
+# refreshenv is now an alias for Update-SessionEnvironment	
+# (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)	
+refreshenv
 
 $installProcess = Start-Process choco -ArgumentList "install synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer wireshark winmerge --ignore-checksums --limit-output" -PassThru
 
@@ -24,12 +32,13 @@ if (!(Test-Path $HOME\.spicetify)) {
     Stop-Process -Name Spotify
     spicetify
     spicetify backup enable-devtool
-    wget -O $HOME\spicetify-themes.zip "https://github.com/morpheusthewhite/spicetify-themes/archive/master.zip"
+    Stop-Process -Name Spotify
+    wget.exe -O $HOME\spicetify-themes.zip "https://github.com/morpheusthewhite/spicetify-themes/archive/master.zip"
     Expand-Archive -Path $HOME\spicetify-themes.zip  -DestinationPath $HOME -Force;
     Copy-Item -r $HOME\spicetify-themes-master\* $HOME\.spicetify\Themes\ -ErrorAction SilentlyContinue
     Remove-Item $HOME\spicetify-themes-master -Recurse -Force
     spicetify config current_theme CherryBlossom
-    wget -O $HOME\spicetify-cli.zip "https://github.com/khanhas/spicetify-cli/archive/master.zip"
+    wget.exe -O $HOME\spicetify-cli.zip "https://github.com/khanhas/spicetify-cli/archive/master.zip"
     Expand-Archive -Path $HOME\spicetify-cli.zip  -DestinationPath $HOME -Force;
     Copy-Item -r $HOME\spicetify-cli-master\Extensions\* $HOME\.spicetify\Extensions\ -ErrorAction SilentlyContinue
     Remove-Item $HOME\spicetify-cli-master -Recurse -Force
@@ -44,19 +53,19 @@ if(!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Re
     Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3" -NoRestart
 }
 
-wget -O $HOME\VSCode-Setup.exe https://aka.ms/win32-x64-user-stable
+wget.exe -O $HOME\VSCode-Setup.exe https://aka.ms/win32-x64-user-stable
 Start-Process $HOME\VSCode-Setup.exe -ArgumentList "/VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles"
 
-wget -O $HOME\ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe
+wget.exe -O $HOME\ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe
 Start-Process $HOME\ImgReName-Setup.exe -ArgumentList "--silent"
 
-wget -O $HOME\CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku --no-check-certificate
+wget.exe -O $HOME\CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku --no-check-certificate
 Start-Process $HOME\CrystalDiskInfo-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
 
-wget -O $HOME\CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku --no-check-certificate
+wget.exe -O $HOME\CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku --no-check-certificate
 Start-Process $HOME\CrystalDiskMark-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
 
-wget -O $HOME\MediaInfoNET.7z ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/stax76/MediaInfo.NET/releases/latest").assets | Where-Object name -like MediaInfo.NET-*.7z).browser_download_url
+wget.exe -O $HOME\MediaInfoNET.7z ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/stax76/MediaInfo.NET/releases/latest").assets | Where-Object name -like MediaInfo.NET-*.7z).browser_download_url
 7z x $HOME\MediaInfoNET.7z -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
 Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
 

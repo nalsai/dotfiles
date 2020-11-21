@@ -9,7 +9,7 @@ if ($null -eq (which cinst)) {
 }
 
 choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
-choco install googlechrome nomacs spotify autohotkey curl wget.exe 7zip --ignore-checksums --limit-output
+choco install googlechrome nomacs spotify autohotkey curl wget 7zip --ignore-checksums --limit-output
 # https://stackoverflow.com/a/46760714	
 # Make `refreshenv` available right away, by defining the $env:ChocolateyInstall	
 # variable and importing the Chocolatey profile module.	

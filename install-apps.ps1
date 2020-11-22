@@ -20,7 +20,7 @@ Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 # (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)	
 refreshenv
 
-$installProcess = Start-Process choco -ArgumentList "install synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer wireshark winmerge --ignore-checksums --limit-output" -PassThru
+$installProcess = Start-Process choco -ArgumentList "install synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer wireshark winmerge rufus --ignore-checksums --limit-output" -PassThru
 
 # customize Spotify using spicetify
 if (!(Test-Path $HOME\.spicetify)) {
@@ -69,8 +69,8 @@ wget.exe -O $HOME\MediaInfoNET.7z ((Invoke-RestMethod -Method GET -Uri "https://
 7z x $HOME\MediaInfoNET.7z -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
 Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
 
-choco install powershell-core --install-arguments='`"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1`"' --limit-output
-choco install mp3tag --package-parameters='`"/NoDesktopShortcut /NoContextMenu`"' --limit-output
+choco install powershell-core --install-arguments='"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1"' --limit-output
+choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
 
 # prevent choco from upgrading packages that upgrade themselves
 $pin_block = {
@@ -83,18 +83,13 @@ $pin_block = {
     'spotify'
     for ($i = 0; $i -lt $apps.Count; $i++) {
         choco pin add --name $apps[$i]
-    } 
+    }
 }
 $installProcess.WaitForExit()
 Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimized
 
 # remove WinMerge from Context Menu & 7zip from Drag & Drop Context Menu
-try {
-    New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
-}
-catch {
-    # the drive has already been created
-}
+New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
 $Keys = @(
     "HKCR:\*\shellex\ContextMenuHandlers\WinMerge"
     "HKCR:\Directory\shellex\ContextMenuHandlers\WinMerge"
@@ -136,41 +131,36 @@ Start-Process powershell -ArgumentList "-command $installation_block" -WindowSty
 
 
 Write-Host "Install itunes? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) 
-{ 
+Switch (Read-Host)
+{
     Y {choco install itunes --limit-output}
-} 
+}
 Write-Host "Install h2testw? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) 
-{ 
+Switch (Read-Host)
+{
     Y {choco install h2testw --limit-output}
-} 
+}
 Write-Host "Install xmind? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) 
-{ 
+Switch (Read-Host)
+{
     Y {choco install xmind --limit-output}
-} 
+}
 Write-Host "Install assaultcube? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) 
-{ 
+Switch (Read-Host)
+{
     Y {choco install assaultcube --limit-output}
-} 
-Write-Host "Install steam? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) 
-{ 
+}
+Write-Host "Install steam, bethesdanet, goggalaxy? (y/N): " -ForegroundColor Yellow -NoNewline
+Switch (Read-Host)
+{
     Y {
-        choco install steam --limit-output
+        choco install steam bethesdanet goggalaxy --ignore-checksums --limit-output
         choco pin add --name steam
-    }
-} 
-Write-Host "Install bethesdanet? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) 
-{ 
-    Y {
-        choco install bethesdanet --ignore-checksums --limit-output
         choco pin add --name bethesdanet
+        choco pin add --name goggalaxy
     }
-} 
+}
+
 
 # Remove remaining setup files
 Remove-Item $HOME\VSCode-Setup.exe -ErrorAction SilentlyContinue

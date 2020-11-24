@@ -104,6 +104,7 @@ ForEach ($Key in $Keys) {
     Remove-Item -LiteralPath $Key -Recurse -ErrorAction SilentlyContinue
 }
 
+refreshenv
 $installation_block = {
     $extensions =
     'bungcip.better-toml',

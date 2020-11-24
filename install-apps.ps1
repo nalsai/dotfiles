@@ -34,14 +34,16 @@ if (!(Test-Path $HOME\.spicetify)) {
     spicetify backup enable-devtool
     Stop-Process -Name Spotify
     wget.exe -O $HOME\spicetify-themes.zip "https://github.com/morpheusthewhite/spicetify-themes/archive/master.zip"
-    Expand-Archive -Path $HOME\spicetify-themes.zip  -DestinationPath $HOME -Force;
+    Expand-Archive -Path $HOME\spicetify-themes.zip -DestinationPath $HOME -Force
     Copy-Item -r $HOME\spicetify-themes-master\* $HOME\.spicetify\Themes\ -ErrorAction SilentlyContinue
-    Remove-Item $HOME\spicetify-themes-master -Recurse -Force
+    Remove-Item $HOME\spicetify-themes.zip -ErrorAction SilentlyContinue
+    Remove-Item $HOME\spicetify-themes-master -Recurse -Force -ErrorAction SilentlyContinue
     spicetify config current_theme CherryBlossom
     wget.exe -O $HOME\spicetify-cli.zip "https://github.com/khanhas/spicetify-cli/archive/master.zip"
     Expand-Archive -Path $HOME\spicetify-cli.zip  -DestinationPath $HOME -Force;
     Copy-Item -r $HOME\spicetify-cli-master\Extensions\* $HOME\.spicetify\Extensions\ -ErrorAction SilentlyContinue
-    Remove-Item $HOME\spicetify-cli-master -Recurse -Force
+    Remove-Item $HOME\spicetify-cli.zip -ErrorAction SilentlyContinue
+    Remove-Item $HOME\spicetify-cli-master -Recurse -Force -ErrorAction SilentlyContinue
     spicetify config extensions fullAppDisplay.js 
     spicetify config extensions keyboardShortcut.js
     spicetify config extensions shuffle+.js

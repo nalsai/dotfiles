@@ -124,10 +124,10 @@ $installation_block = {
     'yummygum.city-lights-theme',
     'Zignd.html-css-class-completion'
     for ($i = 0; $i -lt $extensions.Count; $i++) {
-        code --install-extension $extensions[$i]
+        code.cmd --install-extension $extensions[$i]
     } 
 }
-Start-Process powershell -ArgumentList "-command $installation_block" -WindowStyle Minimized    # Invoke new poweshell instance so code is in path
+Start-Process powershell -ArgumentList "-command refreshenv $installation_block"
 
 
 Write-Host "Install itunes? (y/N): " -ForegroundColor Yellow -NoNewline

@@ -3,7 +3,7 @@
 Write-Host "Installing Apps..." -ForegroundColor Green
 
 # install chocolatey if not already installed
-if ($null -eq (which cinst)) {
+if (!(which choco)) {
     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     choco feature enable -n=allowGlobalConfirmation
 }
@@ -23,7 +23,7 @@ refreshenv
 $installProcess = Start-Process choco -ArgumentList "install synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer wireshark winmerge rufus --ignore-checksums --limit-output" -PassThru
 
 # customize Spotify using spicetify
-if (!(Test-Path $HOME\.spicetify)) {
+if (!(which spicetify)) {
     choco install spicetify-cli --limit-output
     $spotifyInstance = [Diagnostics.Process]::Start("$env:APPDATA\Spotify\Spotify.exe")
     while ($spotifyInstance.MainWindowHandle -eq 0) {
@@ -55,21 +55,31 @@ if(!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Re
     Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3" -NoRestart
 }
 
-wget.exe -O $HOME\VSCode-Setup.exe https://aka.ms/win32-x64-user-stable
-Start-Process $HOME\VSCode-Setup.exe -ArgumentList "/VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles"
+if(!(which code)) {
+    wget.exe -O $HOME\VSCode-Setup.exe https://aka.ms/win32-x64-user-stable
+    Start-Process $HOME\VSCode-Setup.exe -ArgumentList "/VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles"
+}
 
-wget.exe -O $HOME\ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe
-Start-Process $HOME\ImgReName-Setup.exe -ArgumentList "--silent"
+if(!(Test-Path "$env:LOCALAPPDATA\ImgReName")) {
+    wget.exe -O $HOME\ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe
+    Start-Process $HOME\ImgReName-Setup.exe -ArgumentList "--silent"
+}
 
-wget.exe -O $HOME\CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku --no-check-certificate
-Start-Process $HOME\CrystalDiskInfo-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
+if(!(Test-Path "C:\Program Files\CrystalDiskInfo*")) {
+    wget.exe -O $HOME\CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku --no-check-certificate
+    Start-Process $HOME\CrystalDiskInfo-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
+}
 
-wget.exe -O $HOME\CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku --no-check-certificate
-Start-Process $HOME\CrystalDiskMark-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
+if(!(Test-Path "C:\Program Files\CrystalDiskMark*")) {
+    wget.exe -O $HOME\CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku --no-check-certificate
+    Start-Process $HOME\CrystalDiskMark-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
+}
 
-wget.exe -O $HOME\MediaInfoNET.7z ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/stax76/MediaInfo.NET/releases/latest").assets | Where-Object name -like MediaInfo.NET-*.7z).browser_download_url
-7z x $HOME\MediaInfoNET.7z -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
-Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
+if(!(Test-Path "$env:LOCALAPPDATA\MediaInfo.NET")) {
+    wget.exe -O $HOME\MediaInfoNET.7z ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/stax76/MediaInfo.NET/releases/latest").assets | Where-Object name -like MediaInfo.NET-*.7z).browser_download_url
+    7z x $HOME\MediaInfoNET.7z -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
+    Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
+}
 
 choco install powershell-core --install-arguments='"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1"' --limit-output
 choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output

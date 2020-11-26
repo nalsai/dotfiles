@@ -7,7 +7,7 @@ A collection of PowerShell files for Windows, including application installation
 To install these dotfiles from PowerShell without any prerequisites, copy this command into your elevated PowerShell instance and run it:
 
 ```ps1
-Invoke-WebRequest "https://git.nalsai.de/dotfiles/archive/master.zip" -O $HOME\dotfiles.zip; if($?){Expand-Archive $HOME\dotfiles.zip $HOME; Remove-Item $HOME\dotfiles.zip; Remove-Item $HOME\.dotfiles -Recurse -ErrorAction SilentlyContinue; Rename-Item $HOME\dotfiles-master $HOME\.dotfiles; Set-ExecutionPolicy RemoteSigned; Invoke-Expression -Command $HOME\.dotfiles\full-install.ps1}
+iwr "https://git.nalsai.de/dotfiles/archive/master.zip" -O $HOME\dotfiles.zip; if($?){Expand-Archive $HOME\dotfiles.zip $HOME; rm $HOME\dotfiles.zip; rm $HOME\.dotfiles -r -ErrorA Ignore; rni $HOME\dotfiles-master $HOME\.dotfiles; Set-ExecutionPolicy RemoteSigned; iex $HOME\.dotfiles\full-install.ps1}
 ```
 
 The command will download this repository to `$HOME` and run `full-install.ps1`
@@ -22,8 +22,8 @@ If you still want to clone this repo you at least need to change the following:
 
 ```gitconfig
 [username]
-        name = YourName
-        email = YourEmail
+    name = YourName
+    email = YourEmail
 ```
 
 The list of Terminals in `WindowsTerminal/settings.json`
@@ -32,10 +32,7 @@ Additionally, you should change what apps get installed in `install-apps.ps1` be
 
 ## Thanks to
 
-- ![](https://avatars.githubusercontent.com/LightArrowsEXE?s=12)
-LightArrowsEXE's [dotfiles](https://github.com/LightArrowsEXE/dotfiles)
-- ![](https://avatars.githubusercontent.com/jayharris?s=12)
-jayharris's [dotfiles-windows](https://github.com/jayharris/dotfiles-windows)
-- <img src="https://avatars.githubusercontent.com/ndz-v?s=12" width="12"> ndz-v's [windows-dotfiles](https://github.com/ndz-v/windows-dotfiles)
-- ![](https://avatars.githubusercontent.com/Sycnex?s=12)
-Sycnex's [Windows10Debloater](https://github.com/Sycnex/Windows10Debloater)
+- ![LightArrowsEXE Profile Picture](https://avatars.githubusercontent.com/LightArrowsEXE?s=12) LightArrowsEXE's [dotfiles](https://github.com/LightArrowsEXE/dotfiles)
+- ![jayharris Profile Picture](https://avatars.githubusercontent.com/jayharris?s=12) jayharris's [dotfiles-windows](https://github.com/jayharris/dotfiles-windows)
+- <img src="https://avatars.githubusercontent.com/ndz-v?s=12" width="12" alt="ndz-v"> ndz-v's [windows-dotfiles](https://github.com/ndz-v/windows-dotfiles)
+- ![Sycnex Profile Picture](https://avatars.githubusercontent.com/Sycnex?s=12) Sycnex's [Windows10Debloater](https://github.com/Sycnex/Windows10Debloater)

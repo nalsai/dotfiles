@@ -1,35 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<AppSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <RawView>false</RawView>
-  <CompactSummary>true</CompactSummary>
-  <WordWrap>false</WordWrap>
-  <CenterScreen>true</CenterScreen>
-  <FormatEncoded>true</FormatEncoded>
-  <CheckForUpdates>false</CheckForUpdates>
-  <WindowWidth>900</WindowWidth>
-  <WindowHeight>600</WindowHeight>
-  <ColumnPadding>28</ColumnPadding>
-  <FontSize>12</FontSize>
-  <FontName>Cascadia Code PL</FontName>
-  <Exclude />
-  <Theme>System</Theme>
-  <FileTypes>avi mp4 mkv mov webm mpg vob ts m2ts wmv flv mp2 mp3 mpa ogg opus mka dts dtshd ac3 eac3 thd wav flac</FileTypes>
-  <LightTheme>
-    <Foreground>#252525</Foreground>
-    <Background>#F0F0F0</Background>
-    <Border>Gray</Border>
-    <TextSelection>#535E66</TextSelection>
-    <ItemSelection>#A7BCCC</ItemSelection>
-    <ItemHover>#B1C8D8</ItemHover>
-    <Highlight>Gold</Highlight>
-  </LightTheme>
-  <DarkTheme>
-    <Foreground>#E6E6E6</Foreground>
-    <Background>#1E1E1E</Background>
-    <Border>Gray</Border>
-    <TextSelection>AliceBlue</TextSelection>
-    <ItemSelection>DimGray</ItemSelection>
-    <ItemHover>Gray</ItemHover>
-    <Highlight>Green</Highlight>
-  </DarkTheme>
+<AppSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<RawView>false</RawView>
+	<CompactSummary>true</CompactSummary>
+	<WordWrap>false</WordWrap>
+	<CenterScreen>true</CenterScreen>
+	<FormatEncoded>true</FormatEncoded>
+	<CheckForUpdates>false</CheckForUpdates>
+	<WindowWidth>900</WindowWidth>
+	<WindowHeight>600</WindowHeight>
+	<ColumnPadding>28</ColumnPadding>
+	<FontSize>12</FontSize>
+	<FontName>Cascadia Code PL</FontName>
+	<Exclude />
+	<Theme>System</Theme>
+	<FileTypes>avi mp4 mkv mov webm mpg vob ts m2ts wmv flv mp2 mp3 mpa ogg opus mka dts dtshd ac3 eac3 thd wav flac</FileTypes>
+	<LightTheme>
+		<Foreground>#252525</Foreground>
+		<Background>#F0F0F0</Background>
+		<Border>Gray</Border>
+		<TextSelection>#535E66</TextSelection>
+		<ItemSelection>#A7BCCC</ItemSelection>
+		<ItemHover>#B1C8D8</ItemHover>
+		<Highlight>Gold</Highlight>
+	</LightTheme>
+	<DarkTheme>
+		<Foreground>#E6E6E6</Foreground>
+		<Background>#1E1E1E</Background>
+		<Border>Gray</Border>
+		<TextSelection>AliceBlue</TextSelection>
+		<ItemSelection>DimGray</ItemSelection>
+		<ItemHover>Gray</ItemHover>
+		<Highlight>Green</Highlight>
+	</DarkTheme>
 </AppSettings>

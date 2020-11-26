@@ -11,74 +11,74 @@ Set-ItemProperty $Theme AppsUseLightTheme -Value 0
 
 Write-Host "Removing Bloatware RegKeys"
 $Keys = @(
-    # Remove Background Tasks
-    "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\46928bounde.EclipseManager_2.2.4.51_neutral__a5h4egax66k6y"
-    "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
-    "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.MicrosoftOfficeHub_17.7909.7600.0_x64__8wekyb3d8bbwe"
-    "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
-    "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
-    "HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
+	# Remove Background Tasks
+	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\46928bounde.EclipseManager_2.2.4.51_neutral__a5h4egax66k6y"
+	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.MicrosoftOfficeHub_17.7909.7600.0_x64__8wekyb3d8bbwe"
+	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
+	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
+	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
         
-    # Windows File
-    "HKCR:\Extensions\ContractId\Windows.File\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+	# Windows File
+	"HKCR:\Extensions\ContractId\Windows.File\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
         
-    # Registry keys to delete if they aren't uninstalled by RemoveAppXPackage/RemoveAppXProvisionedPackage
-    "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\46928bounde.EclipseManager_2.2.4.51_neutral__a5h4egax66k6y"
-    "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
-    "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
-    "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
-    "HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
+	# Registry keys to delete if they aren't uninstalled by RemoveAppXPackage/RemoveAppXProvisionedPackage
+	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\46928bounde.EclipseManager_2.2.4.51_neutral__a5h4egax66k6y"
+	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
+	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
+	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
         
-    # Scheduled Tasks to delete
-    "HKCR:\Extensions\ContractId\Windows.PreInstalledConfigTask\PackageId\Microsoft.MicrosoftOfficeHub_17.7909.7600.0_x64__8wekyb3d8bbwe"
+	# Scheduled Tasks to delete
+	"HKCR:\Extensions\ContractId\Windows.PreInstalledConfigTask\PackageId\Microsoft.MicrosoftOfficeHub_17.7909.7600.0_x64__8wekyb3d8bbwe"
         
-    # Windows Protocol Keys
-    "HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
-    "HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
-    "HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
-    "HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
+	# Windows Protocol Keys
+	"HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+	"HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
+	"HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
+	"HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
             
-    # Windows Share Target
-    "HKCR:\Extensions\ContractId\Windows.ShareTarget\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
+	# Windows Share Target
+	"HKCR:\Extensions\ContractId\Windows.ShareTarget\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
 
-    # Context Menu
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.bmp\Shell\3D Edit"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.gif\Shell\3D Edit"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpg\Shell\3D Edit"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpeg\Shell\3D Edit"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\3D Edit"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\3D Edit"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\3D Edit"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.bmp\Shell\setdesktopwallpaper"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.gif\Shell\setdesktopwallpaper"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpg\Shell\setdesktopwallpaper"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpeg\Shell\setdesktopwallpaper"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\setdesktopwallpaper"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\setdesktopwallpaper"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\setdesktopwallpaper"
-    "HKCR:\SystemFileAssociations\.bmp\ShellEx\ContextMenuHandlers\ShellImagePreview"   # Rotate Left and Rotate Right in Context Menu
-    "HKCR:\SystemFileAssociations\.dib\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.gif\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.heic\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.heif\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.ico\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.jfif\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.jpe\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.jpeg\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.jpg\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.png\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.rle\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.tif\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.tiff\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\SystemFileAssociations\.webp\ShellEx\ContextMenuHandlers\ShellImagePreview"
-    "HKCR:\Folder\ShellEx\ContextMenuHandlers\Library Location"
-    "HKLM:\SOFTWARE\Classes\SystemFileAssociations\image\shell\edit"
-    "HKCR:\*\shellex\ContextMenuHandlers\ModernSharing"                                 # Share
-    "HKCR:\*\shellex\ContextMenuHandlers\{90AA3A4E-1CBA-4233-B8BB-535773D48449}"        # Pin To Taskbar
-    "HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                                # Scan with Microsoft Defender
+	# Context Menu
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.bmp\Shell\3D Edit"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.gif\Shell\3D Edit"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpg\Shell\3D Edit"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpeg\Shell\3D Edit"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\3D Edit"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\3D Edit"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\3D Edit"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.bmp\Shell\setdesktopwallpaper"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.gif\Shell\setdesktopwallpaper"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpg\Shell\setdesktopwallpaper"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpeg\Shell\setdesktopwallpaper"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\setdesktopwallpaper"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\setdesktopwallpaper"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\setdesktopwallpaper"
+	"HKCR:\SystemFileAssociations\.bmp\ShellEx\ContextMenuHandlers\ShellImagePreview"   # Rotate Left and Rotate Right in Context Menu
+	"HKCR:\SystemFileAssociations\.dib\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.gif\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.heic\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.heif\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.ico\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.jfif\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.jpe\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.jpeg\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.jpg\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.png\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.rle\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.tif\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.tiff\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\SystemFileAssociations\.webp\ShellEx\ContextMenuHandlers\ShellImagePreview"
+	"HKCR:\Folder\ShellEx\ContextMenuHandlers\Library Location"
+	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\image\shell\edit"
+	"HKCR:\*\shellex\ContextMenuHandlers\ModernSharing"                                 # Share
+	"HKCR:\*\shellex\ContextMenuHandlers\{90AA3A4E-1CBA-4233-B8BB-535773D48449}"        # Pin To Taskbar
+	"HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                                # Scan with Microsoft Defender
 )
 ForEach ($Key in $Keys) {
-    Remove-Item -LiteralPath $Key -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -LiteralPath $Key -Recurse -ErrorAction SilentlyContinue
 }
 
 Write-Host "Disabling Cortana"
@@ -86,68 +86,66 @@ $Cortana1 = "HKCU:\SOFTWARE\Microsoft\Personalization\Settings"
 $Cortana2 = "HKCU:\SOFTWARE\Microsoft\InputPersonalization"
 $Cortana3 = "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore"
 if (!(Test-Path $Cortana1)) {
-    New-Item $Cortana1
+	New-Item $Cortana1
 }
 Set-ItemProperty $Cortana1 AcceptedPrivacyPolicy -Value 0 
 if (!(Test-Path $Cortana2)) {
-    New-Item $Cortana2
+	New-Item $Cortana2
 }
 Set-ItemProperty $Cortana2 RestrictImplicitTextCollection -Value 1 
 Set-ItemProperty $Cortana2 RestrictImplicitInkCollection -Value 1 
 if (!(Test-Path $Cortana3)) {
-    New-Item $Cortana3
+	New-Item $Cortana3
 }
 Set-ItemProperty $Cortana3 HarvestContacts -Value 0
 
 Write-Output "Stopping Cortana from being used as part of your Windows Search Function"
 $Search = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"
 if (Test-Path $Search) {
-    Set-ItemProperty $Search AllowCortana -Value 0
+	Set-ItemProperty $Search AllowCortana -Value 0
 }
 
 Write-Output "Disabling Bing Search in Start Menu"
 $WebSearch = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"
 Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" BingSearchEnabled -Value 0
 if (!(Test-Path $WebSearch)) {
-    New-Item $WebSearch
+	New-Item $WebSearch
 }
 Set-ItemProperty $WebSearch DisableWebSearch -Value 1
 
-if((Get-Process -name OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive"))
-{
-    Write-Output "Uninstalling OneDrive"
-    $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
-    $ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-    $ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-    Stop-Process -Name "OneDrive*"
-    Start-Sleep 2
-    if (!(Test-Path $onedrive)) {
-        $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
-    }
-    Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
-    Stop-Process -name explorer
+if ((Get-Process -name OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive")) {
+	Write-Output "Uninstalling OneDrive"
+	$onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
+	$ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+	$ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+	Stop-Process -Name "OneDrive*"
+	Start-Sleep 2
+	if (!(Test-Path $onedrive)) {
+		$onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
+	}
+	Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
+	Stop-Process -name explorer
     
-    Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-    Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-    Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-    if (Test-Path "$env:SYSTEMDRIVE\OneDriveTemp") {
-        Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse
-    }
-    if (!(Test-Path $ExplorerReg1)) {
-        New-Item $ExplorerReg1 > $null
-    }
-    Set-ItemProperty $ExplorerReg1 System.IsPinnedToNameSpaceTree -Value 0 
-    if (!(Test-Path $ExplorerReg2)) {
-        New-Item $ExplorerReg2 > $null
-    }
-    Set-ItemProperty $ExplorerReg2 System.IsPinnedToNameSpaceTree -Value 0
+	Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+	Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+	Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+	if (Test-Path "$env:SYSTEMDRIVE\OneDriveTemp") {
+		Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse
+	}
+	if (!(Test-Path $ExplorerReg1)) {
+		New-Item $ExplorerReg1 > $null
+	}
+	Set-ItemProperty $ExplorerReg1 System.IsPinnedToNameSpaceTree -Value 0 
+	if (!(Test-Path $ExplorerReg2)) {
+		New-Item $ExplorerReg2 > $null
+	}
+	Set-ItemProperty $ExplorerReg2 System.IsPinnedToNameSpaceTree -Value 0
     
-    Start-Sleep 2
-    $Running = Get-Process -name explorer -ErrorAction SilentlyContinue
-    if($null -eq $Running)
-    {
-        Start-Process explorer
-    }
+	Start-Sleep 2
+	$Running = Get-Process -name explorer -ErrorAction SilentlyContinue
+	if ($null -eq $Running) {
+		Start-Process explorer
+	}
 }
 
 Write-Output "Unpinning all tiles from the start menu"
@@ -161,50 +159,50 @@ $START_MENU_LAYOUT = @"
     </DefaultLayoutOverride>
 </LayoutModificationTemplate>
 "@
-$layoutFile="C:\Windows\StartMenuLayout.xml"
+$layoutFile = "C:\Windows\StartMenuLayout.xml"
 Remove-Item $layoutFile -ErrorAction SilentlyContinue
 $START_MENU_LAYOUT | Out-File $layoutFile -Encoding ASCII
 $regAliases = @("HKLM", "HKCU")
-foreach ($regAlias in $regAliases){
-    $basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
-    $keyPath = $basePath + "\Explorer" 
-    if(!(Test-Path -Path $keyPath)) { 
-        New-Item -Path $basePath -Name "Explorer" > $null
-    }
-    Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 1
-    Set-ItemProperty -Path $keyPath -Name "StartLayoutFile" -Value $layoutFile
+foreach ($regAlias in $regAliases) {
+	$basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
+	$keyPath = $basePath + "\Explorer" 
+	if (!(Test-Path -Path $keyPath)) { 
+		New-Item -Path $basePath -Name "Explorer" > $null
+	}
+	Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 1
+	Set-ItemProperty -Path $keyPath -Name "StartLayoutFile" -Value $layoutFile
 }
 Stop-Process -name explorer
 Start-Sleep 5
 $wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys('^{ESCAPE}')
 Start-Sleep 5
-foreach ($regAlias in $regAliases){
-    $basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
-    $keyPath = $basePath + "\Explorer" 
-    Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 0
+foreach ($regAlias in $regAliases) {
+	$basePath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows"
+	$keyPath = $basePath + "\Explorer" 
+	Set-ItemProperty -Path $keyPath -Name "LockedStartLayout" -Value 0
 }
 Stop-Process -name explorer
 Start-Sleep 3
 Remove-Item $layoutFile
-if(!(Get-Process -name explorer -ErrorAction SilentlyContinue)) {
-    Start-Process explorer
+if (!(Get-Process -name explorer -ErrorAction SilentlyContinue)) {
+	Start-Process explorer
 }
 
 Write-Output "Disabling Windows Feedback Experience program"
 $Advertising = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
 if (Test-Path $Advertising) {
-    Set-ItemProperty $Advertising Enabled -Value 0
+	Set-ItemProperty $Advertising Enabled -Value 0
 }
 
 Write-Output "Adding Registry key to prevent bloatware apps from returning"
 $registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
 $registryOEM = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
 if (!(Test-Path $registryPath)) { 
-    New-Item $registryPath
+	New-Item $registryPath
 }
 Set-ItemProperty $registryPath DisableWindowsConsumerFeatures -Value 1 
 if (!(Test-Path $registryOEM)) {
-    New-Item $registryOEM
+	New-Item $registryOEM
 }
 Set-ItemProperty $registryOEM ContentDeliveryAllowed -Value 0 
 Set-ItemProperty $registryOEM OemPreInstalledAppsEnabled -Value 0 
@@ -218,24 +216,24 @@ $DataCollection1 = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Dat
 $DataCollection2 = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"
 $DataCollection3 = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection"    
 if (Test-Path $DataCollection1) {
-    Set-ItemProperty $DataCollection1 AllowTelemetry -Value 0
+	Set-ItemProperty $DataCollection1 AllowTelemetry -Value 0
 }
 if (Test-Path $DataCollection2) {
-    Set-ItemProperty $DataCollection2 AllowTelemetry -Value 0
+	Set-ItemProperty $DataCollection2 AllowTelemetry -Value 0
 }
 if (Test-Path $DataCollection3) {
-    Set-ItemProperty $DataCollection3 AllowTelemetry -Value 0
+	Set-ItemProperty $DataCollection3 AllowTelemetry -Value 0
 }
 
 Write-Output "Disabling Location Tracking"
 $SensorState = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}"
 $LocationConfig = "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration"
 if (!(Test-Path $SensorState)) {
-    New-Item $SensorState
+	New-Item $SensorState
 }
 Set-ItemProperty $SensorState SensorPermissionState -Value 0
 if (!(Test-Path $LocationConfig)) {
-    New-Item $LocationConfig
+	New-Item $LocationConfig
 }
 Set-ItemProperty $LocationConfig Status -Value 0
 
@@ -245,42 +243,42 @@ Set-Service "DiagTrack" -StartupType Disabled
 
 Write-Output "Removing unnecessary AppxPackages"
 $AppXApps = @(
-    "Microsoft.3DBuilder"
-    "Microsoft.BingWeather"
-    "Microsoft.GetHelp"
-    "Microsoft.Getstarted"
-    "Microsoft.Messaging"
-    "Microsoft.MicrosoftOfficeHub"
-    "Microsoft.MicrosoftSolitaireCollection"
-    "Microsoft.MSPaint"
-    "Microsoft.Office.OneNote"
-    "Microsoft.OneConnect"
-    "Microsoft.People"
-    "Microsoft.Print3D"
-    "microsoft.windowscommunicationsapps"
-    "Microsoft.WindowsFeedbackHub"
-    "Microsoft.WindowsMaps"
-    "Microsoft.YourPhone"
-    "Microsoft.ZuneMusic"
-    "Microsoft.ZuneVideo"
-    "Microsoft.BingNews"
-    "Microsoft.Office.Sway"  
-    "*EclipseManager*"
-    "*ActiproSoftwareLLC*"
-    "*AdobeSystemsIncorporated.AdobePhotoshop*"
-    "*Duolingo-LearnLanguagesforFree*"
-    "*PandoraMediaInc*"
-    "*CandyCrush*"
-    "*Wunderlist*"
-    "*Flipboard*"
-    "*Twitter*"
-    "*Facebook*"
-    "*Spotify*"
+	"Microsoft.3DBuilder"
+	"Microsoft.BingWeather"
+	"Microsoft.GetHelp"
+	"Microsoft.Getstarted"
+	"Microsoft.Messaging"
+	"Microsoft.MicrosoftOfficeHub"
+	"Microsoft.MicrosoftSolitaireCollection"
+	"Microsoft.MSPaint"
+	"Microsoft.Office.OneNote"
+	"Microsoft.OneConnect"
+	"Microsoft.People"
+	"Microsoft.Print3D"
+	"microsoft.windowscommunicationsapps"
+	"Microsoft.WindowsFeedbackHub"
+	"Microsoft.WindowsMaps"
+	"Microsoft.YourPhone"
+	"Microsoft.ZuneMusic"
+	"Microsoft.ZuneVideo"
+	"Microsoft.BingNews"
+	"Microsoft.Office.Sway"  
+	"*EclipseManager*"
+	"*ActiproSoftwareLLC*"
+	"*AdobeSystemsIncorporated.AdobePhotoshop*"
+	"*Duolingo-LearnLanguagesforFree*"
+	"*PandoraMediaInc*"
+	"*CandyCrush*"
+	"*Wunderlist*"
+	"*Flipboard*"
+	"*Twitter*"
+	"*Facebook*"
+	"*Spotify*"
 )
 foreach ($App in $AppXApps) {
-    try {Get-AppxPackage -Name $App | Remove-AppxPackage} catch {}
-    try {Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers} catch {}
-    try {Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online} catch {}
+	try { Get-AppxPackage -Name $App | Remove-AppxPackage } catch {}
+	try { Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers } catch {}
+	try { Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online } catch {}
 }
 
 Write-Output "Setting standby times"
@@ -290,7 +288,7 @@ powercfg /change /monitor-timeout-dc 30     # 30m
 powercfg /change /standby-timeout-dc 60     # 1h
 
 Write-Output "Applying Explorer tweaks"
-if (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Type Folder > $null}
+if (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) { New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Type Folder > $null }
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Start_TrackDocs" 0                    # Disable Recent Files in Explorer
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "DisableThumbnailsOnNetworkFolders" 1
@@ -302,7 +300,7 @@ Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explo
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" 0                 # Disable Task View Button
 $People = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
 if (!(Test-Path $People)) {
-    New-Item $People > $null
+	New-Item $People > $null
 }
 Set-ItemProperty $People "PeopleBand" 0
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\System" "EnableActivityFeed" 0
@@ -318,24 +316,24 @@ Write-Output "Uninstalling Windows Media Player"
 Disable-WindowsOptionalFeature -Online -FeatureName "WindowsMediaPlayer" -NoRestart -WarningAction SilentlyContinue > $null
 
 Write-Host "Configuring Windows Update"
-if (!(Test-Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate")) {New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Type Folder > $null}
-if (!(Test-Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU")) {New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" -Type Folder > $null}
+if (!(Test-Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate")) { New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" -Type Folder > $null }
+if (!(Test-Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU")) { New-Item -Path "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" -Type Folder > $null }
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" "NoAutoRebootWithLoggedOnUsers" 1
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoRebootWithLoggedOnUsers" 1
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "AUOptions" 3
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "IncludeRecommendedUpdates" 1
 $MU = New-Object -ComObject Microsoft.Update.ServiceManager -Strict
-$MU.AddService2("7971f918-a847-4430-9279-4a52d1efe18d",7,"") > $null
+$MU.AddService2("7971f918-a847-4430-9279-4a52d1efe18d", 7, "") > $null
 Remove-Variable MU
 
 Write-Output "Disabling downloaded files from being blocked"
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments" "SaveZoneInformation" 1
 
 Write-Output "Disabling Context Menu bloat"
-if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked")) {New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" -Type Folder > $null}
-if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager")) {New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Type Folder > $null}
-if (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Type Folder > $null}
+if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked")) { New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" -Type Folder > $null }
+if (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager")) { New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Type Folder > $null }
+if (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) { New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Type Folder > $null }
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{8A734961-C4AA-4741-AC1E-791ACEBF5B39}" "" # Shop for music online
@@ -358,13 +356,12 @@ Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock
 
 
 Write-Host "Change Name of Computer? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) 
-{ 
-    Y {
-        Write-Host "Name: " -ForegroundColor Cyan -NoNewline
-        $computerName = Read-Host
-        (Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
-    }
+Switch (Read-Host) { 
+	Y {
+		Write-Host "Name: " -ForegroundColor Cyan -NoNewline
+		$computerName = Read-Host
+		(Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
+	}
 }
 
 Write-Host "Done Configuring System" -ForegroundColor Green

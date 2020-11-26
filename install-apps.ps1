@@ -20,7 +20,7 @@ Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 # (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)	
 refreshenv
 
-$installProcess = Start-Process choco -ArgumentList "install synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer wireshark winmerge rufus --ignore-checksums --limit-output" -PassThru
+$installProcess = Start-Process choco -ArgumentList "install synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer wireshark winmerge rufus vlc --ignore-checksums --limit-output" -PassThru
 
 # customize Spotify using spicetify
 if (!(which spicetify)) {
@@ -100,7 +100,9 @@ $pin_block = {
 $installProcess.WaitForExit()
 Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimized
 
-# remove WinMerge from Context Menu & 7zip from Drag & Drop Context Menu
+Invoke-Expression $PSScriptRoot\VLC\removeContexMenu.ps1
+
+Write-Output "removing WinMerge from Context Menu & 7zip from Drag & Drop Context Menu"
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
 $Keys = @(
     "HKCR:\*\shellex\ContextMenuHandlers\WinMerge"

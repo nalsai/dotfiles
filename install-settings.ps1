@@ -6,7 +6,6 @@ New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
 
 if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive")) {
 	Write-Output "Uninstalling OneDrive"
-
 	$onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
 	if (!(Test-Path $onedrive)) { $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"}
 	$ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
@@ -52,15 +51,15 @@ foreach ($regAlias in $regAliases) {
 	Set-ItemProperty $keyPath "StartLayoutFile" $layoutFile
 }
 Stop-Process -Name explorer
-Start-Sleep 3
+Start-Sleep 5
 $wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys('^{ESCAPE}')
-Start-Sleep 3
+Start-Sleep 5
 foreach ($regAlias in $regAliases) {
 	$keyPath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows\Explorer"
 	Set-ItemProperty $keyPath "LockedStartLayout" 0
 }
 Stop-Process -Name explorer
-Start-Sleep 2
+Start-Sleep 3
 Remove-Item $layoutFile
 if (!(Get-Process explorer -ErrorAction SilentlyContinue)) {
 	Start-Process explorer
@@ -241,7 +240,7 @@ Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataC
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" 0
 Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" 0
 
-Write-Output "Disabling bloatware apps from returning, Start Menu Suggestions, Get Even More Out of Windows screen and notifications"
+Write-Output "Disabling bloatware returning, Start Menu Suggestions, Get Even More Out of Windows, notifications"
 Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryAllowed" 0
 Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryManager" 0
 Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "OemPreInstalledAppsEnabled" 0

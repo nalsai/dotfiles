@@ -11,12 +11,12 @@ if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LO
 	if (!(Test-Path $onedrive)) { $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"}
 	$ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
 	$ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-	if (!(Test-Path $ExplorerReg1)) { New-Item $ExplorerReg1 > $null }
-	if (!(Test-Path $ExplorerReg2)) { New-Item $ExplorerReg2 > $null }
+	if (!(Test-Path $ExplorerReg1)) { New-Item $ExplorerReg1 -Type Folder > $null }
+	if (!(Test-Path $ExplorerReg2)) { New-Item $ExplorerReg2 -Type Folder > $null }
 	Stop-Process -Name "OneDrive*"
 	Start-Sleep 1
 	Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
-	Stop-Process -name explorer
+	Stop-Process -Name explorer
 	Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
 	Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
 	Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
@@ -46,12 +46,12 @@ $regAliases = @("HKLM", "HKCU")
 foreach ($regAlias in $regAliases) {
 	$keyPath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows\Explorer"
 	if (!(Test-Path $keyPath)) {
-		New-Item $keyPath -Type Folder
+		New-Item $keyPath -Type Folder > $null
 	}
 	Set-ItemProperty $keyPath "LockedStartLayout" 1
 	Set-ItemProperty $keyPath "StartLayoutFile" $layoutFile
 }
-Stop-Process -name explorer
+Stop-Process -Name explorer
 Start-Sleep 3
 $wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys('^{ESCAPE}')
 Start-Sleep 3
@@ -59,7 +59,7 @@ foreach ($regAlias in $regAliases) {
 	$keyPath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows\Explorer"
 	Set-ItemProperty $keyPath "LockedStartLayout" 0
 }
-Stop-Process explorer
+Stop-Process -Name explorer
 Start-Sleep 2
 Remove-Item $layoutFile
 if (!(Get-Process explorer -ErrorAction SilentlyContinue)) {
@@ -108,9 +108,9 @@ $AppXApps = @(
 	"*Spotify*"
 )
 foreach ($App in $AppXApps) {
-	try { Get-AppxPackage -Name $App | Remove-AppxPackage } catch {}
-	try { Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers } catch {}
-	try { Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online } catch {}
+	try { Get-AppxPackage -Name $App | Remove-AppxPackage > $null } catch {}
+	try { Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers > $null } catch {}
+	try { Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online > $null } catch {}
 }
 
 Write-Output "Setting standby times"
@@ -201,7 +201,7 @@ $folders = @(
 	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments"
 	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
 	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
 	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\UserProfileEngagement"
 	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
 	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"
@@ -214,12 +214,12 @@ $folders = @(
 	"HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration"
 )
 foreach ($folder in $folders) {
-	if (!(Test-Path $folder)) { New-Item $folder -Type Folder }
+	if (!(Test-Path $folder)) { New-Item $folder -Type Folder > $null }
 }
 
 Write-Host "Enabling Dark Mode"
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" "SystemUsesLightTheme" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" "AppsUseLightTheme" 0
+Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" "SystemUsesLightTheme" 0
+Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" "AppsUseLightTheme" 0
 
 Write-Host "Disabling Cortana and Bing Search in Start Menu"
 Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\InputPersonalization" "RestrictImplicitInkCollection" 1
@@ -295,7 +295,7 @@ Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "A
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "IncludeRecommendedUpdates" 1
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoRebootWithLoggedOnUsers" 1
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
-(New-Object -ComObject Microsoft.Update.ServiceManager -Strict).AddService2("7971f918-a847-4430-9279-4a52d1efe18d", 7, "")
+(New-Object -ComObject Microsoft.Update.ServiceManager -Strict).AddService2("7971f918-a847-4430-9279-4a52d1efe18d", 7, "") > $null
 
 Write-Host "Enabling Developer Mode"
 Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" "AllowDevelopmentWithoutDevLicense" 1

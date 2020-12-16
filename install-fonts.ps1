@@ -32,6 +32,7 @@ wget.exe -O "$fontsPath\Gandhi Sans.zip" https://www.fontsquirrel.com/fonts/down
 
 Expand-Archive -Path "$fontsPath\Fira Code.zip" -DestinationPath $fontsPath -Force
 Copy-Item -r  $fontsPath\variable_ttf\* $fontsPath -ErrorAction SilentlyContinue
+Remove-Item "$fontsPath\variable_ttf" -Recurse -Force
 Remove-Item "$fontsPath\ttf" -Recurse -Force
 Remove-Item "$fontsPath\Fira Code.zip" -Force
 
@@ -49,8 +50,11 @@ Copy-Item -r  $fontsPath\ttf\* $fontsPath -ErrorAction SilentlyContinue
 Remove-Item "$fontsPath\otf" -Recurse -Force
 Remove-Item "$fontsPath\static" -Recurse -Force
 Remove-Item "$fontsPath\ttf" -Recurse -Force
+Remove-Item "$fontsPath\woff" -Recurse -Force
 Remove-Item "$fontsPath\woff2" -Recurse -Force
 Remove-Item "$fontsPath\*.txt" -Force
+Remove-Item "$fontsPath\*.html" -Force
+Remove-Item "$fontsPath\*.css" -Force
 
 foreach ($File in $(Get-ChildItem -Path $fontsPath -Include ('*.otf', '*.ttf') -Recurse)) {
 	if (!(Test-Path "C:\Windows\Fonts\$($File.Name)")) {

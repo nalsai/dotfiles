@@ -50,13 +50,18 @@
 			},
 			{
 				"name": "SSH NanoPi",
-				"commandline": "ssh root@nanopineo3",
-				"icon": "S:/Bilder/Icons/small/armbian.png",
+				"commandline": "ssh nalsai@nanopineo3",
+				"icon": "S:/Bilder/Icons/small/armbian.png"
+			},
+			{
+				"name": "SSH Odroid",
+				"commandline": "ssh nalsai@odroidxu4",
+				"icon": "S:/Bilder/Icons/small/armbian.png"
 			},
 			{
 				"name": "SSH NilsVPS",
-				"commandline": "ssh root@164.68.116.69",
-				"icon": "S:/Bilder/Icons/small/contabo.png",
+				"commandline": "ssh nalsai@164.68.116.69",
+				"icon": "S:/Bilder/Icons/small/contabo.png"
 			}
 		]
 	},

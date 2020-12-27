@@ -9,7 +9,7 @@ if (!(which choco)) {
 }
 
 choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
-choco install googlechrome nomacs spotify autohotkey curl wget 7zip --ignore-checksums --limit-output
+choco install googlechrome nomacs spotify autohotkey curl wget 7zip notepad2-mod --ignore-checksums --limit-output
 # https://stackoverflow.com/a/46760714	
 # Make `refreshenv` available right away, by defining the $env:ChocolateyInstall	
 # variable and importing the Chocolatey profile module.	
@@ -20,7 +20,7 @@ Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 # (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)	
 refreshenv
 
-$installProcess = Start-Process choco -ArgumentList "install synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord deluge renamer wireshark winmerge rufus vlc --ignore-checksums --limit-output" -PassThru
+$installProcess = Start-Process choco -ArgumentList "install microsoft-windows-terminal synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord renamer wireshark winmerge rufus vlc --ignore-checksums --limit-output" -PassThru
 
 # customize Spotify using spicetify
 if (!(which spicetify)) {
@@ -81,9 +81,15 @@ if (!(Test-Path "$env:LOCALAPPDATA\MediaInfo.NET")) {
 	Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
 }
 
+if (!(Test-Path "C:\Program Files\Deluge")) {
+	wget.exe -O $HOME\deluge-2.0.3.exe "https://drive.google.com/uc?export=download&id=1OwoFlf796WlE6Lklyt94z6OcPloh59rn"
+	Start-Process $HOME\deluge-2.0.3.exe -ArgumentList "/S"
+}
+
 choco install powershell-core --install-arguments='"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1"' --limit-output
 choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
 
+$installProcess.WaitForExit()
 # prevent choco from upgrading packages that upgrade themselves
 $pin_block = {
 	$apps =
@@ -97,7 +103,6 @@ $pin_block = {
 		choco pin add --name $apps[$i]
 	}
 }
-$installProcess.WaitForExit()
 Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimized
 
 Invoke-Expression $PSScriptRoot\VLC\removeContexMenu.ps1
@@ -144,7 +149,6 @@ $installation_block = {
 }
 Start-Process powershell -ArgumentList "-command refreshenv $installation_block"
 
-
 Write-Host "Install itunes? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) {
 	Y { choco install itunes --limit-output }
@@ -152,10 +156,6 @@ Switch (Read-Host) {
 Write-Host "Install h2testw? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) {
 	Y { choco install h2testw --limit-output }
-}
-Write-Host "Install xmind? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) {
-	Y { choco install xmind --limit-output }
 }
 Write-Host "Install assaultcube? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) {
@@ -179,8 +179,5 @@ Remove-Item $HOME\CrystalDiskInfo-Setup.exe -ErrorAction SilentlyContinue
 Remove-Item $HOME\CrystalDiskMark-Setup.exe -ErrorAction SilentlyContinue
 Remove-Item $HOME\MediaInfoNET.7z -ErrorAction SilentlyContinue
 
-#winget install --id=Microsoft.WindowsTerminal -e
-#winget install notepads
-
 Write-Host "Done Installing Apps" -ForegroundColor Green
-Write-Host "You still need to install Windows Terminal & Notepads from the Microsoft Store`nand Visual Studio, Davinci Resolve, Minion, ESO, TTC from the Internet`nand setup apps like Chrome, Icaros, Authy..." -ForegroundColor Cyan
+Write-Host "You still need to install Visual Studio, Davinci Resolve, Minion, ESO, TTC from the Internet`nand setup apps like Chrome, Icaros, Authy, Notepad2-mod, Deluge..." -ForegroundColor Cyan

@@ -13,6 +13,9 @@ New-Item -Force -ItemType SymbolicLink -Path $documents\WindowsPowerShell -Targe
 # mpv config
 New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\mpv -Target $PSScriptRoot\mpv
 
+# Notepad2
+New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Notepad2 -Target $PSScriptRoot\Notepad2
+
 # MediaInfo.NET
 New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\MediaInfo.NET -Target $PSScriptRoot\MediaInfo.NET
 

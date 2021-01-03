@@ -38,7 +38,6 @@ if (!(which spicetify)) {
 	Copy-Item -r $HOME\spicetify-themes-master\* $HOME\.spicetify\Themes\ -ErrorAction SilentlyContinue
 	Remove-Item $HOME\spicetify-themes.zip -ErrorAction SilentlyContinue
 	Remove-Item $HOME\spicetify-themes-master -Recurse -Force -ErrorAction SilentlyContinue
-	spicetify config current_theme CherryBlossom
 	wget.exe -O $HOME\spicetify-cli.zip "https://github.com/khanhas/spicetify-cli/archive/master.zip"
 	Expand-Archive -Path $HOME\spicetify-cli.zip  -DestinationPath $HOME -Force;
 	Copy-Item -r $HOME\spicetify-cli-master\Extensions\* $HOME\.spicetify\Extensions\ -ErrorAction SilentlyContinue
@@ -47,6 +46,11 @@ if (!(which spicetify)) {
 	spicetify config extensions fullAppDisplay.js 
 	spicetify config extensions keyboardShortcut.js
 	spicetify config extensions shuffle+.js
+	cd "$(spicetify -c | Split-Path)\Themes\DribbblishDynamic"
+	Copy-Item dribbblish-dynamic.js ..\..\Extensions
+	spicetify config extensions dribbblish-dynamic.js
+	spicetify config current_theme DribbblishDynamic color_scheme dark
+	spicetify config inject_css 1 replace_colors 1 overwrite_assets 1
 	spicetify apply
 }
 

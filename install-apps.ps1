@@ -20,7 +20,7 @@ Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 # (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)	
 refreshenv
 
-$installProcess = Start-Process choco -ArgumentList "install microsoft-windows-terminal synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord renamer wireshark winmerge rufus vlc --ignore-checksums --limit-output" -PassThru
+$installProcess = Start-Process choco -ArgumentList "install microsoft-windows-terminal partitionwizard synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord renamer wireshark winmerge rufus vlc hwinfo --ignore-checksums --limit-output" -PassThru
 
 # customize Spotify using spicetify
 if (!(which spicetify)) {
@@ -76,14 +76,9 @@ if (!(Test-Path "C:\Program Files\CrystalDiskMark*")) {
 }
 
 if (!(Test-Path "$env:LOCALAPPDATA\MediaInfo.NET")) {
-	wget.exe -O $HOME\MediaInfoNET.7z ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/stax76/MediaInfo.NET/releases/latest").assets | Where-Object name -like MediaInfo.NET-*.7z).browser_download_url
-	7z x $HOME\MediaInfoNET.7z -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
+	wget.exe -O $HOME\MediaInfoNET.zip ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/stax76/MediaInfo.NET/releases/latest").assets | Where-Object name -like MediaInfo.NET-*.zip).browser_download_url
+	7z x $HOME\MediaInfoNET.zip -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
 	Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
-}
-
-if (!(Test-Path "C:\Program Files\Deluge")) {
-	wget.exe -O $HOME\deluge-2.0.3.exe "https://drive.google.com/uc?export=download&id=1OwoFlf796WlE6Lklyt94z6OcPloh59rn"
-	Start-Process $HOME\deluge-2.0.3.exe -ArgumentList "/S"
 }
 
 choco install powershell-core --install-arguments='"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1"' --limit-output
@@ -180,4 +175,4 @@ Remove-Item $HOME\CrystalDiskMark-Setup.exe -ErrorAction SilentlyContinue
 Remove-Item $HOME\MediaInfoNET.7z -ErrorAction SilentlyContinue
 
 Write-Host "Done Installing Apps" -ForegroundColor Green
-Write-Host "You still need to install Visual Studio, Davinci Resolve, Minion, ESO, TTC from the Internet`nand setup apps like Chrome, Icaros, Authy, Notepad2-mod, Deluge..." -ForegroundColor Cyan
+Write-Host "You still need to install Visual Studio, Davinci Resolve, Deluge, Minion, ESO, TTC from the Internet`nand setup apps like Chrome, Icaros, Authy, Notepad2-mod, Deluge..." -ForegroundColor Cyan

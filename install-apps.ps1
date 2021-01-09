@@ -9,7 +9,7 @@ if (!(which choco)) {
 }
 
 choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
-choco install googlechrome nomacs spotify autohotkey curl wget 7zip notepad2-mod --ignore-checksums --limit-output
+choco install googlechrome nomacs curl wget 7zip notepad2-mod spotify --ignore-checksums --limit-output
 # https://stackoverflow.com/a/46760714	
 # Make `refreshenv` available right away, by defining the $env:ChocolateyInstall	
 # variable and importing the Chocolatey profile module.	
@@ -20,7 +20,7 @@ Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 # (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)	
 refreshenv
 
-$installProcess = Start-Process choco -ArgumentList "install microsoft-windows-terminal partitionwizard synctrayzor plex golang hugo python openjdk unity-hub mpv ffmpeg youtube-dl mkvtoolnix aegisub subtitleedit makemkv eac audacity audacity-lame cdburnerxp burnawarefree etcher obs-studio openssl.light filezilla windirstat libreoffice-fresh exiftool flacsquisher authy-desktop paint.net linkshellextension image-composite-editor icaros figma discord renamer wireshark winmerge rufus vlc hwinfo --ignore-checksums --limit-output" -PassThru
+$installProcess = Start-Process choco -ArgumentList "install aegisub audacity audacity-lame authy-desktop autohotkey burnawarefree cdburnerxp discord eac etcher exiftool ffmpeg figma filezilla flacsquisher golang h2testw hugo hwinfo icaros image-composite-editor laragon.portable libreoffice-fresh linkshellextension makemkv microsoft-windows-terminal mkvtoolnix mpv obs-studio openjdk openssl.light paint.net partitionwizard plex python rclone renamer rufus subtitleedit synctrayzor unity-hub vlc windirstat winmerge wireshark youtube-dl --ignore-checksums --limit-output" -PassThru
 
 # customize Spotify using spicetify
 if (!(which spicetify)) {
@@ -46,8 +46,7 @@ if (!(which spicetify)) {
 	spicetify config extensions fullAppDisplay.js 
 	spicetify config extensions keyboardShortcut.js
 	spicetify config extensions shuffle+.js
-	cd "$(spicetify -c | Split-Path)\Themes\DribbblishDynamic"
-	Copy-Item dribbblish-dynamic.js ..\..\Extensions
+	Copy-Item $HOME\.spicetify\Themes\DribbblishDynamic\dribbblish-dynamic.js $HOME\.spicetify\Extensions
 	spicetify config extensions dribbblish-dynamic.js
 	spicetify config current_theme DribbblishDynamic color_scheme dark
 	spicetify config inject_css 1 replace_colors 1 overwrite_assets 1
@@ -63,41 +62,38 @@ if (!(which code)) {
 	wget.exe -O $HOME\VSCode-Setup.exe https://aka.ms/win32-x64-user-stable
 	Start-Process $HOME\VSCode-Setup.exe -ArgumentList "/VERYSILENT /MERGETASKS=!runcode /NoDesktopIcon /NoQuicklaunchIcon /NoAddContextMenuFiles /AssociateWithFiles"
 }
-
 if (!(Test-Path "$env:LOCALAPPDATA\ImgReName")) {
 	wget.exe -O $HOME\ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe
 	Start-Process $HOME\ImgReName-Setup.exe -ArgumentList "--silent"
 }
-
 if (!(Test-Path "C:\Program Files\CrystalDiskInfo*")) {
 	wget.exe -O $HOME\CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku --no-check-certificate
 	Start-Process $HOME\CrystalDiskInfo-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
 }
-
 if (!(Test-Path "C:\Program Files\CrystalDiskMark*")) {
 	wget.exe -O $HOME\CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku --no-check-certificate
 	Start-Process $HOME\CrystalDiskMark-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
 }
-
 if (!(Test-Path "$env:LOCALAPPDATA\MediaInfo.NET")) {
 	wget.exe -O $HOME\MediaInfoNET.zip ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/stax76/MediaInfo.NET/releases/latest").assets | Where-Object name -like MediaInfo.NET-*.zip).browser_download_url
 	7z x $HOME\MediaInfoNET.zip -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
 	Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
 }
 
+$installProcess.WaitForExit()
+
 choco install powershell-core --install-arguments='"ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1"' --limit-output
 choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
 
-$installProcess.WaitForExit()
 # prevent choco from upgrading packages that upgrade themselves
 $pin_block = {
 	$apps =
-	'googlechrome',
-	'unity-hub',
 	'authy-desktop',
-	'figma',
 	'discord',
-	'spotify'
+	'figma',
+	'googlechrome',
+	'spotify',
+	'unity-hub'
 	for ($i = 0; $i -lt $apps.Count; $i++) {
 		choco pin add --name $apps[$i]
 	}
@@ -152,10 +148,6 @@ Write-Host "Install itunes? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) {
 	Y { choco install itunes --limit-output }
 }
-Write-Host "Install h2testw? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) {
-	Y { choco install h2testw --limit-output }
-}
 Write-Host "Install assaultcube? (y/N): " -ForegroundColor Yellow -NoNewline
 Switch (Read-Host) {
 	Y { choco install assaultcube --limit-output }
@@ -170,7 +162,6 @@ Switch (Read-Host) {
 	}
 }
 
-
 # Remove remaining setup files
 Remove-Item $HOME\VSCode-Setup.exe -ErrorAction SilentlyContinue
 Remove-Item $HOME\ImgReName-Setup.exe -ErrorAction SilentlyContinue
@@ -179,4 +170,4 @@ Remove-Item $HOME\CrystalDiskMark-Setup.exe -ErrorAction SilentlyContinue
 Remove-Item $HOME\MediaInfoNET.7z -ErrorAction SilentlyContinue
 
 Write-Host "Done Installing Apps" -ForegroundColor Green
-Write-Host "You still need to install Visual Studio, Davinci Resolve, Deluge, Minion, ESO, TTC from the Internet`nand setup apps like Chrome, Icaros, Authy, Notepad2-mod, Deluge..." -ForegroundColor Cyan
+Write-Host "You still need to install Visual Studio, Davinci Resolve, Deluge, Minion, ESO, TTC from the Internet`nand setup apps like Chrome, Icaros, Authy..." -ForegroundColor Cyan

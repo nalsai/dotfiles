@@ -173,7 +173,6 @@ Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" "NoUseStor
 Write-Output "Disabling Context Menu bloat"
 Set-ItemProperty "HKCR:\AppX43hnxtbyyps62jhe9sqpdzxn1790zetc\Shell\ShellEdit" "ProgrammaticAccessOnly" "" -ErrorAction SilentlyContinue # Edit with Photos
 Set-ItemProperty "HKCR:\AppXk0g4vb8gvt7b93tg50ybcy892pge6jmt\Shell\ShellEdit" "ProgrammaticAccessOnly" "" -ErrorAction SilentlyContinue # Edit with Photos
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" "NoCustomizeThisFolder" 1                          # Customize This Folder
 Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" "" # Pin To Start
 Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
 Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
@@ -202,8 +201,6 @@ Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "N
 Write-Host "Done Configuring System" -ForegroundColor Green
 
 
-
-
 Write-Host "Installing Apps..." -ForegroundColor Green
 
 # install chocolatey if not already installed
@@ -212,7 +209,7 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 	choco feature enable -n=allowGlobalConfirmation
 }
 
-choco install googlechrome nomacs 7zip openjdk burnawarefree windirstat libreoffice-fresh paint.net image-composite-editor vlc --ignore-checksums --limit-output
+choco install 7zip burnawarefree curl ffmpeg googlechrome libreoffice-fresh mpv nomacs notepad2-mod openjdk paint.net rclone vlc wget windirstat youtube-dl --ignore-checksums --limit-output
 choco pin add --name googlechrome
 
 if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
@@ -220,38 +217,62 @@ if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -R
 	Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3" -NoRestart
 }
 
-if (!(Test-Path "$env:LOCALAPPDATA\ImgReName")) {
-	Invoke-WebRequest -O $HOME\ImgReName-Setup.exe https://nalsai.de/imgrename/download/Setup.exe
-	Start-Process $HOME\ImgReName-Setup.exe -ArgumentList "--silent"
-}
-
-
-
-Write-Output "Removing VLC from Context Menu & 7zip from Drag & Drop Context Menu"
+Write-Output "Removing VLC from Context Menu"
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
 $Keys = @(
 	"HKCR:\Directory\shell\AddToPlaylistVLC\"
 	"HKCR:\Directory\shell\PlayWithVLC\"
 	"HKCR:\VLC.*\shell\AddToPlaylistVLC\"
 	"HKCR:\VLC.*\shell\PlayWithVLC\"
-	"HKCR:\Directory\shellex\DragDropHandlers\7-Zip"
 )
 ForEach ($Key in $Keys) {
 	Remove-Item $Key -Recurse -ErrorAction SilentlyContinue
 }
 
-
-Write-Host "Install itunes? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) {
-	Y { choco install itunes --limit-output }
-}
-
-
-# Remove remaining setup files
-Remove-Item $HOME\ImgReName-Setup.exe -ErrorAction SilentlyContinue
-
 Write-Host "Done Installing Apps" -ForegroundColor Green
 
+
+Write-Host "Installing Fonts..." -ForegroundColor Green
+
+$fontsPath = "$HOME\Downloads\Fonts"
+New-Item -ItemType directory -Force -Path $fontsPath -ErrorAction SilentlyContinue > $null
+$fonts =
+'Alice',
+'Lato',
+'Montserrat',
+'Quicksand',
+'Merriweather',
+'Comfortaa',
+'Roboto',
+'Noto Sans',
+'Noto Serif'
+foreach ($font in $fonts) {
+	wget.exe -O $fontsPath\$font.zip "https://fonts.google.com/download?family=$font"
+}
+
+foreach ($font in $fonts) {
+	Expand-Archive -Path $fontsPath\$font.zip -DestinationPath $fontsPath -Force
+	Remove-Item $fontsPath\$font.zip -Force
+}
+
+Remove-Item "$fontsPath\ttf\static\" -Recurse -Force
+Copy-Item -r  $fontsPath\ttf\* $fontsPath -ErrorAction SilentlyContinue
+Remove-Item "$fontsPath\ttf" -Recurse -Force
+Remove-Item "$fontsPath\otf" -Recurse -Force
+Remove-Item "$fontsPath\static" -Recurse -Force
+Remove-Item "$fontsPath\woff" -Recurse -Force
+Remove-Item "$fontsPath\woff2" -Recurse -Force
+
+foreach ($File in $(Get-ChildItem -Path $fontsPath -Include ('*.otf', '*.ttf') -Recurse)) {
+	if (!(Test-Path "C:\Windows\Fonts\$($File.Name)")) {
+		Copy-Item $File.FullName C:\Windows\Fonts\$($File.Name)
+		New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $File.Name -PropertyType string -Value $File.Name
+	}
+}
+
+Remove-Item $fontsPath -Recurse -Force -ErrorAction SilentlyContinue
+
+Write-Host "Done Installing Fonts" -ForegroundColor Green
 
 
 Write-Host "Change Name of Computer? (y/N): " -ForegroundColor Yellow -NoNewline

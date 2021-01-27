@@ -22,7 +22,7 @@ local opts = {
     -- high
     -- veryhigh
 
-    height = 6,
+    height = 9,
     -- [4 .. 12]
 }
 

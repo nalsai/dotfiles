@@ -10,6 +10,12 @@ To install these dotfiles from PowerShell without any prerequisites, copy this c
 iwr "https://git.nalsai.de/dotfiles/archive/master.zip" -O $HOME\dotfiles.zip; if($?){Expand-Archive $HOME\dotfiles.zip $HOME; rm $HOME\dotfiles.zip; rm $HOME\.dotfiles -r -ErrorA Ignore; rni $HOME\dotfiles-master $HOME\.dotfiles; Set-ExecutionPolicy RemoteSigned; iex $HOME\.dotfiles\full-install.ps1}
 ```
 
+To run minimal-install.ps1, use:
+
+```ps1
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/master/minimal-install.ps1'))
+```
+
 The command will download this repository to `$HOME` and run `full-install.ps1`
 
 ## Forking this repository

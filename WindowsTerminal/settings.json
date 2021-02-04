@@ -36,10 +36,10 @@
 			},
 			{
 				"name": "Git Bash",
-				"commandline": "P:/Git/bin/bash.exe -li",
-				"icon": "P:/Git/mingw64/share/git/git-for-windows.ico",
+				"commandline": "C:/Program Files/Git/bin/bash.exe -li",
+				"icon": "C:/Program Files/Git/mingw64/share/git/git-for-windows.ico",
 				"startingDirectory": "%USERPROFILE%",
-				"hidden": true
+				"hidden": false
 			},
 			{
 				"guid": "{58ad8b0c-3ef8-5f4d-bc6f-13e4c00f2530}",

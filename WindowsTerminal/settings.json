@@ -60,7 +60,7 @@
 			},
 			{
 				"name": "SSH NilsVPS",
-				"commandline": "ssh nalsai@164.68.116.69",
+				"commandline": "ssh nalsai@164.68.116.69 -p 35474",
 				"icon": "S:/Bilder/Icons/small/contabo.png"
 			}
 		]

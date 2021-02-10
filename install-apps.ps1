@@ -10,14 +10,14 @@ if (!(which choco)) {
 
 choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
 choco install googlechrome nomacs curl wget 7zip notepad2-mod spotify --ignore-checksums --limit-output
-# https://stackoverflow.com/a/46760714	
-# Make `refreshenv` available right away, by defining the $env:ChocolateyInstall	
-# variable and importing the Chocolatey profile module.	
-# Note: Using `. $PROFILE` instead *may* work, but isn't guaranteed to.	
-$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."   	
-Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"	
-# refreshenv is now an alias for Update-SessionEnvironment	
-# (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)	
+# https://stackoverflow.com/a/46760714
+# Make `refreshenv` available right away, by defining the $env:ChocolateyInstall
+# variable and importing the Chocolatey profile module.
+# Note: Using `. $PROFILE` instead *may* work, but isn't guaranteed to.
+$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+# refreshenv is now an alias for Update-SessionEnvironment
+# (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)
 refreshenv
 
 $installProcess = Start-Process choco -ArgumentList "install aegisub audacity audacity-lame authy-desktop autohotkey burnawarefree cdburnerxp discord eac etcher exiftool ffmpeg figma filezilla flacsquisher golang h2testw hugo hwinfo icaros image-composite-editor laragon.portable libreoffice-fresh linkshellextension makemkv microsoft-windows-terminal mkvtoolnix mpv obs-studio openjdk openssl.light paint.net partitionwizard plex python rclone renamer rufus subtitleedit synctrayzor unity-hub vlc windirstat winmerge wireshark youtube-dl --ignore-checksums --limit-output" -PassThru
@@ -43,7 +43,7 @@ if (!(which spicetify)) {
 	Copy-Item -r $HOME\spicetify-cli-master\Extensions\* $HOME\.spicetify\Extensions\ -ErrorAction SilentlyContinue
 	Remove-Item $HOME\spicetify-cli.zip -ErrorAction SilentlyContinue
 	Remove-Item $HOME\spicetify-cli-master -Recurse -Force -ErrorAction SilentlyContinue
-	spicetify config extensions fullAppDisplay.js 
+	spicetify config extensions fullAppDisplay.js
 	spicetify config extensions keyboardShortcut.js
 	spicetify config extensions shuffle+.js
 	Copy-Item $HOME\.spicetify\Themes\DribbblishDynamic\dribbblish-dynamic.js $HOME\.spicetify\Extensions
@@ -140,7 +140,7 @@ $installation_block = {
 	'Zignd.html-css-class-completion'
 	for ($i = 0; $i -lt $extensions.Count; $i++) {
 		code.cmd --install-extension $extensions[$i]
-	} 
+	}
 }
 Start-Process powershell -ArgumentList "-command refreshenv $installation_block"
 
@@ -167,7 +167,7 @@ Remove-Item $HOME\VSCode-Setup.exe -ErrorAction SilentlyContinue
 Remove-Item $HOME\ImgReName-Setup.exe -ErrorAction SilentlyContinue
 Remove-Item $HOME\CrystalDiskInfo-Setup.exe -ErrorAction SilentlyContinue
 Remove-Item $HOME\CrystalDiskMark-Setup.exe -ErrorAction SilentlyContinue
-Remove-Item $HOME\MediaInfoNET.7z -ErrorAction SilentlyContinue
+Remove-Item $HOME\MediaInfoNET.zip -ErrorAction SilentlyContinue
 
 Write-Host "Done Installing Apps" -ForegroundColor Green
 Write-Host "You still need to install Visual Studio, Davinci Resolve, Deluge, Minion, ESO, TTC from the Internet`nand setup apps like Chrome, Icaros, Authy..." -ForegroundColor Cyan

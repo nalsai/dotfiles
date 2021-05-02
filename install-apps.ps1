@@ -22,37 +22,6 @@ refreshenv
 
 $installProcess = Start-Process choco -ArgumentList "install aegisub audacity audacity-lame authy-desktop autohotkey burnawarefree cdburnerxp discord eac etcher exiftool ffmpeg figma filezilla flacsquisher golang h2testw hugo hwinfo icaros image-composite-editor laragon.portable libreoffice-fresh linkshellextension makemkv microsoft-windows-terminal mkvtoolnix mpv obs-studio openjdk openssl.light paint.net partitionwizard plex python rclone renamer rufus subtitleedit synctrayzor unity-hub vlc windirstat winmerge wireshark youtube-dl --ignore-checksums --limit-output" -PassThru
 
-# customize Spotify using spicetify
-if (!(which spicetify)) {
-	choco install spicetify-cli --limit-output
-	$spotifyInstance = [Diagnostics.Process]::Start("$env:APPDATA\Spotify\Spotify.exe")
-	while ($spotifyInstance.MainWindowHandle -eq 0) {
-		Start-Sleep 1
-	}
-	Stop-Process -Name Spotify
-	spicetify
-	spicetify backup enable-devtool
-	Stop-Process -Name Spotify
-	wget.exe -O $HOME\spicetify-themes.zip "https://github.com/morpheusthewhite/spicetify-themes/archive/master.zip"
-	Expand-Archive -Path $HOME\spicetify-themes.zip -DestinationPath $HOME -Force
-	Copy-Item -r $HOME\spicetify-themes-master\* $HOME\.spicetify\Themes\ -ErrorAction SilentlyContinue
-	Remove-Item $HOME\spicetify-themes.zip -ErrorAction SilentlyContinue
-	Remove-Item $HOME\spicetify-themes-master -Recurse -Force -ErrorAction SilentlyContinue
-	wget.exe -O $HOME\spicetify-cli.zip "https://github.com/khanhas/spicetify-cli/archive/master.zip"
-	Expand-Archive -Path $HOME\spicetify-cli.zip  -DestinationPath $HOME -Force;
-	Copy-Item -r $HOME\spicetify-cli-master\Extensions\* $HOME\.spicetify\Extensions\ -ErrorAction SilentlyContinue
-	Remove-Item $HOME\spicetify-cli.zip -ErrorAction SilentlyContinue
-	Remove-Item $HOME\spicetify-cli-master -Recurse -Force -ErrorAction SilentlyContinue
-	spicetify config extensions fullAppDisplay.js
-	spicetify config extensions keyboardShortcut.js
-	spicetify config extensions shuffle+.js
-	Copy-Item $HOME\.spicetify\Themes\DribbblishDynamic\dribbblish-dynamic.js $HOME\.spicetify\Extensions
-	spicetify config extensions dribbblish-dynamic.js
-	spicetify config current_theme DribbblishDynamic color_scheme dark
-	spicetify config inject_css 1 replace_colors 1 overwrite_assets 1
-	spicetify apply
-}
-
 if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
 	Write-Host "Installing .NET 3.5"
 	Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3" -NoRestart

@@ -9,7 +9,7 @@ if (!(which choco)) {
 }
 
 choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
-choco install googlechrome nomacs curl wget 7zip notepad2-mod spotify --ignore-checksums --limit-output
+choco install firefox googlechrome nomacs curl wget 7zip notepad2-mod spotify --ignore-checksums --limit-output
 # https://stackoverflow.com/a/46760714
 # Make `refreshenv` available right away, by defining the $env:ChocolateyInstall
 # variable and importing the Chocolatey profile module.
@@ -60,6 +60,7 @@ $pin_block = {
 	'authy-desktop',
 	'discord',
 	'figma',
+	'firefox',
 	'googlechrome',
 	'spotify',
 	'unity-hub'

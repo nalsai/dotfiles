@@ -211,6 +211,7 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 
 choco install 7zip curl ffmpeg firefox googlechrome libreoffice-fresh mpv nomacs notepad2-mod openjdk paint.net rclone vlc wget windirstat youtube-dl --ignore-checksums --limit-output
 choco pin add --name googlechrome
+choco pin add --name firefox
 
 if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
 	Write-Host "Installing .NET 3.5"

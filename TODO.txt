@@ -1,0 +1,6 @@
+Attention: don't just install these dotfiles on your machine. Dotfiles are highly personalized and a bunch of settings are only for me, you need to at least change those.
+
+
+You may want to change your mpv gpu-api and other setting, open mpv.conf
+
+You may want to change your git signingKey, open .gitconfig

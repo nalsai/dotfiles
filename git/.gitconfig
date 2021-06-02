@@ -1,8 +1,16 @@
 [core]
 	editor = code --wait
 	autocrlf = true
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+[commit]
+    gpgsign = true
 [user]
-	name = nalsai
+	name = Nils Fürniß
 	email = contact@nalsai.de
+	signingKey = 79CB1318699409FF
 [credential]
 	helper = manager

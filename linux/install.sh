@@ -2,6 +2,18 @@
 
 
 
+Server installation
+minimal installation
+full installation
+
+
+---
+
+
+git/.gitconfig -->  ~/.gitconfig
+ask for gpg key 
+    else remove gpg from config
+
 
 if chrome is installed:
 linux/chrome/dark_mode.sh
@@ -9,15 +21,9 @@ linux/chrome/dark_mode.sh
 
 Symlinks:
 
-vscode --> ~/.config/Code/User           (Files)
-vscode --> ~/.config/code-oss/User       (Files)
-vscode --> ~/.config/Code - OSS/User     (Files)
-
-mpv -->  ~/.config/mpv
-
-git/.gitconfig -->  ~/.gitconfig
-
-
+vscode --> ~/.config/Code/User
+vscode --> ~/.config/code-oss/User
+vscode --> ~/.config/Code - OSS/User
 
 
 mpv:
@@ -34,3 +40,17 @@ flatpak: allow access to screenshot path
 ~/Pictures/mpv-screenshots:create
 
 ask for sponsorblock.txt
+
+
+
+gnome terminal
+
+
+
+Apps:
+
+dnf:
+
+pacman/yay:
+
+flatpaks:

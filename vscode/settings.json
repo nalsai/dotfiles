@@ -1,11 +1,14 @@
 {
-	"platformio-ide.activateOnlyOnPlatformIOProject": true,
+	"workbench.colorTheme": "City Lights",
 	"workbench.iconTheme": "city-lights-icons-vsc-light",
+	"window.zoomLevel": 0,
+	"diffEditor.ignoreTrimWhitespace": false,
+	"git.autofetch": true,
 	"go.formatTool": "goimports",
 	"go.useLanguageServer": true,
-	"workbench.colorTheme": "City Lights",
-	"window.zoomLevel": 0,
-	"git.autofetch": true,
-	"diffEditor.ignoreTrimWhitespace": false,
+    "omnisharp.enableImportCompletion": true,
+    "omnisharp.enableRoslynAnalyzers": true,
+    "omnisharp.organizeImportsOnFormat": true,
+	"platformio-ide.activateOnlyOnPlatformIOProject": true,
 	"terminal.integrated.shell.windows": "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
 }

@@ -1,2 +1,3 @@
-*.db
-mpv/scripts/sponsorblock_shared/sponsorblock.txt
+sponsorblock.db
+sponsorblock.db.tmp
+sponsorblock.txt

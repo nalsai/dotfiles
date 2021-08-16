@@ -20,7 +20,7 @@ Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 # (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)
 refreshenv
 
-$installProcess = Start-Process choco -ArgumentList "install aegisub audacity audacity-lame authy-desktop autohotkey burnawarefree cdburnerxp discord eac etcher exiftool ffmpeg figma filezilla flacsquisher golang h2testw hugo hwinfo icaros image-composite-editor laragon.portable libreoffice-fresh linkshellextension makemkv microsoft-windows-terminal mkvtoolnix mpv obs-studio openjdk openssl.light paint.net partitionwizard plex python rclone renamer rufus subtitleedit synctrayzor unity-hub vlc windirstat winmerge wireshark youtube-dl --ignore-checksums --limit-output" -PassThru
+$installProcess = Start-Process choco -ArgumentList "install aegisub audacity audacity-lame authy-desktop autohotkey burnawarefree cdburnerxp discord eac etcher exiftool ffmpeg figma filezilla flacsquisher golang h2testw hugo hwinfo icaros image-composite-editor laragon.portable libreoffice-fresh linkshellextension makemkv microsoft-windows-terminal mkvtoolnix mpv obs-studio openjdk openssl paint.net partitionwizard plex python rclone renamer rufus subtitleedit synctrayzor unity-hub vlc windirstat winmerge wireshark youtube-dl --ignore-checksums --limit-output" -PassThru
 
 if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
 	Write-Host "Installing .NET 3.5"

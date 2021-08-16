@@ -35,6 +35,8 @@ mpv:
 /home/nalsai/.var/app/io.mpv.Mpv/config/mpv
 /home/nalsai/.config/mpv
 
+# celluloid
+
 permissions
 flatpak: allow access to screenshot path
 ~/Pictures/mpv-screenshots:create
@@ -45,6 +47,9 @@ ask for sponsorblock.txt
 
 gnome terminal
 
+fish
+
+nvim
 
 
 Apps:

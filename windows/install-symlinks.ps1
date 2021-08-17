@@ -1,4 +1,5 @@
 #Requires -RunAsAdministrator
+$DOT = "$HOME\.dotfiles"
 
 Write-Host "Making Symlinks..." -ForegroundColor Green
 

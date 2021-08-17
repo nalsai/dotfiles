@@ -1,9 +1,9 @@
 #Requires -RunAsAdministrator
+$TMP = "$env:TEMP\ZG90ZmlsZXM"
 
 Write-Host "Installing Fonts..." -ForegroundColor Green
 
-$fontsPath = "$HOME\Downloads\Fonts"
-
+$fontsPath = "$TMP\Fonts"
 New-Item -ItemType directory -Force -Path $fontsPath -ErrorAction SilentlyContinue > $null
 
 $fonts =
@@ -42,16 +42,11 @@ Remove-Item "$fontsPath\Cascadia Code\ttf\static" -Recurse -Force
 Copy-Item -r  "$fontsPath\Cascadia Code\ttf\*" $fontsPath -ErrorAction SilentlyContinue
 Remove-Item "$fontsPath\Cascadia Code" -Recurse -Force
 
-Remove-Item "$fontsPath\*.txt" -Force
-Remove-Item "$fontsPath\*.zip" -Force
-
 foreach ($File in $(Get-ChildItem -Path $fontsPath -Include ('*.otf', '*.ttf') -Recurse)) {
 	if (!(Test-Path "C:\Windows\Fonts\$($File.Name)")) {
 		Copy-Item $File.FullName C:\Windows\Fonts\$($File.Name)
 		New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $File.Name -PropertyType string -Value $File.Name
 	}
 }
-
-Remove-Item $fontsPath -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Host "Done Installing Fonts" -ForegroundColor Green

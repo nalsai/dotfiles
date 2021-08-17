@@ -1,37 +1,22 @@
-Attention: don't just install these dotfiles on your machine. Dotfiles are highly personalized and a bunch of settings are only for me, you need to at least change those.
+
+change git signingKey
+gpg --list-secret-keys --keyid-format=long
+git config --global user.signingkey 
 
 
-You may want to change your mpv gpu-api and other setting, open mpv.conf
-
-You may want to change your git signingKey, open .gitconfig
-
-
-
-choco install adoptopenjdkjre
-choco install adoptopenjdk
-
-choco install everything
 choco install everythingtoolbar
 
 
 
-
-Write-Host "[1] minimal-install.ps1 - only sets up windows minimally"
-Write-Host "[2] full-install.ps1 - downloads dotfiles and lets you choose what to install (symlinks/settings/apps/fonts)"
-Write-Host "Select Installation [1/2/q]): " -ForegroundColor Yellow -NoNewline
-
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
-while(-Not($key -eq "1" -Or $key -eq "2" -Or $key -eq "Q")) {
+while(-Not($key -eq "Y" -Or $key -eq "N" -Or $key -eq "Q")) {
 	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
 }
 Write-Host "$key";
-
 Switch ($key) {
-	1 {}
-	2 {}
+	Y {
+		
+	}
+	N {}
 	Q {}
 }
-
-
-# TODO
-Set-ExecutionPolicy RemoteSigned

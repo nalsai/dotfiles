@@ -5,6 +5,17 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 	Exit
 }
 
+$DOT = "$HOME\.dotfiles"
+$TMP = "$env:TEMP\ZG90ZmlsZXM"
+New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
+
+#Write-Host "Configuring Windows"
+#Write-Host "Installing Apps"
+#choco install adoptopenjdkjre
+#Write-Host "Installing fonts"
+
+# check if windows 10 or 11
+
 
 Write-Host "Configuring System..." -ForegroundColor Green
 
@@ -215,7 +226,8 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 	choco feature enable -n=allowGlobalConfirmation
 }
 
-choco install 7zip curl ffmpeg firefox googlechrome libreoffice-fresh mpv nomacs notepad2-mod openjdk paint.net rclone vlc wget windirstat youtube-dl --ignore-checksums --limit-output
+choco install 7zip adoptopenjdkjre curl ffmpeg firefox googlechrome libreoffice-fresh mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --ignore-checksums --limit-output
+# TODO: gimp
 choco pin add --name googlechrome
 choco pin add --name firefox
 

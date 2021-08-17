@@ -11,29 +11,29 @@ while(-Not($key -eq "1" -Or $key -eq "2" -Or $key -eq "Q")) {
 Write-Host "$key";
 
 $TMP = "$env:TEMP\ZG90ZmlsZXM"
-mkdir $TMP  > $null
+New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
 
 Switch ($key) {
 	1 {
-		. $PSScriptRoot\minimal-install.ps1
+		iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/master/windows/minimal-install.ps1'))
 	}
 	2 {
 		Write-Host "Downloading dotfiles"
 		iwr "https://git.nalsai.de/dotfiles/archive/master.zip" -O $TMP\dotfiles.zip
 		$DOT = "$HOME\.dotfiles"
 		#if(-Not $?){throw "Error Downloading"}	# TODO test if needed
-		Expand-Archive $TMP\dotfiles.zip $TMP
+		Expand-Archive $TMP\dotfiles.zip $TMP$TMP
 		rm $DOT -r -ErrorAction Ignore	# delete old dotfiles
 		mv $TMP\dotfiles-master $DOT
 
 		Set-ExecutionPolicy RemoteSigned
 
 		Write-Host "Installing dotfiles"
-#		iex $HOME\.dotfiles\full-install.ps1
-#		. $PSScriptRoot\full-install.ps1
+		. $DOT\windows\full-install.ps1
 	}
 	Q {}
 }
 
-rm -r $TMP
+Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue
+
 Write-Host "Done!"

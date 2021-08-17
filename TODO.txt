@@ -12,3 +12,26 @@ choco install adoptopenjdk
 
 choco install everything
 choco install everythingtoolbar
+
+
+
+
+Write-Host "[1] minimal-install.ps1 - only sets up windows minimally"
+Write-Host "[2] full-install.ps1 - downloads dotfiles and lets you choose what to install (symlinks/settings/apps/fonts)"
+Write-Host "Select Installation [1/2/q]): " -ForegroundColor Yellow -NoNewline
+
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
+while(-Not($key -eq "1" -Or $key -eq "2" -Or $key -eq "Q")) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
+}
+Write-Host "$key";
+
+Switch ($key) {
+	1 {}
+	2 {}
+	Q {}
+}
+
+
+# TODO
+Set-ExecutionPolicy RemoteSigned

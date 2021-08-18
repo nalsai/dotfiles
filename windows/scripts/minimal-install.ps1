@@ -9,14 +9,6 @@ $DOT = "$HOME\.dotfiles"
 $TMP = "$env:TEMP\ZG90ZmlsZXM"
 New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
 
-#Write-Host "Configuring Windows"
-#Write-Host "Installing Apps"
-#choco install adoptopenjdkjre
-#Write-Host "Installing fonts"
-
-# check if windows 10 or 11
-
-
 Write-Host "Configuring System..." -ForegroundColor Green
 
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null

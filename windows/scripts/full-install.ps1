@@ -5,11 +5,6 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 	Exit
 }
 
-# TODO
-# if not from install.ps1 ask if want to update (require admin / self-elevate?)
-#Attention: don't just install these dotfiles on your machine. Dotfiles are highly personalized and a bunch of settings are only for me, you need to at least change those.
-#Set-ExecutionPolicy RemoteSigned
-
 Write-Host "Install app settings? [Y/n]: " -ForegroundColor Yellow -NoNewline
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
 while(-Not($key -eq "Y" -Or $key -eq "N" -Or $key -eq "Q")) {

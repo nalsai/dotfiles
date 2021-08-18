@@ -20,3 +20,34 @@ Switch ($key) {
 	N {}
 	Q {}
 }
+
+
+
+
+install.ps1
+
+test download unsuccessful
+#if(-Not $?){throw "Error Downloading"}	# TODO test if needed
+
+
+
+declutter-contextmenu.ps1
+
+# TODO: reinstall apps with args
+# choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
+# choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
+
+
+
+minimal-install.ps1
+
+#Write-Host "Configuring Windows"
+#Write-Host "Installing Apps"
+#choco install adoptopenjdkjre
+#Write-Host "Installing fonts"
+
+# check if windows 10 or 11
+
+
+
+#Set-ExecutionPolicy RemoteSigned

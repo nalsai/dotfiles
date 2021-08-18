@@ -13,13 +13,13 @@ Each application's dotfiles are kept in a folder with the name of the applicatio
 `Linux:` To install these dotfiles, run this command:
 
 ```bash
-bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/master/linux/install.sh)
+bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/rework/linux/install.sh)
 ```
 
 `Windows:` Copy this into an elevated PowerShell instance:
 
 ```ps1
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/master/windows/install.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/install.ps1'))
 ```
 
 

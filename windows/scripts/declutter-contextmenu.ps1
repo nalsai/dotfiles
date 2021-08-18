@@ -1,4 +1,9 @@
-#Requires -RunAsAdministrator
+# Self-elevate the script if required
+if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
+	$CommandLine = "-File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
+	Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
+	Exit
+}
 
 # remove VLC from Context Menu
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null

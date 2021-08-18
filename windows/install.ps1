@@ -23,16 +23,14 @@ Switch ($key) {
 		Write-Host "Downloading dotfiles"
 		iwr "https://github.com/Nalsai/dotfiles/archive/refs/heads/rework.zip" -O $TMP\dotfiles.zip
 		$DOT = "$HOME\.dotfiles"
-		Expand-Archive $TMP\dotfiles.zip $TMP$TMP
+		Expand-Archive $TMP\dotfiles.zip $TMP
 		Remove-Item $DOT -Recurse -ErrorAction Ignore # delete old dotfiles
 		Move-Item $TMP\dotfiles-rework $DOT
-
-		Set-ExecutionPolicy RemoteSigned
-
 		Write-Host "Installing dotfiles"
 		. $DOT\windows\scripts\full-install.ps1
 	}
 	3 {
+		Write-Host "Executing declutter-contextmenu.ps1"
 		iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/scripts/declutter-contextmenu.ps1'))
 	}
 	Q {}

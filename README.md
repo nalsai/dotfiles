@@ -16,7 +16,7 @@ Each application's dotfiles are kept in a folder with the name of the applicatio
 bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/rework/linux/install.sh)
 ```
 
-`Windows:` Copy this into an elevated PowerShell instance:
+`Windows:` Copy this into PowerShell:
 
 ```ps1
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/install.ps1'))

@@ -36,6 +36,5 @@ Switch ($key) {
 	Q {}
 }
 
-Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue
-
 Write-Host "Done!"
+Exit

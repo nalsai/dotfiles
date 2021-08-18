@@ -1,12 +1,17 @@
 # Self-elevate the script if required
 if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
-	$CommandLine = "-File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
+	$CommandLine = "-NoExit -File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
 	Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
 	Exit
 }
 
-# remove VLC from Context Menu
+Clear-Host
+Write-Host " _   _ _ _     ____        _    __ _ _`n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___`n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|`n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \`n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
+Write-Host "`n"
+
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
+
+Write-Host "Removing VLC from Context Menu"
 $Keys = @(
 	"HKCR:\Directory\shell\AddToPlaylistVLC\"
 	"HKCR:\Directory\shell\PlayWithVLC\"
@@ -14,12 +19,10 @@ $Keys = @(
 	"HKCR:\VLC.*\shell\PlayWithVLC\"
 )
 ForEach ($Key in $Keys) {
-	Remove-Item $Key -Recurse -ErrorAction SilentlyContinue
+	Remove-Item $Key -Recurse -ErrorAction Ignore
 }
-Write-Output "Done removing VLC from Context Menu"
 
-Write-Output "removing WinMerge from Context Menu & 7zip from Drag & Drop Context Menu"
-New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
+Write-Host "Removing WinMerge from Context Menu"
 $Keys = @(
 	"HKCR:\*\shellex\ContextMenuHandlers\WinMerge"
 	"HKCR:\Directory\shellex\ContextMenuHandlers\WinMerge"
@@ -28,8 +31,13 @@ $Keys = @(
 	"HKCR:\Directory\Background\shellex\DragDropHandlers\WinMerge"
 	"HKCR:\Drive\shellex\ContextMenuHandlers\WinMerge"
 	"HKCR:\Drive\shellex\DragDropHandlers\WinMerge"
-	"HKCR:\Directory\shellex\DragDropHandlers\7-Zip"
 )
 ForEach ($Key in $Keys) {
-	Remove-Item -LiteralPath $Key -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -LiteralPath $Key -Recurse -ErrorAction Ignore
 }
+
+Write-Host "Removing 7zip from Drag & Drop Context Menu"
+Remove-Item -LiteralPath "HKCR:\Directory\shellex\DragDropHandlers\7-Zip" -Recurse -ErrorAction Ignore
+
+Read-Host "Done!"
+Exit

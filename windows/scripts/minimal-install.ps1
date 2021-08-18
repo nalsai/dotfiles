@@ -1,9 +1,13 @@
 # Self-elevate the script if required
 if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
-	$CommandLine = "-File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
+	$CommandLine = "-NoExit -File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
 	Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
 	Exit
 }
+
+Clear-Host
+Write-Host " _   _ _ _     ____        _    __ _ _`n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___`n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|`n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \`n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
+Write-Host "`n"
 
 $DOT = "$HOME\.dotfiles"
 $TMP = "$env:TEMP\ZG90ZmlsZXM"
@@ -11,7 +15,7 @@ New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $
 
 Write-Host "Configuring System..." -ForegroundColor Green
 
-New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
+New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
 
 Write-Output "Disabling WAP Push Service & Diagnostics Tracking Service"
 Set-Service "dmwappushservice" -StartupType Disabled
@@ -299,4 +303,6 @@ Switch (Read-Host)
 	}
 }
 
-Write-Host "Done! Note that some changes require a restart to take effect." -ForegroundColor Green
+Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue
+Read-Host "Done! Note that some changes require a restart to take effect." -ForegroundColor Green
+Exit

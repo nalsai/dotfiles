@@ -1,13 +1,8 @@
-# Self-elevate the script if required
-if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
-	$CommandLine = "-NoExit -File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
-	Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
-	Exit
-}
+#Requires -RunAsAdministrator
 
 Clear-Host
 Write-Host " _   _ _ _     ____        _    __ _ _`n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___`n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|`n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \`n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
-Write-Host "`n"
+Write-Host "[minimal-install.ps1]`n"
 
 $DOT = "$HOME\.dotfiles"
 $TMP = "$env:TEMP\ZG90ZmlsZXM"
@@ -222,10 +217,7 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 	choco feature enable -n=allowGlobalConfirmation
 }
 
-choco install 7zip adoptopenjdkjre curl ffmpeg firefox googlechrome libreoffice-fresh mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --ignore-checksums --limit-output
-# TODO: gimp
-choco pin add --name googlechrome
-choco pin add --name firefox
+choco install 7zip adoptopenjdkjre curl ffmpeg firefox gimp googlechrome libreoffice-fresh mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --ignore-checksums --limit-output
 
 if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
 	Write-Host "Installing .NET 3.5"
@@ -293,16 +285,24 @@ Remove-Item $fontsPath -Recurse -Force -ErrorAction SilentlyContinue
 Write-Host "Done Installing Fonts" -ForegroundColor Green
 
 
-Write-Host "Change Name of Computer? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host)
-{
-	Y {
+Write-Host "Change Name of Computer? [Y/n]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Default {
 		Write-Host "Name: " -ForegroundColor Cyan -NoNewline
 		$computerName = Read-Host
 		(Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
 	}
+	N {}
 }
 
 Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue
-Read-Host "Done! Note that some changes require a restart to take effect." -ForegroundColor Green
-Exit
+Write-Host "Done! Note that some changes require a restart to take effect." -ForegroundColor Green
+$host.UI.RawUI.FlushInputBuffer()
+$Host.UI.ReadLine()
+[Environment]::Exit(0)

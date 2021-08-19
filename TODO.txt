@@ -1,53 +1,56 @@
+Write-Host "Install something? [Y/n]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Default {
+
+	}
+	N {}
+}
+
+Switch ($key.Character) {
+	Y {
+
+	}
+	Default {}
+}
+
+
+
+
 
 change git signingKey
 gpg --list-secret-keys --keyid-format=long
 git config --global user.signingkey 
 
 
-choco install everythingtoolbar
+
+install.ps1:
+	test download unsuccessful
+	#if(-Not $?){throw "Error Downloading"}	# TODO test if needed
 
 
 
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
-while(-Not($key -eq "Y" -Or $key -eq "N" -Or $key -eq "Q")) {
-	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
-}
-Write-Host "$key";
-Switch ($key) {
-	Y {
-		
-	}
-	N {}
-	Q {}
-}
+declutter-contextmenu.ps1:
+	check if even insatlled (WinMerge, ...)
+	# TODO: reinstall apps with args
+	# choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
+	# choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
 
+install-fonts:
+	use windows wget if not installed
 
-
-
-install.ps1
-
-test download unsuccessful
-#if(-Not $?){throw "Error Downloading"}	# TODO test if needed
-
-
-
-declutter-contextmenu.ps1
-
-# TODO: reinstall apps with args
-# choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
-# choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
-
-
-
-minimal-install.ps1
-
-#Write-Host "Configuring Windows"
-#Write-Host "Installing Apps"
-#choco install adoptopenjdkjre
-#Write-Host "Installing fonts"
 
 # check if windows 10 or 11
 
 
+Set-ExecutionPolicy RemoteSigned
 
-#Set-ExecutionPolicy RemoteSigned
+$host.UI.RawUI.FlushInputBuffer()
+
+weather news windows 10
+taks view windows 11

@@ -2,7 +2,12 @@
 
 Write-Host "Configuring System..." -ForegroundColor Green
 
-New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT > $null
+$OS = [Environment]::OSVersion.Version.Major;
+if((Get-ComputerInfo | select OsName).IndexOf("Windows 11") -neq -1){
+	$OS = "11";
+}
+
+New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
 
 if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive")) {
 	Write-Output "Uninstalling OneDrive"
@@ -27,8 +32,9 @@ if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LO
 	}
 }
 
-Write-Output "Unpinning all tiles from the start menu"
-$START_MENU_LAYOUT = @"
+if ($OS -eq "10") {
+	Write-Output "Unpinning all tiles from the start menu"
+	$START_MENU_LAYOUT = @"
 <LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
     <LayoutOptions StartTileGroupCellWidth="6" />
     <DefaultLayoutOverride>
@@ -38,39 +44,36 @@ $START_MENU_LAYOUT = @"
     </DefaultLayoutOverride>
 </LayoutModificationTemplate>
 "@
-$layoutFile = "C:\Windows\StartMenuLayout.xml"
-Remove-Item $layoutFile -ErrorAction SilentlyContinue
-$START_MENU_LAYOUT | Out-File $layoutFile -Encoding ASCII
-$regAliases = @("HKLM", "HKCU")
-foreach ($regAlias in $regAliases) {
-	$keyPath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows\Explorer"
-	if (!(Test-Path $keyPath)) {
-		New-Item $keyPath -Type Folder > $null
+	$layoutFile = "C:\Windows\StartMenuLayout.xml"
+	Remove-Item $layoutFile -ErrorAction SilentlyContinue
+	$START_MENU_LAYOUT | Out-File $layoutFile -Encoding ASCII
+	$regAliases = @("HKLM", "HKCU")
+	foreach ($regAlias in $regAliases) {
+		$keyPath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows\Explorer"
+		if (!(Test-Path $keyPath)) {
+			New-Item $keyPath -Type Folder > $null
+		}
+		Set-ItemProperty $keyPath "LockedStartLayout" 1
+		Set-ItemProperty $keyPath "StartLayoutFile" $layoutFile
 	}
-	Set-ItemProperty $keyPath "LockedStartLayout" 1
-	Set-ItemProperty $keyPath "StartLayoutFile" $layoutFile
-}
-Stop-Process -Name explorer
-Start-Sleep 5
-$wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys('^{ESCAPE}')
-Start-Sleep 5
-foreach ($regAlias in $regAliases) {
-	$keyPath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows\Explorer"
-	Set-ItemProperty $keyPath "LockedStartLayout" 0
-}
-Stop-Process -Name explorer
-Start-Sleep 3
-Remove-Item $layoutFile
-if (!(Get-Process explorer -ErrorAction SilentlyContinue)) {
-	Start-Process explorer
+	Stop-Process -Name explorer
+	Start-Sleep 5
+	$wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys('^{ESCAPE}')
+	Start-Sleep 5
+	foreach ($regAlias in $regAliases) {
+		$keyPath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows\Explorer"
+		Set-ItemProperty $keyPath "LockedStartLayout" 0
+	}
+	Stop-Process -Name explorer
+	Start-Sleep 3
+	Remove-Item $layoutFile
+	if (!(Get-Process explorer -ErrorAction SilentlyContinue)) {
+		Start-Process explorer
+	}
 }
 
-Write-Output "Disabling WAP Push Service & Diagnostics Tracking Service"
-Set-Service "dmwappushservice" -StartupType Disabled
+Write-Output "Disabling Diagnostics Tracking Service"
 Set-Service "DiagTrack" -StartupType Disabled
-
-Write-Output "Uninstalling Windows Media Player"
-Disable-WindowsOptionalFeature -Online -FeatureName "WindowsMediaPlayer" -NoRestart -WarningAction SilentlyContinue > $null
 
 Write-Output "Removing unnecessary AppxPackages"
 $AppXApps = @(
@@ -301,13 +304,20 @@ Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock
 Write-Host "Enabling WSL"
 Enable-WindowsOptionalFeature -Online -All -FeatureName "Microsoft-Windows-Subsystem-Linux" -NoRestart -WarningAction SilentlyContinue > $null
 
-Write-Host "Change Name of Computer? (y/N): " -ForegroundColor Yellow -NoNewline
-Switch (Read-Host) {
-	Y {
+Write-Host "Change Name of Computer? [Y/n]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Default {
 		Write-Host "Name: " -ForegroundColor Cyan -NoNewline
 		$computerName = Read-Host
 		(Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
 	}
+	N {}
 }
 
 Write-Host "Done Configuring System" -ForegroundColor Green

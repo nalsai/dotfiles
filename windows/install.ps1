@@ -17,24 +17,25 @@ New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $
 
 Switch ($key) {
 	1 {
-		iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/scripts/minimal-install.ps1'))
+		Write-Host "Executing minimal-install.ps1"
+		Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/scripts/minimal-install.ps1'))`""
 	}
 	2 {
 		Write-Host "Downloading dotfiles"
 		iwr "https://github.com/Nalsai/dotfiles/archive/refs/heads/rework.zip" -O $TMP\dotfiles.zip
 		$DOT = "$HOME\.dotfiles"
 		Expand-Archive $TMP\dotfiles.zip $TMP
-		Remove-Item $DOT -Recurse -ErrorAction Ignore # delete old dotfiles
+		Remove-Item $DOT -Recurse -ErrorAction SilentlyContinue # delete old dotfiles
 		Move-Item $TMP\dotfiles-rework $DOT
 		Write-Host "Installing dotfiles"
 		. $DOT\windows\scripts\full-install.ps1
 	}
 	3 {
 		Write-Host "Executing declutter-contextmenu.ps1"
-		iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/scripts/declutter-contextmenu.ps1'))
+		Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/scripts/declutter-contextmenu.ps1'))`""
 	}
 	Q {}
 }
 
 Write-Host "Done!"
-Exit
+[Environment]::Exit(0)

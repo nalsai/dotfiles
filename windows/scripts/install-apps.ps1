@@ -1,5 +1,6 @@
 #Requires -RunAsAdministrator
 $TMP = "$env:TEMP\ZG90ZmlsZXM"
+New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
 
 Write-Host "Installing Apps..." -ForegroundColor Green
 

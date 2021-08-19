@@ -9,6 +9,9 @@ Clear-Host
 Write-Host " _   _ _ _     ____        _    __ _ _`n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___`n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|`n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \`n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
 Write-Host "[full-install.ps1]`n"
 
+$TMP = "$env:TEMP\ZG90ZmlsZXM"
+New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
+
 Write-Host "Install app settings? [Y/n]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

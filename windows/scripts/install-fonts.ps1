@@ -43,7 +43,7 @@ Remove-Item "$TMP\Fonts\Cascadia Code" -Recurse -Force
 foreach ($File in $(Get-ChildItem -Path $TMP\Fonts -Include ('*.otf', '*.ttf') -Recurse)) {
 	if (!(Test-Path "C:\Windows\Fonts\$($File.Name)")) {
 		Copy-Item $File.FullName C:\Windows\Fonts\$($File.Name)
-		New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $File.Name -PropertyType string -Value $File.Name
+		New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $File.Name -PropertyType string -Value $File.Name > $null
 	}
 }
 

@@ -20,21 +20,6 @@ Switch ($key.Character) {
 }
 
 
-
-
-
-change git signingKey
-gpg --list-secret-keys --keyid-format=long
-git config --global user.signingkey 
-
-
-
-install.ps1:
-	test download unsuccessful
-	#if(-Not $?){throw "Error Downloading"}	# TODO test if needed
-
-
-
 declutter-contextmenu.ps1:
 	check if even insatlled (WinMerge, ...)
 	# TODO: reinstall apps with args
@@ -42,15 +27,11 @@ declutter-contextmenu.ps1:
 	# choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
 
 install-fonts:
-	use windows wget if not installed
+	use windows wget if not installed (or at least throw error and exit)
 
-
-# check if windows 10 or 11
-
-
-Set-ExecutionPolicy RemoteSigned
-
-$host.UI.RawUI.FlushInputBuffer()
+#change git signingKey
+gpg --list-secret-keys --keyid-format=long
+git config --global user.signingkey 
 
 weather news windows 10
 taks view windows 11

@@ -19,7 +19,8 @@ choco install 7zip curl firefox googlechrome nomacs notepad2-mod spotify wget --
 #Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 #refreshenv
 
-$installProcess = Start-Process choco -ArgumentList "install adoptopenjdk aegisub audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp discord eac eartrumpet etcher everything exiftool ffmpeg figma filezilla flacsquisher gimp golang hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus steam-client synctrayzor unity-hub vlc windirstat wireshark youtube-dl --limit-output" -PassThru
+choco install adoptopenjdk audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp discord eac eartrumpet etcher everything exiftool ffmpeg filezilla flacsquisher gimp golang hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus steam-client synctrayzor unity-hub vlc windirstat wireshark youtube-dl --limit-output
+choco install figma --ignore-checksums --limit-output
 
 #if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
 #	Write-Host "Installing .NET 3.5"
@@ -39,8 +40,6 @@ if (!(Test-Path "$env:LOCALAPPDATA\MediaInfo.NET")) {
 	7z x $TMP\MediaInfoNET.zip -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
 	Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
 }
-
-$installProcess.WaitForExit()
 
 # stop choco upgrading packages that upgrade themselves
 $pin_block = {

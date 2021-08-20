@@ -1,4 +1,9 @@
-#Requires -RunAsAdministrator
+# Self-elevate the script if required
+if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
+	$CommandLine = "-NoExit -File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
+	Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
+	Exit
+}
 
 Clear-Host
 Write-Host " _   _ _ _     ____        _    __ _ _`n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___`n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|`n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \`n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
@@ -108,6 +113,8 @@ $folders = @(
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
+	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync"
+	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language"
@@ -132,7 +139,7 @@ $folders = @(
 	"HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration"
 )
 foreach ($folder in $folders) {
-	if (!(Test-Path $folder)) { New-Item $folder -Type Folder }
+	if (!(Test-Path $folder)) { New-Item $folder -Type Folder > $null }
 }
 
 Write-Host "Disabling Cortana and Bing Search in Start Menu"
@@ -204,7 +211,7 @@ Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "A
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "IncludeRecommendedUpdates" 1
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoRebootWithLoggedOnUsers" 1
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
-(New-Object -ComObject Microsoft.Update.ServiceManager -Strict).AddService2("7971f918-a847-4430-9279-4a52d1efe18d", 7, "")
+(New-Object -ComObject Microsoft.Update.ServiceManager -Strict).AddService2("7971f918-a847-4430-9279-4a52d1efe18d", 7, "") > $null
 
 Write-Host "Done Configuring System" -ForegroundColor Green
 
@@ -217,12 +224,12 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 	choco feature enable -n=allowGlobalConfirmation
 }
 
-choco install 7zip adoptopenjdkjre curl ffmpeg firefox gimp googlechrome libreoffice-fresh mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --ignore-checksums --limit-output
+choco install 7zip adoptopenjdkjre curl ffmpeg firefox gimp googlechrome libreoffice-fresh mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --limit-output
 
-if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
-	Write-Host "Installing .NET 3.5"
-	Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3" -NoRestart
-}
+#if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
+#	Write-Host "Installing .NET 3.5"
+#	Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3" -NoRestart > $null
+#}
 
 Write-Output "Removing VLC from Context Menu"
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
@@ -285,7 +292,9 @@ Remove-Item $fontsPath -Recurse -Force -ErrorAction SilentlyContinue
 Write-Host "Done Installing Fonts" -ForegroundColor Green
 
 
-Write-Host "Change Name of Computer? [Y/n]: " -ForegroundColor Yellow -NoNewline
+Write-Host "Current Name of Computer: " -NoNewline
+Write-Host (Get-CimInstance -ClassName Win32_ComputerSystem).Name
+Write-Host "Change Name of Computer? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
@@ -293,12 +302,12 @@ while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKey
 }
 Write-Host $key.Character
 Switch ($key.Character) {
-	Default {
+	Y {
 		Write-Host "Name: " -ForegroundColor Cyan -NoNewline
 		$computerName = Read-Host
 		(Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
 	}
-	N {}
+	Default {}
 }
 
 Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue

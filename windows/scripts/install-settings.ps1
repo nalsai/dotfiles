@@ -3,7 +3,7 @@
 Write-Host "Configuring System..." -ForegroundColor Green
 
 $OS = [Environment]::OSVersion.Version.Major;
-if((Get-ComputerInfo | select OsName).IndexOf("Windows 11") -neq -1){
+if((Get-ComputerInfo | select OsName | Out-String).IndexOf("Windows 11") -ne -1){
 	$OS = "11";
 }
 
@@ -192,6 +192,8 @@ $folders = @(
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
+	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync"
+	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials"
 	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language"
@@ -304,7 +306,9 @@ Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock
 Write-Host "Enabling WSL"
 Enable-WindowsOptionalFeature -Online -All -FeatureName "Microsoft-Windows-Subsystem-Linux" -NoRestart -WarningAction SilentlyContinue > $null
 
-Write-Host "Change Name of Computer? [Y/n]: " -ForegroundColor Yellow -NoNewline
+Write-Host "Current Name of Computer: " -NoNewline
+Write-Host (Get-CimInstance -ClassName Win32_ComputerSystem).Name
+Write-Host "Change Name of Computer? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
@@ -312,12 +316,12 @@ while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKey
 }
 Write-Host $key.Character
 Switch ($key.Character) {
-	Default {
+	Y {
 		Write-Host "Name: " -ForegroundColor Cyan -NoNewline
 		$computerName = Read-Host
 		(Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
 	}
-	N {}
+	Default {}
 }
 
 Write-Host "Done Configuring System" -ForegroundColor Green

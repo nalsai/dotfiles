@@ -5,9 +5,11 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 	Exit
 }
 
-Clear-Host
-Write-Host " _   _ _ _     ____        _    __ _ _`n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___`n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|`n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \`n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
-Write-Host "[declutter-contextmenu.ps1]`n"
+if (-Not ($args[0] -eq "script")){
+	Clear-Host
+	Write-Host " _   _ _ _     ____        _    __ _ _`n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___`n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|`n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \`n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
+	Write-Host "[declutter-contextmenu.ps1]`n"
+}
 
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
 
@@ -40,7 +42,7 @@ Write-Host "Removing 7zip from Drag & Drop Context Menu"
 Remove-Item -LiteralPath "HKCR:\Directory\shellex\DragDropHandlers\7-Zip" -Recurse -ErrorAction Ignore
 
 Write-Host "Done!" -ForegroundColor Green
-# Should only run when called through install.ps1 NOT full-install.ps1
-# TEST: put commands after iex in install.ps1?
-#$Host.UI.ReadLine()
-#[Environment]::Exit(0)
+if (-Not ($args[0] -eq "script")){
+	$Host.UI.ReadLine()
+	[Environment]::Exit(0)
+}

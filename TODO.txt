@@ -6,19 +6,11 @@ while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKey
 }
 Write-Host $key.Character
 Switch ($key.Character) {
-	Default {
-
-	}
-	N {}
-}
-
-Switch ($key.Character) {
 	Y {
 
 	}
 	Default {}
 }
-
 
 declutter-contextmenu.ps1:
 	check if even insatlled (WinMerge, ...)
@@ -33,5 +25,4 @@ install-fonts:
 gpg --list-secret-keys --keyid-format=long
 git config --global user.signingkey 
 
-weather news windows 10
-taks view windows 11
+update minimal-install.ps1

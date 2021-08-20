@@ -11,6 +11,8 @@ Write-Host "[full-install.ps1]`n"
 
 $TMP = "$env:TEMP\ZG90ZmlsZXM"
 New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
+$OriginalPref = $ProgressPreference
+$ProgressPreference = "SilentlyContinue"
 
 Write-Host "Install app settings? [Y/n]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
@@ -68,6 +70,7 @@ Switch ($key.Character) {
 	}
 }
 
+$ProgressPreference = $OriginalPref
 Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue
 Write-Host "Done! Note that some changes may require a restart to take effect." -ForegroundColor Green
 $host.UI.RawUI.FlushInputBuffer()

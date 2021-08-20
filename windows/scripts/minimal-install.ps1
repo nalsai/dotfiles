@@ -12,6 +12,8 @@ Write-Host "[minimal-install.ps1]`n"
 $DOT = "$HOME\.dotfiles"
 $TMP = "$env:TEMP\ZG90ZmlsZXM"
 New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
+$OriginalPref = $ProgressPreference
+$ProgressPreference = "SilentlyContinue"
 
 Write-Host "Configuring System..." -ForegroundColor Green
 
@@ -310,6 +312,7 @@ Switch ($key.Character) {
 	Default {}
 }
 
+$ProgressPreference = $OriginalPref
 Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue
 Write-Host "Done! Note that some changes require a restart to take effect." -ForegroundColor Green
 $host.UI.RawUI.FlushInputBuffer()

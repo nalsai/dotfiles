@@ -10,17 +10,16 @@ if (!(which choco)) {
 	choco feature enable -n=allowGlobalConfirmation
 }
 
-choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
-choco install vscode --params '"/NoDesktopIcon /NoQuicklaunchIcon / NoContextMenuFiles"' --limit-output
-choco install 7zip curl firefox googlechrome nomacs notepad2-mod spotify wget --limit-output
+choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
+choco install vscode --params "/NoDesktopIcon /NoQuicklaunchIcon /NoContextMenuFiles" --limit-output
+choco install 7zip adoptopenjdk audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp curl discord eac eartrumpet etcher everything exiftool ffmpeg filezilla firefox flacsquisher gimp golang googlechrome hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv nomacs notepad2-mod obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus spotify steam-client synctrayzor unity-hub vlc wget windirstat wireshark youtube-dl --limit-output
+choco install figma --ignore-checksums --limit-output
 
 # https://stackoverflow.com/a/46760714
 #$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
 #Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 #refreshenv
 
-choco install adoptopenjdk audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp discord eac eartrumpet etcher everything exiftool ffmpeg filezilla flacsquisher gimp golang hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus steam-client synctrayzor unity-hub vlc windirstat wireshark youtube-dl --limit-output
-choco install figma --ignore-checksums --limit-output
 
 #if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
 #	Write-Host "Installing .NET 3.5"
@@ -58,9 +57,9 @@ $pin_block = {
 }
 Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimized
 
-. $PSScriptRoot\declutter-contextmenu.ps1
+. $PSScriptRoot\declutter-contextmenu.ps1 script
 
-refreshenv
+#refreshenv
 $installation_block = {
 	$extensions =
 	'bungcip.better-toml',

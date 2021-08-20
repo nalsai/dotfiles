@@ -25,8 +25,8 @@ if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LO
 	Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
 	Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
 	Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse -ErrorAction SilentlyContinue
-	Set-ItemProperty $ExplorerReg1 "System.IsPinnedToNameSpaceTree" 0
-	Set-ItemProperty $ExplorerReg2 "System.IsPinnedToNameSpaceTree" 0
+	Set-ItemProperty $ExplorerReg1 "System.IsPinnedToNameSpaceTree" 0 -ErrorAction SilentlyContinue
+	Set-ItemProperty $ExplorerReg2 "System.IsPinnedToNameSpaceTree" 0 -ErrorAction SilentlyContinue
 	if (!(Get-Process explorer -ErrorAction SilentlyContinue)) {
 		Start-Process explorer
 	}
@@ -74,6 +74,9 @@ if ($OS -eq "10") {
 
 Write-Output "Disabling Diagnostics Tracking Service"
 Set-Service "DiagTrack" -StartupType Disabled
+
+Write-Output "Uninstalling Windows Media Player"
+Disable-WindowsOptionalFeature -Online -FeatureName "WindowsMediaPlayer" -NoRestart -WarningAction SilentlyContinue > $null
 
 Write-Output "Removing unnecessary AppxPackages"
 $AppXApps = @(
@@ -281,9 +284,10 @@ Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensio
 
 Write-Output "Hiding stuff in the SysTray"
 Remove-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "SecurityHealth" -ErrorAction SilentlyContinue	# Remove Windows Defender Systray
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" "EnableActivityFeed" 0
+Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" 0					# Task view
+Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" 0					# People
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" "ShellFeedsTaskbarViewMode" 2						# News and weather
+Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" "EnableActivityFeed" 0									# Timeline (Windows 10)
 
 Write-Output "Disabling automatic syncing of settings"
 Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" "Enabled" 0

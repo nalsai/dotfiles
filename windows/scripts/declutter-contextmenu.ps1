@@ -41,6 +41,9 @@ ForEach ($Key in $Keys) {
 Write-Host "Removing 7zip from Drag & Drop Context Menu"
 Remove-Item -LiteralPath "HKCR:\Directory\shellex\DragDropHandlers\7-Zip" -Recurse -ErrorAction Ignore
 
+#choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
+#choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
+
 Write-Host "Done!" -ForegroundColor Green
 if (-Not ($args[0] -eq "script")){
 	$Host.UI.ReadLine()

@@ -1,28 +1,5 @@
-Write-Host "Install something? [Y/n]: " -ForegroundColor Yellow -NoNewline
-$host.UI.RawUI.FlushInputBuffer()
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
-	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-Write-Host $key.Character
-Switch ($key.Character) {
-	Y {
-
-	}
-	Default {}
-}
-
-declutter-contextmenu.ps1:
-	check if even insatlled (WinMerge, ...)
-	# TODO: reinstall apps with args
-	# choco install mp3tag --package-parameters='"/NoDesktopShortcut /NoContextMenu"' --limit-output
-	# choco install git --params '"/GitAndUnixToolsOnPath /NoShellIntegration"' --limit-output
-
-install-fonts:
-	use windows wget if not installed (or at least throw error and exit)
+update minimal-install.ps1
 
 #change git signingKey
 gpg --list-secret-keys --keyid-format=long
 git config --global user.signingkey 
-
-update minimal-install.ps1

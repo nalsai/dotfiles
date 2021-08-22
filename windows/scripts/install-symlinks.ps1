@@ -4,6 +4,7 @@ $DOT = "$HOME\.dotfiles"
 Write-Host "Making Symlinks..." -ForegroundColor Green
 
 # Windows Terminal config
+Remove-Item -Force -Recurse $HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState -ErrorAction Ignore
 New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState -Target $DOT\windows\WindowsTerminal > $null
 
 # PowerShell

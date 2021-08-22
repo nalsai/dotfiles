@@ -131,3 +131,4 @@ Switch ($key.Character) {
 
 Write-Host "Done Installing Apps" -ForegroundColor Green
 Write-Host "You still need to install Visual Studio, Davinci Resolve, Deluge, Minion, ESO, TTC yourself" -ForegroundColor Cyan
+Write-Host "You also need to deactivate auto startup for a lot of Apps in Task Manager" -ForegroundColor Cyan

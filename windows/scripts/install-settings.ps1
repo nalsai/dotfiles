@@ -49,7 +49,7 @@ if ($OS -eq "10") {
 	$START_MENU_LAYOUT | Out-File $layoutFile -Encoding ASCII
 	$regAliases = @("HKLM", "HKCU")
 	foreach ($regAlias in $regAliases) {
-		$keyPath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows\Explorer"
+		$keyPath = $regAlias + ":\Software\Policies\Microsoft\Windows\Explorer"
 		if (!(Test-Path $keyPath)) {
 			New-Item $keyPath -Type Folder > $null
 		}
@@ -61,7 +61,7 @@ if ($OS -eq "10") {
 	$wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys('^{ESCAPE}')
 	Start-Sleep 5
 	foreach ($regAlias in $regAliases) {
-		$keyPath = $regAlias + ":\SOFTWARE\Policies\Microsoft\Windows\Explorer"
+		$keyPath = $regAlias + ":\Software\Policies\Microsoft\Windows\Explorer"
 		Set-ItemProperty $keyPath "LockedStartLayout" 0
 	}
 	Stop-Process -Name explorer
@@ -146,20 +146,20 @@ $keys = @(
 	"HKCR:\Extensions\ContractId\Windows.ShareTarget\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
 
 	# Context Menu
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.bmp\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.gif\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpg\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpeg\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.bmp\Shell\setdesktopwallpaper"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.gif\Shell\setdesktopwallpaper"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpg\Shell\setdesktopwallpaper"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpeg\Shell\setdesktopwallpaper"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\setdesktopwallpaper"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\setdesktopwallpaper"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\setdesktopwallpaper"
+	"HKLM:\Software\Classes\SystemFileAssociations\.bmp\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.gif\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.jpg\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.jpeg\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.png\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.tif\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.tiff\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.bmp\Shell\setdesktopwallpaper"
+	"HKLM:\Software\Classes\SystemFileAssociations\.gif\Shell\setdesktopwallpaper"
+	"HKLM:\Software\Classes\SystemFileAssociations\.jpg\Shell\setdesktopwallpaper"
+	"HKLM:\Software\Classes\SystemFileAssociations\.jpeg\Shell\setdesktopwallpaper"
+	"HKLM:\Software\Classes\SystemFileAssociations\.png\Shell\setdesktopwallpaper"
+	"HKLM:\Software\Classes\SystemFileAssociations\.tif\Shell\setdesktopwallpaper"
+	"HKLM:\Software\Classes\SystemFileAssociations\.tiff\Shell\setdesktopwallpaper"
 	"HKCR:\SystemFileAssociations\.bmp\ShellEx\ContextMenuHandlers\ShellImagePreview"   # Rotate Left and Rotate Right in Context Menu
 	"HKCR:\SystemFileAssociations\.dib\ShellEx\ContextMenuHandlers\ShellImagePreview"
 	"HKCR:\SystemFileAssociations\.gif\ShellEx\ContextMenuHandlers\ShellImagePreview"
@@ -179,7 +179,7 @@ $keys = @(
 	"HKCR:\*\shellex\ContextMenuHandlers\{90AA3A4E-1CBA-4233-B8BB-535773D48449}"        # Pin To Taskbar
 	"HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                                # Scan with Microsoft Defender
 	"HKCR:\Folder\ShellEx\ContextMenuHandlers\Library Location"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\image\shell\edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\image\shell\edit"
 )
 foreach ($key in $keys) {
 	Remove-Item -LiteralPath $key -Recurse -ErrorAction SilentlyContinue
@@ -187,37 +187,37 @@ foreach ($key in $keys) {
 
 Write-Output "Creating Registry Folders"
 $folders = @(
-	"HKCU:\SOFTWARE\Microsoft\InputPersonalization"
-	"HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore"
-	"HKCU:\SOFTWARE\Microsoft\Personalization\Settings"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows"
-	"HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\UserProfileEngagement"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\System"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU"
-	"HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
+	"HKCU:\Software\Microsoft\InputPersonalization"
+	"HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore"
+	"HKCU:\Software\Microsoft\Personalization\Settings"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Search"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows"
+	"HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\AppModelUnlock"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement"
+	"HKLM:\Software\Policies\Microsoft\Windows\CloudContent"
+	"HKLM:\Software\Policies\Microsoft\Windows\DataCollection"
+	"HKLM:\Software\Policies\Microsoft\Windows\Explorer"
+	"HKLM:\Software\Policies\Microsoft\Windows\System"
+	"HKLM:\Software\Policies\Microsoft\Windows\Windows Search"
+	"HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate"
+	"HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+	"HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
 	"HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration"
 )
 foreach ($folder in $folders) {
@@ -225,90 +225,108 @@ foreach ($folder in $folders) {
 }
 
 Write-Host "Enabling Dark Mode"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" "SystemUsesLightTheme" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" "AppsUseLightTheme" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "SystemUsesLightTheme" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "AppsUseLightTheme" 0
 
 Write-Host "Disabling Cortana and Bing Search in Start Menu"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\InputPersonalization" "RestrictImplicitInkCollection" 1
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" "HarvestContacts" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" "AcceptedPrivacyPolicy" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" "BingSearchEnabled" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" "AllowCortana" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" "DisableWebSearch" 1
+Set-ItemProperty "HKCU:\Software\Microsoft\InputPersonalization" "RestrictImplicitInkCollection" 1
+Set-ItemProperty "HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore" "HarvestContacts" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Personalization\Settings" "AcceptedPrivacyPolicy" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" "BingSearchEnabled" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Windows Search" "AllowCortana" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Windows Search" "DisableWebSearch" 1
 
 Write-Output "Disabling Windows Feedback Experience program"
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" 0
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" 0
 
 Write-Output "Disabling Location Tracking"
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" "SensorPermissionState" 0
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" "SensorPermissionState" 0
 Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" "Status" 0
 
 Write-Output "Turning off Data Collection"
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" 0
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" 0
+Set-ItemProperty "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" 0
 
 Write-Output "Disabling bloatware returning, Start Menu Suggestions, Get Even More Out of Windows, notifications"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryAllowed" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryManager" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "OemPreInstalledAppsEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "PreInstalledAppsEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "PreInstalledAppsEverEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SilentInstalledAppsEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-310093Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-314563Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338388Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338389Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338393Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-353698Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\UserProfileEngagement" "ScoobeSystemSettingEnabled" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" 1
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryAllowed" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryManager" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "OemPreInstalledAppsEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "PreInstalledAppsEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "PreInstalledAppsEverEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SilentInstalledAppsEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-310093Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-314563Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338388Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338389Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338393Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-353698Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" 0
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement" "ScoobeSystemSettingEnabled" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" 1
 
 Write-Output "Applying Explorer tweaks"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Start_TrackDocs" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" "NoUseStoreOpenWith" 1
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" "SaveZoneInformation" 1		# Disable downloaded files from being blocked
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Start_TrackDocs" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" "ShowRecent" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Explorer" "NoUseStoreOpenWith" 1
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments" "SaveZoneInformation" 1		# Disable downloaded files from being blocked
 
 Write-Output "Disabling Context Menu bloat"
 Set-ItemProperty "HKCR:\AppX43hnxtbyyps62jhe9sqpdzxn1790zetc\Shell\ShellEdit" "ProgrammaticAccessOnly" "" -ErrorAction SilentlyContinue # Edit with Photos
 Set-ItemProperty "HKCR:\AppXk0g4vb8gvt7b93tg50ybcy892pge6jmt\Shell\ShellEdit" "ProgrammaticAccessOnly" "" -ErrorAction SilentlyContinue # Edit with Photos
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" "" # Pin To Start
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{8A734961-C4AA-4741-AC1E-791ACEBF5B39}" "" # Shop for music online
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" "" # Share
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{f81e9010-6ea4-11ce-a7ff-00aa003ca9f6}" "" # Give Access To
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" "" # Pin To Start
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{8A734961-C4AA-4741-AC1E-791ACEBF5B39}" "" # Shop for music online
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" "" # Share
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{f81e9010-6ea4-11ce-a7ff-00aa003ca9f6}" "" # Give Access To
 
 Write-Output "Hiding stuff in the SysTray"
-Remove-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "SecurityHealth" -ErrorAction SilentlyContinue	# Remove Windows Defender Systray
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" 0					# Task view
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" 0					# People
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" 0					# Task view
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" "SearchboxTaskbarMode" 0							# Search
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" 0					# People
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" "ShellFeedsTaskbarViewMode" 2						# News and weather
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" "EnableActivityFeed" 0									# Timeline (Windows 10)
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\System" "EnableActivityFeed" 0									# Timeline (Windows 10)
+if ($OS -eq "11") {
+	Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "TaskbarDa" 0						# Widgets
+}
 
 Write-Output "Disabling automatic syncing of settings"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" "Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials" "Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" "Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization" "Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows" "Enabled" 0
 
 Write-Host "Configuring Windows Update"
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" "NoAutoRebootWithLoggedOnUsers" 1
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "AUOptions" 3
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "IncludeRecommendedUpdates" 1
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoRebootWithLoggedOnUsers" 1
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" "NoAutoRebootWithLoggedOnUsers" 1
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "AUOptions" 3
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "IncludeRecommendedUpdates" 1
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoRebootWithLoggedOnUsers" 1
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
 (New-Object -ComObject Microsoft.Update.ServiceManager -Strict).AddService2("7971f918-a847-4430-9279-4a52d1efe18d", 7, "") > $null
 
 Write-Host "Enabling Developer Mode"
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" "AllowDevelopmentWithoutDevLicense" 1
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\AppModelUnlock" "AllowDevelopmentWithoutDevLicense" 1
 
 Write-Host "Enabling WSL"
 Enable-WindowsOptionalFeature -Online -All -FeatureName "Microsoft-Windows-Subsystem-Linux" -NoRestart -WarningAction SilentlyContinue > $null
+
+Write-Host "Hide desktop Icons? [y/N]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Y {
+		Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "NoDesktop" 1
+	}
+	Default {}
+}
 
 Write-Host "Current Name of Computer: " -NoNewline
 Write-Host (Get-CimInstance -ClassName Win32_ComputerSystem).Name

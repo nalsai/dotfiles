@@ -12,14 +12,13 @@ if (!(which choco)) {
 
 choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
 choco install vscode --params "/NoDesktopIcon /NoQuicklaunchIcon /NoContextMenuFiles" --limit-output
-choco install 7zip adoptopenjdk audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp curl discord eac eartrumpet etcher everything exiftool ffmpeg filezilla firefox flacsquisher gimp golang googlechrome hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv nomacs notepad2-mod obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus spotify steam-client synctrayzor unity-hub vlc wget windirstat wireshark youtube-dl --limit-output
+choco install 7zip adoptopenjdk altdrag audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp curl discord eac eartrumpet etcher everything exiftool ffmpeg filezilla firefox flacsquisher gimp golang googlechrome hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv nomacs notepad2-mod obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus spotify steam-client synctrayzor unity-hub vlc wget windirstat wireshark youtube-dl --limit-output
 choco install figma --ignore-checksums --limit-output
 
 # https://stackoverflow.com/a/46760714
-#$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
-#Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-#refreshenv
-
+$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
+Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+refreshenv
 
 #if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
 #	Write-Host "Installing .NET 3.5"
@@ -59,7 +58,7 @@ Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimi
 
 . $PSScriptRoot\declutter-contextmenu.ps1 script
 
-#refreshenv
+Write-Host "Installing VSCode Extensions"
 $installation_block = {
 	$extensions =
 	'bungcip.better-toml',
@@ -130,5 +129,6 @@ Switch ($key.Character) {
 }
 
 Write-Host "Done Installing Apps" -ForegroundColor Green
-Write-Host "You still need to install Visual Studio, Davinci Resolve, Deluge, Minion, ESO, TTC yourself" -ForegroundColor Cyan
-Write-Host "You also need to deactivate auto startup for a lot of Apps in Task Manager" -ForegroundColor Cyan
+Write-Host "You still need to install Visual Studio, Davinci Resolve, Deluge, Minion, ESO, TTC yourself," -ForegroundColor Cyan
+Write-Host "deactivate auto startup for a lot of Apps in Task Manager" -ForegroundColor Cyan
+Write-Host "and configure apps like AltDrag, Icaros and SyncTrayzor" -ForegroundColor Cyan

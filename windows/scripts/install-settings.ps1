@@ -72,9 +72,6 @@ if ($OS -eq "10") {
 	}
 }
 
-Write-Output "Disabling Diagnostics Tracking Service"
-Set-Service "DiagTrack" -StartupType Disabled
-
 Write-Output "Uninstalling Windows Media Player"
 Disable-WindowsOptionalFeature -Online -FeatureName "WindowsMediaPlayer" -NoRestart -WarningAction SilentlyContinue > $null
 
@@ -117,6 +114,9 @@ foreach ($App in $AppXApps) {
 	try { Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers > $null } catch {}
 	try { Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online > $null } catch {}
 }
+
+Write-Output "Disabling Diagnostics Tracking Service"
+Set-Service "DiagTrack" -StartupType Disabled
 
 Write-Output "Setting standby times"
 powercfg /change /monitor-timeout-ac 240    # 4h
@@ -313,20 +313,6 @@ Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\AppModelUnlock
 
 Write-Host "Enabling WSL"
 Enable-WindowsOptionalFeature -Online -All -FeatureName "Microsoft-Windows-Subsystem-Linux" -NoRestart -WarningAction SilentlyContinue > $null
-
-Write-Host "Hide desktop Icons? [y/N]: " -ForegroundColor Yellow -NoNewline
-$host.UI.RawUI.FlushInputBuffer()
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
-	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-Write-Host $key.Character
-Switch ($key.Character) {
-	Y {
-		Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "NoDesktop" 1
-	}
-	Default {}
-}
 
 Write-Host "Current Name of Computer: " -NoNewline
 Write-Host (Get-CimInstance -ClassName Win32_ComputerSystem).Name

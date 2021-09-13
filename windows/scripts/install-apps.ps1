@@ -128,6 +128,26 @@ Switch ($key.Character) {
 	Default {}
 }
 
+Write-Host "Change git signingkey? [y/N]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Y {
+		Write-Host "Listing keys:" -ForegroundColor Yellow
+		Write-Host "gpg --list-secret-keys --keyid-format=long"
+		gpg --list-secret-keys --keyid-format=long
+
+		Write-Host "GPG key ID: " -ForegroundColor Cyan -NoNewline
+		$keyID = Read-Host
+		git config --global user.signingkey "$keyID"
+	}
+	Default {}
+}
+
 Write-Host "Done Installing Apps" -ForegroundColor Green
 Write-Host "You still need to install Visual Studio, Davinci Resolve, Deluge, Minion, ESO, TTC yourself," -ForegroundColor Cyan
 Write-Host "deactivate auto startup for a lot of Apps in Task Manager" -ForegroundColor Cyan

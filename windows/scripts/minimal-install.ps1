@@ -367,6 +367,18 @@ ForEach ($Key in $Keys) {
 Write-Host "Done Installing Apps" -ForegroundColor Green
 
 
+Write-Host "Configuring Apps..." -ForegroundColor Green
+
+# mpv
+wget.exe -O "$HOME\AppData\Roaming\mpv\mpv.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/mpv/mpv-minimal/mpv.conf"
+wget.exe -O "$HOME\AppData\Roaming\mpv\input.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/mpv/mpv-minimal/input.conf"
+
+# Notepad2
+wget.exe -O "$HOME\AppData\Roaming\Notepad2\Notepad2.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/Notepad2/Notepad2.ini"
+
+Write-Host "Done Configuring Apps" -ForegroundColor Green
+
+
 Write-Host "Installing Fonts..." -ForegroundColor Green
 
 New-Item -ItemType directory -Force -Path "$TMP\Fonts" -ErrorAction SilentlyContinue > $null

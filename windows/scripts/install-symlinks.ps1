@@ -3,7 +3,7 @@ $DOT = "$HOME\.dotfiles"
 
 Write-Host "Making Symlinks..." -ForegroundColor Green
 
-# Windows Terminal config
+# Windows Terminal
 Remove-Item -Force -Recurse $HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState -ErrorAction Ignore
 New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState -Target $DOT\windows\WindowsTerminal > $null
 
@@ -12,8 +12,8 @@ $documents = [Environment]::GetFolderPath("MyDocuments")
 New-Item -Force -ItemType SymbolicLink -Path $documents\PowerShell -Target $DOT\windows\PowerShell > $null
 New-Item -Force -ItemType SymbolicLink -Path $documents\WindowsPowerShell -Target $DOT\windows\PowerShell > $null
 
-# mpv config
-New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\mpv -Target $DOT\mpv > $null
+# mpv
+New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\mpv -Target $DOT\mpv\mpv-windows > $null
 
 # Notepad2
 New-Item -Force -ItemType SymbolicLink -Path $HOME\AppData\Roaming\Notepad2 -Target $DOT\windows\Notepad2 > $null

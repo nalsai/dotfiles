@@ -9,7 +9,6 @@ Clear-Host
 Write-Host " _   _ _ _     ____        _    __ _ _`n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___`n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|`n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \`n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
 Write-Host "[minimal-install.ps1]`n"
 
-$DOT = "$HOME\.dotfiles"
 $TMP = "$env:TEMP\ZG90ZmlsZXM"
 New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
 $OriginalPref = $ProgressPreference
@@ -19,19 +18,77 @@ Write-Host "Configuring System..." -ForegroundColor Green
 
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
 
-Write-Output "Disabling WAP Push Service & Diagnostics Tracking Service"
-Set-Service "dmwappushservice" -StartupType Disabled
+Write-Host "Uninstall OneDrive? [Y/n]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Default {
+		if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive")) {
+			$onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
+			if (!(Test-Path $onedrive)) { $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"}
+			$ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+			$ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+			if (!(Test-Path $ExplorerReg1)) { New-Item $ExplorerReg1 -Type Folder > $null }
+			if (!(Test-Path $ExplorerReg2)) { New-Item $ExplorerReg2 -Type Folder > $null }
+			Stop-Process -Name "OneDrive*"
+			Start-Sleep 1
+			Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
+			Stop-Process -Name explorer
+			Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+			Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+			Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+			Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse -ErrorAction SilentlyContinue
+			Set-ItemProperty $ExplorerReg1 "System.IsPinnedToNameSpaceTree" 0 -ErrorAction SilentlyContinue
+			Set-ItemProperty $ExplorerReg2 "System.IsPinnedToNameSpaceTree" 0 -ErrorAction SilentlyContinue
+			if (!(Get-Process explorer -ErrorAction SilentlyContinue)) {
+				Start-Process explorer
+			}
+		}
+	}
+	N {}
+}
+
+Write-Host "Uninstall Windows Media Player? [Y/n]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Default {
+		Disable-WindowsOptionalFeature -Online -FeatureName "WindowsMediaPlayer" -NoRestart -WarningAction SilentlyContinue > $null	
+	}
+	N {}
+}
+
+Write-Output "Disabling Diagnostics Tracking Service"
 Set-Service "DiagTrack" -StartupType Disabled
 
 Write-Output "Removing unnecessary AppxPackages"
 $AppXApps = @(
+#	"Microsoft.3DBuilder"
+	"Microsoft.BingWeather"
 	"Microsoft.GetHelp"
 	"Microsoft.Getstarted"
+	"Microsoft.Messaging"
 	"Microsoft.MicrosoftOfficeHub"
+	"Microsoft.MicrosoftSolitaireCollection"
+#	"Microsoft.MSPaint"
+	"Microsoft.Office.OneNote"
 	"Microsoft.OneConnect"
+#	"Microsoft.People"
 	"Microsoft.Print3D"
+#	"microsoft.windowscommunicationsapps"
 	"Microsoft.WindowsFeedbackHub"
+	"Microsoft.WindowsMaps"
 	"Microsoft.YourPhone"
+#	"Microsoft.ZuneMusic"
+#	"Microsoft.ZuneVideo"
 	"Microsoft.BingNews"
 	"Microsoft.Office.Sway"
 	"*EclipseManager*"
@@ -74,13 +131,20 @@ $keys = @(
 	"HKCR:\Extensions\ContractId\Windows.ShareTarget\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
 
 	# Context Menu
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.bmp\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.gif\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpg\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.jpeg\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.png\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tif\Shell\3D Edit"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\.tiff\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.bmp\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.gif\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.jpg\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.jpeg\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.png\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.tif\Shell\3D Edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\.tiff\Shell\3D Edit"
+#	"HKLM:\Software\Classes\SystemFileAssociations\.bmp\Shell\setdesktopwallpaper"
+#	"HKLM:\Software\Classes\SystemFileAssociations\.gif\Shell\setdesktopwallpaper"
+#	"HKLM:\Software\Classes\SystemFileAssociations\.jpg\Shell\setdesktopwallpaper"
+#	"HKLM:\Software\Classes\SystemFileAssociations\.jpeg\Shell\setdesktopwallpaper"
+#	"HKLM:\Software\Classes\SystemFileAssociations\.png\Shell\setdesktopwallpaper"
+#	"HKLM:\Software\Classes\SystemFileAssociations\.tif\Shell\setdesktopwallpaper"
+#	"HKLM:\Software\Classes\SystemFileAssociations\.tiff\Shell\setdesktopwallpaper"
 	"HKCR:\SystemFileAssociations\.bmp\ShellEx\ContextMenuHandlers\ShellImagePreview"   # Rotate Left and Rotate Right in Context Menu
 	"HKCR:\SystemFileAssociations\.dib\ShellEx\ContextMenuHandlers\ShellImagePreview"
 	"HKCR:\SystemFileAssociations\.gif\ShellEx\ContextMenuHandlers\ShellImagePreview"
@@ -98,8 +162,9 @@ $keys = @(
 	"HKCR:\SystemFileAssociations\.webp\ShellEx\ContextMenuHandlers\ShellImagePreview"
 	"HKCR:\*\shellex\ContextMenuHandlers\ModernSharing"                                 # Share
 	"HKCR:\*\shellex\ContextMenuHandlers\{90AA3A4E-1CBA-4233-B8BB-535773D48449}"        # Pin To Taskbar
+#	"HKCR:\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}"                                # Scan with Microsoft Defender
 	"HKCR:\Folder\ShellEx\ContextMenuHandlers\Library Location"
-	"HKLM:\SOFTWARE\Classes\SystemFileAssociations\image\shell\edit"
+	"HKLM:\Software\Classes\SystemFileAssociations\image\shell\edit"
 )
 foreach ($key in $keys) {
 	Remove-Item -LiteralPath $key -Recurse -ErrorAction SilentlyContinue
@@ -107,113 +172,152 @@ foreach ($key in $keys) {
 
 Write-Output "Creating Registry Folders"
 $folders = @(
-	"HKCU:\SOFTWARE\Microsoft\InputPersonalization"
-	"HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore"
-	"HKCU:\SOFTWARE\Microsoft\Personalization\Settings"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization"
-	"HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows"
-	"HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\UserProfileEngagement"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\System"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate"
-	"HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU"
-	"HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
+	"HKCU:\Software\Microsoft\InputPersonalization"
+	"HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore"
+	"HKCU:\Software\Microsoft\Personalization\Settings"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Search"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows"
+	"HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\AppModelUnlock"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+	"HKLM:\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement"
+	"HKLM:\Software\Policies\Microsoft\Windows\CloudContent"
+	"HKLM:\Software\Policies\Microsoft\Windows\DataCollection"
+	"HKLM:\Software\Policies\Microsoft\Windows\Explorer"
+	"HKLM:\Software\Policies\Microsoft\Windows\System"
+	"HKLM:\Software\Policies\Microsoft\Windows\Windows Search"
+	"HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate"
+	"HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
+	"HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
 	"HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration"
 )
 foreach ($folder in $folders) {
 	if (!(Test-Path $folder)) { New-Item $folder -Type Folder > $null }
 }
+Write-Host "Enable Dark Mode? [Y/n]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Default {
+		Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "SystemUsesLightTheme" 0
+		Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" "AppsUseLightTheme" 0
+	}
+	N {}
+}
 
 Write-Host "Disabling Cortana and Bing Search in Start Menu"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\InputPersonalization" "RestrictImplicitInkCollection" 1
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" "HarvestContacts" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" "AcceptedPrivacyPolicy" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" "BingSearchEnabled" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" "AllowCortana" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" "DisableWebSearch" 1
+Set-ItemProperty "HKCU:\Software\Microsoft\InputPersonalization" "RestrictImplicitInkCollection" 1
+Set-ItemProperty "HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore" "HarvestContacts" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Personalization\Settings" "AcceptedPrivacyPolicy" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" "BingSearchEnabled" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Windows Search" "AllowCortana" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Windows Search" "DisableWebSearch" 1
 
 Write-Output "Disabling Windows Feedback Experience program"
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" 0
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" 0
 
 Write-Output "Disabling Location Tracking"
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" "SensorPermissionState" 0
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" "SensorPermissionState" 0
 Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" "Status" 0
 
 Write-Output "Turning off Data Collection"
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" 0
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" 0
+Set-ItemProperty "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" 0
 
-Write-Output "Disabling bloatware apps from returning, Start Menu Suggestions, Get Even More Out of Windows screen and notifications"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryAllowed" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryManager" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "OemPreInstalledAppsEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "PreInstalledAppsEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "PreInstalledAppsEverEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SilentInstalledAppsEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-310093Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-314563Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338388Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338389Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338393Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-353698Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\UserProfileEngagement" "ScoobeSystemSettingEnabled" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" 1
+Write-Output "Disabling bloatware returning, Start Menu Suggestions, Get Even More Out of Windows, notifications"
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryAllowed" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryManager" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "OemPreInstalledAppsEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "PreInstalledAppsEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "PreInstalledAppsEverEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SilentInstalledAppsEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-310093Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-314563Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338388Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338389Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338393Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-353698Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" 0
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement" "ScoobeSystemSettingEnabled" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" 1
 
 Write-Output "Applying Explorer tweaks"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Start_TrackDocs" 0
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" "NoUseStoreOpenWith" 1
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "Start_TrackDocs" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" "ShowRecent" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Explorer" "NoUseStoreOpenWith" 1
+#Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments" "SaveZoneInformation" 1		# Disable downloaded files from being blocked
 
 Write-Output "Disabling Context Menu bloat"
 Set-ItemProperty "HKCR:\AppX43hnxtbyyps62jhe9sqpdzxn1790zetc\Shell\ShellEdit" "ProgrammaticAccessOnly" "" -ErrorAction SilentlyContinue # Edit with Photos
 Set-ItemProperty "HKCR:\AppXk0g4vb8gvt7b93tg50ybcy892pge6jmt\Shell\ShellEdit" "ProgrammaticAccessOnly" "" -ErrorAction SilentlyContinue # Edit with Photos
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" "" # Pin To Start
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{8A734961-C4AA-4741-AC1E-791ACEBF5B39}" "" # Shop for music online
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" "" # Share
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{f81e9010-6ea4-11ce-a7ff-00aa003ca9f6}" "" # Give Access To
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{470C0EBD-5D73-4d58-9CED-E91E22E23282}" "" # Pin To Start
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{596AB062-B4D2-4215-9F74-E9109B0A8153}" "" # Restore Previous Versions
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{7AD84985-87B4-4a16-BE58-8B72A5B390F7}" "" # Cast to Device
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{8A734961-C4AA-4741-AC1E-791ACEBF5B39}" "" # Shop for music online
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{e2bf9676-5f8f-435c-97eb-11607a5bedf7}" "" # Share
+Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked" "{f81e9010-6ea4-11ce-a7ff-00aa003ca9f6}" "" # Give Access To
 
 Write-Output "Hiding stuff in the SysTray"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" 0
+#Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" 0				# Task view
+#Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" "SearchboxTaskbarMode" 0							# Search
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" 0					# People
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" "ShellFeedsTaskbarViewMode" 2						# News and weather
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\System" "EnableActivityFeed" 0									# Timeline (Windows 10)
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "TaskbarDa" 0							# Widgets (Windows 11)
 
 Write-Output "Disabling automatic syncing of settings"
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" "Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials" "Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" "Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization" "Enabled" 0
-Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization" "Enabled" 0
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows" "Enabled" 0
 
 Write-Host "Configuring Windows Update"
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" "NoAutoRebootWithLoggedOnUsers" 1
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "AUOptions" 3
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "IncludeRecommendedUpdates" 1
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoRebootWithLoggedOnUsers" 1
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate" "NoAutoRebootWithLoggedOnUsers" 1
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "AUOptions" 3
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "IncludeRecommendedUpdates" 1
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoRebootWithLoggedOnUsers" 1
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
 (New-Object -ComObject Microsoft.Update.ServiceManager -Strict).AddService2("7971f918-a847-4430-9279-4a52d1efe18d", 7, "") > $null
+
+Write-Host "Current Name of Computer: " -NoNewline
+Write-Host (Get-CimInstance -ClassName Win32_ComputerSystem).Name
+Write-Host "Change Name of Computer? [y/N]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Y {
+		Write-Host "Name: " -ForegroundColor Cyan -NoNewline
+		$computerName = Read-Host
+		(Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
+	}
+	Default {}
+}
 
 Write-Host "Done Configuring System" -ForegroundColor Green
 
@@ -226,7 +330,22 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 	choco feature enable -n=allowGlobalConfirmation
 }
 
-choco install 7zip adoptopenjdkjre curl ffmpeg firefox gimp googlechrome libreoffice-fresh mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --limit-output
+choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
+choco install 7zip adoptopenjdkjre altdrag cdburnerxp curl everything ffmpeg firefox gimp googlechrome hwinfo libreoffice-fresh microsoft-windows-terminal mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --limit-output
+
+Write-Host "Install Cinebench, CrystalDiskMark, Furmark? [y/N]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Y {
+		choco install cinebench crystaldiskmark furmark --limit-output
+	}
+	Default {}
+}
 
 #if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
 #	Write-Host "Installing .NET 3.5"
@@ -250,8 +369,7 @@ Write-Host "Done Installing Apps" -ForegroundColor Green
 
 Write-Host "Installing Fonts..." -ForegroundColor Green
 
-$fontsPath = "$HOME\Downloads\Fonts"
-New-Item -ItemType directory -Force -Path $fontsPath -ErrorAction SilentlyContinue > $null
+New-Item -ItemType directory -Force -Path "$TMP\Fonts" -ErrorAction SilentlyContinue > $null
 $fonts =
 'Alice',
 'Lato',
@@ -261,56 +379,37 @@ $fonts =
 'Comfortaa',
 'Roboto',
 'Noto Sans',
-'Noto Serif'
+'Noto Serif',
+'Source Code Pro'
 foreach ($font in $fonts) {
-	wget.exe -O $fontsPath\$font.zip "https://fonts.google.com/download?family=$font"
-	Expand-Archive -Path $fontsPath\$font.zip -DestinationPath $fontsPath -Force
+	wget.exe -O $TMP\Fonts\$font.zip "https://fonts.google.com/download?family=$font"
+	Expand-Archive -Path $TMP\Fonts\$font.zip -DestinationPath $TMP\Fonts -Force
 }
-Remove-Item "$fontsPath\static\" -Recurse -Force
+Remove-Item "$TMP\Fonts\static\" -Recurse -Force
 
-wget.exe -O "$fontsPath\Gandhi Sans.zip" https://www.fontsquirrel.com/fonts/download/gandhi-sans
-Expand-Archive -Path "$fontsPath\Gandhi Sans.zip" -DestinationPath $fontsPath -Force
+wget.exe -O "$TMP\Fonts\Gandhi Sans.zip" https://www.fontsquirrel.com/fonts/download/gandhi-sans
+Expand-Archive -Path "$TMP\Fonts\Gandhi Sans.zip" -DestinationPath $TMP\Fonts -Force
 
-wget.exe -O "$fontsPath\Fira Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/tonsky/FiraCode/releases/latest").assets | Where-Object name -like Fira*.zip ).browser_download_url
-Expand-Archive -Path "$fontsPath\Fira Code.zip" -DestinationPath "$fontsPath\Fira Code" -Force
-Copy-Item -r "$fontsPath\Fira Code\variable_ttf\*" $fontsPath -ErrorAction SilentlyContinue
-Remove-Item "$fontsPath\Fira Code" -Recurse -Force
+wget.exe -O "$TMP\Fonts\Fira Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/tonsky/FiraCode/releases/latest").assets | Where-Object name -like Fira*.zip ).browser_download_url
+Expand-Archive -Path "$TMP\Fonts\Fira Code.zip" -DestinationPath "$TMP\Fonts\Fira Code" -Force
+Copy-Item -r "$TMP\Fonts\Fira Code\variable_ttf\*" $TMP\Fonts -ErrorAction SilentlyContinue
+Remove-Item "$TMP\Fonts\Fira Code" -Recurse -Force
 
-wget.exe -O "$fontsPath\Cascadia Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/microsoft/cascadia-code/releases/latest").assets | Where-Object name -like Cascadia*.zip ).browser_download_url
-Expand-Archive -Path "$fontsPath\Cascadia Code.zip" -DestinationPath "$fontsPath\Cascadia Code" -Force
-Remove-Item "$fontsPath\Cascadia Code\ttf\static" -Recurse -Force
-Copy-Item -r  "$fontsPath\Cascadia Code\ttf\*" $fontsPath -ErrorAction SilentlyContinue
-Remove-Item "$fontsPath\Cascadia Code" -Recurse -Force
+wget.exe -O "$TMP\Fonts\Cascadia Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/microsoft/cascadia-code/releases/latest").assets | Where-Object name -like Cascadia*.zip ).browser_download_url
+Expand-Archive -Path "$TMP\Fonts\Cascadia Code.zip" -DestinationPath "$TMP\Fonts\Cascadia Code" -Force
+Remove-Item "$TMP\Fonts\Cascadia Code\ttf\static" -Recurse -Force
+Copy-Item -r  "$TMP\Fonts\Cascadia Code\ttf\*" $TMP\Fonts -ErrorAction SilentlyContinue
+Remove-Item "$TMP\Fonts\Cascadia Code" -Recurse -Force
 
-foreach ($File in $(Get-ChildItem -Path $fontsPath -Include ('*.otf', '*.ttf') -Recurse)) {
+foreach ($File in $(Get-ChildItem -Path $TMP\Fonts -Include ('*.otf', '*.ttf') -Recurse)) {
 	if (!(Test-Path "C:\Windows\Fonts\$($File.Name)")) {
 		Copy-Item $File.FullName C:\Windows\Fonts\$($File.Name)
 		New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $File.Name -PropertyType string -Value $File.Name
 	}
 }
 
-Remove-Item $fontsPath -Recurse -Force -ErrorAction SilentlyContinue
-
 Write-Host "Done Installing Fonts" -ForegroundColor Green
 
-
-Write-Host "Current Name of Computer: " -NoNewline
-Write-Host (Get-CimInstance -ClassName Win32_ComputerSystem).Name
-Write-Host "Change Name of Computer? [y/N]: " -ForegroundColor Yellow -NoNewline
-$host.UI.RawUI.FlushInputBuffer()
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
-	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-Write-Host $key.Character
-Switch ($key.Character) {
-	Y {
-		Write-Host "Name: " -ForegroundColor Cyan -NoNewline
-		$computerName = Read-Host
-		(Get-WmiObject Win32_ComputerSystem).Rename("$computerName") > $null
-	}
-	Default {}
-}
 
 $ProgressPreference = $OriginalPref
 Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue

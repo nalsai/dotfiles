@@ -4,11 +4,6 @@ New-Item -ItemType directory -Force -Path "$TMP\Fonts" -ErrorAction SilentlyCont
 
 Write-Host "Installing Fonts..." -ForegroundColor Green
 
-# make sure wget.exe is used if it's available
-#if (Get-Command wget.exe -ErrorAction SilentlyContinue | Test-Path) {
-#	rm alias:wget -ErrorAction SilentlyContinue
-#}
-
 $fonts =
 'Alice',
 'Lato',

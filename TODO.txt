@@ -1,5 +1,0 @@
-update minimal-install.ps1
-
-#change git signingKey
-gpg --list-secret-keys --keyid-format=long
-git config --global user.signingkey 

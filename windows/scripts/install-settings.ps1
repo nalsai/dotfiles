@@ -2,11 +2,6 @@
 
 Write-Host "Configuring System..." -ForegroundColor Green
 
-$OS = [Environment]::OSVersion.Version.Major;
-if((Get-ComputerInfo | select OsName | Out-String).IndexOf("Windows 11") -ne -1){
-	$OS = "11";
-}
-
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
 
 if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive")) {
@@ -32,7 +27,7 @@ if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LO
 	}
 }
 
-if ($OS -eq "10") {
+if ([Environment]::OSVersion.Version.Major -eq "10") {
 	Write-Output "Unpinning all tiles from the start menu"
 	$START_MENU_LAYOUT = @"
 <LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
@@ -75,6 +70,9 @@ if ($OS -eq "10") {
 Write-Output "Uninstalling Windows Media Player"
 Disable-WindowsOptionalFeature -Online -FeatureName "WindowsMediaPlayer" -NoRestart -WarningAction SilentlyContinue > $null
 
+Write-Output "Disabling Diagnostics Tracking Service"
+Set-Service "DiagTrack" -StartupType Disabled
+
 Write-Output "Removing unnecessary AppxPackages"
 $AppXApps = @(
 	"Microsoft.3DBuilder"
@@ -114,9 +112,6 @@ foreach ($App in $AppXApps) {
 	try { Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers > $null } catch {}
 	try { Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online > $null } catch {}
 }
-
-Write-Output "Disabling Diagnostics Tracking Service"
-Set-Service "DiagTrack" -StartupType Disabled
 
 Write-Output "Setting standby times"
 powercfg /change /monitor-timeout-ac 240    # 4h
@@ -289,9 +284,7 @@ Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" "Searc
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" 0					# People
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" "ShellFeedsTaskbarViewMode" 2						# News and weather
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\System" "EnableActivityFeed" 0									# Timeline (Windows 10)
-if ($OS -eq "11") {
-	Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "TaskbarDa" 0						# Widgets
-}
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "TaskbarDa" 0							# Widgets (Windows 11)
 
 Write-Output "Disabling automatic syncing of settings"
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" "Enabled" 0

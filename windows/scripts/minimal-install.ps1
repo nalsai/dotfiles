@@ -104,9 +104,9 @@ $AppXApps = @(
 	"*Spotify*"
 )
 foreach ($App in $AppXApps) {
-	try { Get-AppxPackage -Name $App | Remove-AppxPackage } catch {}
-	try { Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers } catch {}
-	try { Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online } catch {}
+	try { Get-AppxPackage -Name $App | Remove-AppxPackage > $null } catch {}
+	try { Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers > $null } catch {}
+	try { Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online > $null } catch {}
 }
 
 Write-Host "Removing Bloatware Registry Keys"

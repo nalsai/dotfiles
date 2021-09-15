@@ -371,10 +371,12 @@ Write-Host "Done Installing Apps" -ForegroundColor Green
 Write-Host "Configuring Apps..." -ForegroundColor Green
 
 # mpv
+New-Item -ItemType directory -Force -Path "$HOME\AppData\Roaming\mpv" -ErrorAction SilentlyContinue > $null
 wget.exe -O "$HOME\AppData\Roaming\mpv\mpv.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/mpv/mpv-minimal/mpv.conf"
 wget.exe -O "$HOME\AppData\Roaming\mpv\input.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/mpv/mpv-minimal/input.conf"
 
 # Notepad2
+New-Item -ItemType directory -Force -Path "$HOME\AppData\Roaming\Notepad2" -ErrorAction SilentlyContinue > $null
 wget.exe -O "$HOME\AppData\Roaming\Notepad2\Notepad2.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/Notepad2/Notepad2.ini"
 
 Write-Host "Done Configuring Apps" -ForegroundColor Green

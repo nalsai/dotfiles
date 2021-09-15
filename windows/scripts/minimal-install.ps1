@@ -331,7 +331,7 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 }
 
 choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
-choco install 7zip adoptopenjdkjre altdrag cdburnerxp curl everything ffmpeg firefox gimp googlechrome hwinfo libreoffice-fresh microsoft-windows-terminal mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --limit-output
+choco install 7zip adoptopenjdkjre altdrag cdburnerxp crystaldiskinfo curl everything ffmpeg firefox gimp googlechrome hwinfo libreoffice-fresh microsoft-windows-terminal mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --limit-output
 
 Write-Host "Install Cinebench, CrystalDiskMark, Furmark? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()

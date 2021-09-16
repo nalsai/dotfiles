@@ -325,14 +325,14 @@ Write-Host "Done Configuring System" -ForegroundColor Green
 
 Write-Host "Installing Apps..." -ForegroundColor Green
 
-# install chocolatey if not already installed
+# Install chocolatey if not already installed
 if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 	Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 	choco feature enable -n=allowGlobalConfirmation
 }
 
 choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
-choco install 7zip adoptopenjdkjre altdrag cdburnerxp crystaldiskinfo curl everything ffmpeg firefox gimp googlechrome hwinfo libreoffice-fresh microsoft-windows-terminal mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --limit-output
+choco install 7zip adoptopenjdkjre altdrag cdburnerxp crystaldiskinfo curl everything ffmpeg firefox gimp googlechrome hwinfo icaros libreoffice-fresh microsoft-windows-terminal mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --limit-output
 
 Write-Host "Install Cinebench, CrystalDiskMark, Furmark? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
@@ -378,6 +378,15 @@ wget.exe -O "$HOME\AppData\Roaming\mpv\input.conf" "https://raw.githubuserconten
 # Notepad2
 New-Item -ItemType directory -Force -Path "$HOME\AppData\Roaming\Notepad2" -ErrorAction SilentlyContinue > $null
 wget.exe -O "$HOME\AppData\Roaming\Notepad2\Notepad2.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/Notepad2/Notepad2.ini"
+
+# AltDrag
+wget.exe -O "$HOME\AppData\Roaming\AltDrag\AltDrag.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/AltDrag/AltDrag.ini"
+Start-Process "$HOME\AppData\Roaming\AltDrag\AltDrag.exe"
+
+# Icaros
+Set-ItemProperty "HKLM:\Software\Icaros" "Thumbnail Extensions" "3g2;3gp;3gp2;3gpp;amv;ape;asf;avi;bik;bmp;cb7;cbr;cbz;divx;dpg;dv;dvr-ms;epub;evo;f4v;flac;flv;gif;hdmov;jpg;k3g;m1v;m2t;m2ts;m2v;m4b;m4p;m4v;mk3d;mka;mkv;mov;mp2v;mp3;mp4;mp4v;mpc;mpe;mpeg;mpg;mpv2;mpv4﻿﻿;mqv;mts;mxf;nsv;ofr;ofs;ogg;ogm;ogv;opus;png;qt;ram;rm;rmvb;skm;spx;swf;tak;tif;tiff;tp;tpr;trp;ts;tta;vob;wav;webm;wm;wmv;wv;xvid"
+RegSvr32.exe "C:\Program Files\Icaros\64-bit\IcarosThumbnailProvider.dll" /s
+RegSvr32.exe "C:\Program Files\Icaros\64-bit\IcarosPropertyHandler.dll" /s
 
 Write-Host "Done Configuring Apps" -ForegroundColor Green
 

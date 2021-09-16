@@ -28,7 +28,7 @@ function Make-Symlink {
                 } catch {
 
                     Write-Host "Error deleting, this is probably because there is already a symlink here and there's a bug in PowerShell"
-                    Write-Host "Trying to delete another way"
+                    Write-Host "Deleting it another way"
                     (Get-Item $Path).Delete()
                 }
 
@@ -68,6 +68,9 @@ Make-Symlink -Path $HOME\.gitconfig -Target $DOT\git\.gitconfig
 
 # AutoHotkey
 Make-Symlink -Path "$env:appdata\Microsoft\Windows\Start Menu\Programs\Startup\myAhk.ahk" -Target $DOT\windows\ahk\myAhk.ahk
+
+# AltDrag
+Make-Symlink -Path $HOME\AppData\Roaming\AltDrag\AltDrag.ini -Target $DOT\windows\AltDrag\AltDrag.ini
 
 # reload profile
 . $profile

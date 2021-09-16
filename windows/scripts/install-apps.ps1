@@ -4,7 +4,7 @@ New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $
 
 Write-Host "Installing Apps..." -ForegroundColor Green
 
-# install chocolatey if not already installed
+# Install chocolatey if not already installed
 if (!(which choco)) {
 	Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 	choco feature enable -n=allowGlobalConfirmation
@@ -18,6 +18,15 @@ choco install figma --ignore-checksums --limit-output
 # Run TaskbarX and add to Startup
 Start-Process "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\TaskbarX\TaskbarX.lnk"
 Copy-Item "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\TaskbarX\TaskbarX.lnk" "C:\Users\Nalsai\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\TaskbarX.lnk"  -ErrorAction SilentlyContinue
+
+# Run AltDrag
+Start-Process "$HOME\AppData\Roaming\AltDrag\AltDrag.exe"
+
+# Register Icaros
+Set-ItemProperty "HKLM:\Software\Icaros" "Thumbnail Extensions" "3g2;3gp;3gp2;3gpp;amv;ape;asf;avi;bik;bmp;cb7;cbr;cbz;divx;dpg;dv;dvr-ms;epub;evo;f4v;flac;flv;gif;hdmov;jpg;k3g;m1v;m2t;m2ts;m2v;m4b;m4p;m4v;mk3d;mka;mkv;mov;mp2v;mp3;mp4;mp4v;mpc;mpe;mpeg;mpg;mpv2;mpv4﻿﻿;mqv;mts;mxf;nsv;ofr;ofs;ogg;ogm;ogv;opus;png;qt;ram;rm;rmvb;skm;spx;swf;tak;tif;tiff;tp;tpr;trp;ts;tta;vob;wav;webm;wm;wmv;wv;xvid"
+RegSvr32.exe "C:\Program Files\Icaros\64-bit\IcarosThumbnailProvider.dll" /s
+RegSvr32.exe "C:\Program Files\Icaros\64-bit\IcarosPropertyHandler.dll" /s
+
 
 # https://stackoverflow.com/a/46760714
 $env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
@@ -156,4 +165,4 @@ Switch ($key.Character) {
 Write-Host "Done Installing Apps" -ForegroundColor Green
 Write-Host "You still need to install Visual Studio, Davinci Resolve, Deluge, Minion, ESO, TTC yourself," -ForegroundColor Cyan
 Write-Host "deactivate auto startup for a lot of Apps in Task Manager" -ForegroundColor Cyan
-Write-Host "and configure apps like AltDrag, Icaros and SyncTrayzor" -ForegroundColor Cyan
+Write-Host "and configure apps like Icaros and SyncTrayzor" -ForegroundColor Cyan

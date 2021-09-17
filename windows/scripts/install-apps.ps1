@@ -21,7 +21,11 @@ Start-Process "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\TaskbarX\Tas
 Copy-Item "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\TaskbarX\TaskbarX.lnk" "C:\Users\Nalsai\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\TaskbarX.lnk"  -ErrorAction SilentlyContinue
 
 # Run AltDrag
-Start-Process "$HOME\AppData\Roaming\AltDrag\AltDrag.exe"
+Start-Process "$HOME\AppData\Roaming\AltDrag\AltDrag.exe" -ArgumentList "-hide"
+$action = New-ScheduledTaskAction -Execute $ExecutionContext.InvokeCommand.ExpandString('$HOME\AppData\Roaming\AltDrag\AltDrag.exe') -Argument '-hide'
+$trigger = New-ScheduledTaskTrigger -AtLogon
+$taskName = "AltDrag"
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName $taskName -RunLevel Highest -Force > $null
 
 # Register Icaros
 Set-ItemProperty "HKLM:\Software\Icaros" "Thumbnail Extensions" "3g2;3gp;3gp2;3gpp;amv;ape;asf;avi;bik;bmp;cb7;cbr;cbz;divx;dpg;dv;dvr-ms;epub;evo;f4v;flac;flv;gif;hdmov;jpg;k3g;m1v;m2t;m2ts;m2v;m4b;m4p;m4v;mk3d;mka;mkv;mov;mp2v;mp3;mp4;mp4v;mpc;mpe;mpeg;mpg;mpv2;mpv4﻿﻿;mqv;mts;mxf;nsv;ofr;ofs;ogg;ogm;ogv;opus;png;qt;ram;rm;rmvb;skm;spx;swf;tak;tif;tiff;tp;tpr;trp;ts;tta;vob;wav;webm;wm;wmv;wv;xvid"

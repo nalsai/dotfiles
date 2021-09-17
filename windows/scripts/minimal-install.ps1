@@ -18,38 +18,38 @@ Write-Host "Configuring System..." -ForegroundColor Green
 
 New-PSDrive HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT -ErrorAction SilentlyContinue > $null
 
-Write-Host "Uninstall OneDrive? [Y/n]: " -ForegroundColor Yellow -NoNewline
-$host.UI.RawUI.FlushInputBuffer()
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive")) {
+	Write-Host "Uninstall OneDrive? [Y/n]: " -ForegroundColor Yellow -NoNewline
+	$host.UI.RawUI.FlushInputBuffer()
 	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-Write-Host $key.Character
-Switch ($key.Character) {
-	Default {
-		if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive")) {
-			$onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
-			if (!(Test-Path $onedrive)) { $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"}
-			$ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-			$ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-			if (!(Test-Path $ExplorerReg1)) { New-Item $ExplorerReg1 -Type Folder > $null }
-			if (!(Test-Path $ExplorerReg2)) { New-Item $ExplorerReg2 -Type Folder > $null }
-			Stop-Process -Name "OneDrive*"
-			Start-Sleep 1
-			Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
-			Stop-Process -Name explorer
-			Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-			Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-			Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-			Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse -ErrorAction SilentlyContinue
-			Set-ItemProperty $ExplorerReg1 "System.IsPinnedToNameSpaceTree" 0 -ErrorAction SilentlyContinue
-			Set-ItemProperty $ExplorerReg2 "System.IsPinnedToNameSpaceTree" 0 -ErrorAction SilentlyContinue
-			if (!(Get-Process explorer -ErrorAction SilentlyContinue)) {
-				Start-Process explorer
-			}
-		}
+	while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+		$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 	}
-	N {}
+	Write-Host $key.Character
+	Switch ($key.Character) {
+		Default {
+				$onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
+				if (!(Test-Path $onedrive)) { $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"}
+				$ExplorerReg1 = "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+				$ExplorerReg2 = "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+				if (!(Test-Path $ExplorerReg1)) { New-Item $ExplorerReg1 -Type Folder > $null }
+				if (!(Test-Path $ExplorerReg2)) { New-Item $ExplorerReg2 -Type Folder > $null }
+				Stop-Process -Name "OneDrive*"
+				Start-Sleep 1
+				Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
+				Stop-Process -Name explorer
+				Remove-Item "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+				Remove-Item "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+				Remove-Item "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+				Remove-Item "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse -ErrorAction SilentlyContinue
+				Set-ItemProperty $ExplorerReg1 "System.IsPinnedToNameSpaceTree" 0 -ErrorAction SilentlyContinue
+				Set-ItemProperty $ExplorerReg2 "System.IsPinnedToNameSpaceTree" 0 -ErrorAction SilentlyContinue
+				if (!(Get-Process explorer -ErrorAction SilentlyContinue)) {
+					Start-Process explorer
+				}
+			}
+		N {}
+	}
 }
 
 Write-Host "Uninstall Windows Media Player? [Y/n]: " -ForegroundColor Yellow -NoNewline

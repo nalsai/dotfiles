@@ -18,7 +18,7 @@ New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $
 Switch ($key) {
 	1 {
 		Write-Host "Executing minimal-install.ps1"
-		Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/scripts/minimal-install.ps1'))`""
+		Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy RemoteSigned -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/scripts/minimal-install.ps1'))`""
 	}
 	2 {
 		Write-Host "Downloading dotfiles"

@@ -51,3 +51,9 @@ else {
 function which($name) {
 	Get-Command $name -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Definition
 }
+
+# Chocolatey profile
+$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+if (Test-Path($ChocolateyProfile)) {
+	Import-Module "$ChocolateyProfile"
+}

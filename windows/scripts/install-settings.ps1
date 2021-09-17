@@ -200,6 +200,7 @@ $folders = @(
 	"HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}"
 	"HKLM:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo"
 	"HKLM:\Software\Microsoft\Windows\CurrentVersion\AppModelUnlock"
+	"HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds"
 	"HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments"
 	"HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
 	"HKLM:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked"

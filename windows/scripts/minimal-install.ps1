@@ -384,11 +384,11 @@ wget.exe -O "$HOME\AppData\Roaming\Notepad2\Notepad2.ini" "https://raw.githubuse
 
 # AltDrag
 wget.exe -O "$HOME\AppData\Roaming\AltDrag\AltDrag.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/AltDrag/AltDrag.ini"
-Start-Process "$HOME\AppData\Roaming\AltDrag\AltDrag.exe" -ArgumentList "-hide"
-$action = New-ScheduledTaskAction -Execute $ExecutionContext.InvokeCommand.ExpandString('$HOME\AppData\Roaming\AltDrag\AltDrag.exe') -Argument '-hide'
+Start-Process "$HOME\AppData\Roaming\AltDrag\AltDrag.exe" -ArgumentList "-h"
+$action = New-ScheduledTaskAction -Execute $ExecutionContext.InvokeCommand.ExpandString('$HOME\AppData\Roaming\AltDrag\AltDrag.exe') -Argument '-h'
 $trigger = New-ScheduledTaskTrigger -AtLogon
-$taskName = "AltDrag"
-Register-ScheduledTask -Action $action -Trigger $trigger -TaskName $taskName -RunLevel Highest -Force > $null
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries
+Register-ScheduledTask -TaskName "AltDrag" -Action $action -Trigger $trigger -Settings $settings -RunLevel Highest -Force > $null
 
 # Icaros
 Set-ItemProperty "HKLM:\Software\Icaros" "Thumbnail Extensions" "3g2;3gp;3gp2;3gpp;amv;ape;asf;avi;bik;bmp;cb7;cbr;cbz;divx;dpg;dv;dvr-ms;epub;evo;f4v;flac;flv;gif;hdmov;jpg;k3g;m1v;m2t;m2ts;m2v;m4b;m4p;m4v;mk3d;mka;mkv;mov;mp2v;mp3;mp4;mp4v;mpc;mpe;mpeg;mpg;mpv2;mpv4﻿﻿;mqv;mts;mxf;nsv;ofr;ofs;ogg;ogm;ogv;opus;png;qt;ram;rm;rmvb;skm;spx;swf;tak;tif;tiff;tp;tpr;trp;ts;tta;vob;wav;webm;wm;wmv;wv;xvid"

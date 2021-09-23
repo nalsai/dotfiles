@@ -103,6 +103,20 @@ $installation_block = {
 }
 Start-Process powershell -ArgumentList "-command refreshenv $installation_block"
 
+Write-Host "Install Cinebench, CrystalDiskMark, Furmark, Prime95? [y/N]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Y {
+		choco install cinebench crystaldiskmark furmark prime95 --limit-output
+	}
+	Default {}
+}
+
 Write-Host "Install itunes? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

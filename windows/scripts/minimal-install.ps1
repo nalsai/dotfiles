@@ -337,7 +337,7 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
 choco install 7zip adoptopenjdkjre altdrag cdburnerxp crystaldiskinfo curl everything ffmpeg firefox gimp googlechrome hwinfo icaros libreoffice-fresh microsoft-windows-terminal mpv nomacs notepad2-mod paint.net rclone vlc wget windirstat youtube-dl --limit-output
 
-Write-Host "Install Cinebench, CrystalDiskMark, Furmark? [y/N]: " -ForegroundColor Yellow -NoNewline
+Write-Host "Install Cinebench, CrystalDiskMark, Furmark, Prime95? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
@@ -346,7 +346,7 @@ while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKey
 Write-Host $key.Character
 Switch ($key.Character) {
 	Y {
-		choco install cinebench crystaldiskmark furmark --limit-output
+		choco install cinebench crystaldiskmark furmark prime95 --limit-output
 	}
 	Default {}
 }

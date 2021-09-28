@@ -1,7 +1,7 @@
 {
     "always_transcode": false,
     "audio_output": "hdmi",
-    "auto_play": false,
+    "auto_play": true,
     "check_updates": false,
     "client_uuid": "bf03b973-6311-4551-b71b-c32607e10fc5",
     "connect_retry_mins": 0,

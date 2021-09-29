@@ -7,7 +7,7 @@
 	required = true
 	clean = git-lfs clean -- %f
 [commit]
-    gpgsign = true
+	gpgsign = true
 [user]
 	name = Nils Fürniß
 	email = contact@nalsai.de

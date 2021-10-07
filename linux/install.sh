@@ -98,4 +98,6 @@ $DOT/linux/chrome/dark_mode.sh  #if chrome is installed:
 #nvim,fish
 #Apps: dnf: pacman/yay: flatpaks:
 
+sudo chmod +x $DOT/linux/update-system.sh
+
 rm -r $TMP

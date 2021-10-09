@@ -41,7 +41,7 @@ echo Making Symlinks
 
 # mpv
 mkdir -p $HOME/.var/app/io.mpv.Mpv/config                       # make parent folder if not exists
-rm -r $HOME/.var/app/io.mpv.Mpv/config/mpv  > /dev/null 2>&1    # remove folder to be symlinked if exists
+rm -r $HOME/.var/app/io.mpv.Mpv/config/mpv > /dev/null 2>&1     # remove folder to be symlinked if exists
 ln -sf $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv        # make symlink
 #/home/nalsai/.config/plex-mpv-shim
 #/home/nalsai/.var/app/com.github.iwalton3.jellyfin-mpv-shim/config/jellyfin-mpv-shim
@@ -62,6 +62,10 @@ ln -sf $DOT/vscode/keybindings.json "$HOME/.config/Code - OSS/User/keybindings.j
 
 # .gitconfig
 ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
+
+# fish
+rm -r $HOME/.config/fish > /dev/null 2>&1    # remove folder to be symlinked if exists
+ln -sf $DOT/linux/fish/ $HOME/.config/fish
 
 
 # install apps
@@ -95,7 +99,7 @@ $DOT/linux/chrome/dark_mode.sh  #if chrome is installed:
 
 
 # other TODO:
-#nvim,fish
+#nvim
 #Apps: dnf: pacman/yay: flatpaks:
 
 sudo chmod +x $DOT/linux/update-system.sh

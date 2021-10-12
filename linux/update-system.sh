@@ -21,11 +21,11 @@ Clean()
 {
     echo Cleaning...
 
-    if which apt >/dev/null 2>&1; then
+    if type apt >/dev/null 2>&1; then
         sudo apt-get autoremove
     fi
 
-    if which yay >/dev/null 2>&1; then
+    if type yay >/dev/null 2>&1; then
         # Remove unneeded dependencies.
         yay -c
 
@@ -37,7 +37,7 @@ Clean()
     fi
 
     #TODO: check if docker daemon running
-    if which docker >/dev/null 2>&1; then
+    if type docker >/dev/null 2>&1; then
         sudo docker system prune -f
     fi
 }
@@ -64,19 +64,19 @@ done
 
 
 echo Updating...
-if which apt >/dev/null 2>&1; then
+if type apt >/dev/null 2>&1; then
     sudo apt update && sudo apt full-upgrade -y
 fi
 
-if which dnf >/dev/null 2>&1; then
+if type dnf >/dev/null 2>&1; then
     sudo dnf -y upgrade
 fi
 
-if which yay >/dev/null 2>&1; then
+if type yay >/dev/null 2>&1; then
     yay -Syu
 fi
 
-if which flatpak >/dev/null 2>&1; then
+if type flatpak >/dev/null 2>&1; then
     flatpak upgrade
 fi
 

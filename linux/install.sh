@@ -70,7 +70,32 @@ ln -sf $DOT/linux/fish/ $HOME/.config/fish
 
 # install apps
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install flathub io.mpv.Mpv
+flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
+flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.iwalton3.jellyfin-mpv-shim com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.mozilla.firefox
+flatpak install NilsFlatpakRepo org.wangqr.Aegisub
+
+#com.calibre_ebook.calibre com.github.polymeilex.neothesia com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator dev.alextren.Spot fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.celluloid_player.Celluloid io.github.ciromattia.kcc io.github.hakuneko.HakuNeko io.github.lainsce.Notejot org.fedoraproject.MediaWriter org.free_astro.siril org.gnome.Builder org.gnome.Connections org.gnome.Epiphany org.gnome.Evolution org.kde.krita org.pitivi.Pitivi
+
+#TODO: dnf, pacman/yay, apt
+
+echo Uninstalling old packages
+if type dnf >/dev/null 2>&1; then
+    sudo dnf -y remove eog firefox gedit gnome-font-viewer libreoffice-*
+fi
+
+echo -n "Add AppCenter (Elementary) flatpak remote and install Ensembles? [y/n]: "
+# https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script#27875395
+old_stty_cfg=$(stty -g)
+stty raw -echo
+answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+stty $old_stty_cfg
+if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
+    flatpak install ElementaryAppCenter com.github.subhadeepjasu.ensembles
+else
+    echo n
+fi
 
 echo -n "Install Tactical Math Returns? [y/n]: "
 # https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script#27875395
@@ -80,7 +105,7 @@ answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
 stty $old_stty_cfg
 if echo "$answer" | grep -iq "^y" ;then
     echo y
-    flatpak install https://flatpak.nils.moe/com.DaRealRoyal.TacticalMathReturns.flatpakref
+    flatpak install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns
 else
     echo n
 fi
@@ -100,7 +125,7 @@ $DOT/linux/chrome/dark_mode.sh  #if chrome is installed:
 
 # other TODO:
 #nvim
-#Apps: dnf: pacman/yay: flatpaks:
+
 
 sudo chmod +x $DOT/linux/update-system.sh
 

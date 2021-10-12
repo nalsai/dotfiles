@@ -127,6 +127,7 @@ $DOT/linux/chrome/dark_mode.sh  #if chrome is installed:
 #nvim
 
 
+sudo chmod +x $DOT/linux/connect-ssh.sh
 sudo chmod +x $DOT/linux/update-system.sh
 
 rm -r $TMP

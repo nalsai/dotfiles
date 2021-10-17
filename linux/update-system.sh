@@ -36,6 +36,10 @@ Clean()
         yay -Qtdq | yay -Rs -
     fi
 
+    if type flatpak >/dev/null 2>&1; then
+        flatpak uninstall --unused
+    fi
+
     #TODO: check if docker daemon running
     if type docker >/dev/null 2>&1; then
         sudo docker system prune -f

@@ -72,6 +72,7 @@ ln -sf $DOT/linux/fish/ $HOME/.config/fish
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
 flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.iwalton3.jellyfin-mpv-shim com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.mozilla.firefox
+# net.mediaarea.MediaInfo
 flatpak install NilsFlatpakRepo org.wangqr.Aegisub
 
 #com.calibre_ebook.calibre com.github.polymeilex.neothesia com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator dev.alextren.Spot fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.celluloid_player.Celluloid io.github.ciromattia.kcc io.github.hakuneko.HakuNeko io.github.lainsce.Notejot org.fedoraproject.MediaWriter org.free_astro.siril org.gnome.Builder org.gnome.Connections org.gnome.Epiphany org.gnome.Evolution org.kde.krita org.pitivi.Pitivi
@@ -80,7 +81,7 @@ flatpak install NilsFlatpakRepo org.wangqr.Aegisub
 
 echo Uninstalling old packages
 if type dnf >/dev/null 2>&1; then
-    sudo dnf -y remove eog firefox gedit gnome-font-viewer libreoffice-*
+    sudo dnf -y remove eog firefox gnome-font-viewer libreoffice-*
 fi
 
 echo -n "Add AppCenter (Elementary) flatpak remote and install Ensembles? [y/n]: "

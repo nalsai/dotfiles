@@ -29,8 +29,3 @@ break
 ;;
 esac
 done
-#ssh nalsai@nanopineo3
-#ssh nalsai@nanopi-r4s
-#ssh nalsai@144.91.122.166
-#ssh nalsai@164.68.116.69 -p 35474
-#ssh nalsai@odroidxu4

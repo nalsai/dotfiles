@@ -81,7 +81,7 @@ if type yay >/dev/null 2>&1; then
 fi
 
 if type flatpak >/dev/null 2>&1; then
-    flatpak upgrade
+    flatpak update -y
 fi
 
 # docker-compose

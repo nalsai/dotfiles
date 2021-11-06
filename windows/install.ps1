@@ -26,7 +26,7 @@ Switch ($key) {
 		if(-Not $?){throw "Error downloading dotfiles"}
 		$DOT = "$HOME\.dotfiles"
 		Expand-Archive $TMP\dotfiles.zip $TMP
-		Remove-Item $DOT -Recurse -ErrorAction SilentlyContinue # delete old dotfiles
+		Remove-Item $DOT -Recurse -Force -ErrorAction SilentlyContinue # delete old dotfiles
 		Move-Item $TMP\dotfiles-rework $DOT
 		Write-Host "Installing dotfiles"
 

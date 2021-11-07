@@ -22,26 +22,20 @@ Clean()
     echo Cleaning...
 
     if type apt >/dev/null 2>&1; then
-        sudo apt-get autoremove
+        sudo apt autoremove
+        sudo apt clean
     fi
 
     if type yay >/dev/null 2>&1; then
-        # Remove unneeded dependencies.
-        yay -c
-
-        # Remove all the cached packages that are not currently installed, and the unused sync database
-        yay -Sc
-
-        # Remove unused packages (orphans)
-        yay -Qtdq | yay -Rs -
+        yay -c  # Remove unneeded dependencies
+        yay -Sc # Remove untracked files in cache
     fi
 
     if type flatpak >/dev/null 2>&1; then
         flatpak uninstall --unused
     fi
 
-    #TODO: check if docker daemon running
-    if type docker >/dev/null 2>&1; then
+    if pgrep -f docker > /dev/null; then
         sudo docker system prune -f
     fi
 }
@@ -69,7 +63,8 @@ done
 
 echo Updating...
 if type apt >/dev/null 2>&1; then
-    sudo apt update && sudo apt full-upgrade -y
+    sudo apt update
+    sudo apt full-upgrade -y
 fi
 
 if type dnf >/dev/null 2>&1; then

@@ -26,6 +26,10 @@ Clean()
         sudo apt clean
     fi
 
+    if type dnf >/dev/null 2>&1; then
+        sudo dnf clean all
+    fi
+
     if type yay >/dev/null 2>&1; then
         yay -c  # Remove unneeded dependencies
         yay -Sc # Remove untracked files in cache

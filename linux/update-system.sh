@@ -80,7 +80,7 @@ if type yay >/dev/null 2>&1; then
 fi
 
 if type flatpak >/dev/null 2>&1; then
-    flatpak update -y
+    flatpak -y update
 fi
 
 # docker-compose

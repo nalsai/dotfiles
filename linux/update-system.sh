@@ -11,7 +11,8 @@ Help()
    echo
    echo "Options:"
    echo " -c      clean system"
-   echo " -h      Print this Help."
+   echo " -r      update remote servers"
+   echo " -h      print this help"
    echo
 }
 ############################################################
@@ -21,9 +22,9 @@ Clean()
 {
     echo Cleaning...
 
-    if type apt >/dev/null 2>&1; then
-        sudo apt autoremove
-        sudo apt clean
+    if type apt-get >/dev/null 2>&1; then
+        sudo apt-get autoremove
+        sudo apt-get clean
     fi
 
     if type dnf >/dev/null 2>&1; then
@@ -43,6 +44,31 @@ Clean()
         sudo docker system prune -f
     fi
 }
+############################################################
+# Update SSH                                               #
+############################################################
+UpdateSSH()
+{
+    echo Updating Servers over SSH...
+    echo -n "Do you really want to do this? [y/n]: "
+    # https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script#27875395
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+    stty $old_stty_cfg
+    if echo "$answer" | grep -iq "^y" ;then
+        echo y
+    else
+        echo n
+        exit 130
+    fi
+
+    ssh root@nanopineo3 'sudo apt-get update && sudo apt-get full-upgrade -y'
+    ssh root@nanopi-r4s 'sudo apt-get update && sudo apt-get full-upgrade -y'
+    ssh root@odroidxu4 'sudo apt-get update && sudo apt-get full-upgrade -y'
+    ssh root@144.91.122.166 'sudo dnf -y update'
+    ssh root@164.68.116.69 -p 35474 'sudo apt-get update && sudo apt-get full-upgrade -y'
+}
 
 ############################################################
 ############################################################
@@ -50,13 +76,16 @@ Clean()
 ############################################################
 ############################################################
 
-while getopts ":hc" option; do
+while getopts ":chr" option; do
    case $option in
-      h) # display Help
-        Help
-        exit;;
       c) # clean
         Clean
+        exit;;
+      r) # update ssh servers
+        UpdateSSH
+        exit;;
+      h) # display Help
+        Help
         exit;;
      \?) # Invalid option
         echo "Error: Invalid option"
@@ -66,9 +95,9 @@ done
 
 
 echo Updating...
-if type apt >/dev/null 2>&1; then
-    sudo apt update
-    sudo apt full-upgrade -y
+if type apt-get >/dev/null 2>&1; then
+    sudo apt-get update
+    sudo apt-get full-upgrade -y
 fi
 
 if type dnf >/dev/null 2>&1; then
@@ -86,5 +115,3 @@ fi
 # docker-compose
 #docker-compose pull
 #docker-compose up --force-recreate --build -d
-
-#TODO: update servers

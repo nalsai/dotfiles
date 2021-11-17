@@ -105,11 +105,11 @@ if type apt-get >/dev/null 2>&1; then
     sudo apt-get install neofetch -y # TODO
 
     # Docker
-    sudo apt-get install ca-certificates curl gnupg lsb-release
+    sudo apt-get install ca-certificates curl gnupg lsb-release -y
     curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt-get update
-    sudo apt-get install docker-ce docker-ce-cli containerd.io
+    sudo apt-get install docker-ce docker-ce-cli containerd.io -y
     docker --version
 
     echo -n "Enable Docker service? [y/n]: "
@@ -151,13 +151,13 @@ elif type dnf >/dev/null 2>&1; then
     sudo dnf -y groupupdate core
 
     echo Installing other packages...
-    sudo dnf -y install ffmpeg fish flatpak-builder neofetch neovim pandoc texlive # TODO
+    sudo dnf -y install ffmpeg fish flatpak-builder neofetch neovim ocrmypdf pandoc texlive # TODO
     sudo dnf group install Virtualization
 
     # Docker
     sudo dnf -y install dnf-plugins-core
     sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-    sudo dnf install docker-ce docker-ce-cli containerd.io
+    sudo dnf -y install docker-ce docker-ce-cli containerd.io
     sudo systemctl start docker
     docker --version
 

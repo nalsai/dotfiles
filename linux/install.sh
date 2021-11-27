@@ -32,6 +32,13 @@ unzip -u -d $TMP $TMP/dotfiles.zip
 rm -r $DOT > /dev/null 2>&1
 mv $TMP/dotfiles-rework $DOT
 
+chmod +x $DOT/linux/connect-ssh.sh
+chmod +x $DOT/linux/install.sh
+chmod +x $DOT/linux/update-system.sh
+chmod +x $DOT/linux/chrome/dark_mode.sh
+
+echo Updating System...
+$DOT/linux/update-system.sh
 
 echo Making Symlinks...
 # mpv
@@ -66,7 +73,7 @@ ln -sf $DOT/linux/fish/ $HOME/.config/fish
 echo Installing Flatpaks...
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
-flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.iwalton3.jellyfin-mpv-shim com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.mozilla.firefox
+flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.iwalton3.jellyfin-mpv-shim com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge
 flatpak install NilsFlatpakRepo org.wangqr.Aegisub
 #com.calibre_ebook.calibre com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.celluloid_player.Celluloid io.github.ciromattia.kcc io.github.hakuneko.HakuNeko io.github.lainsce.Notejot org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Epiphany org.gnome.Evolution org.kde.krita org.pitivi.Pitivi
 
@@ -80,6 +87,19 @@ if echo "$answer" | grep -iq "^y" ;then
     echo y
     flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
     flatpak install ElementaryAppCenter com.github.subhadeepjasu.ensembles
+else
+    echo n
+fi
+
+echo -n "Install osu? [y/n]: "
+# https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script#27875395
+old_stty_cfg=$(stty -g)
+stty raw -echo
+answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+stty $old_stty_cfg
+if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    flatpak install flathub sh.ppy.osu
 else
     echo n
 fi
@@ -143,7 +163,7 @@ if type apt-get >/dev/null 2>&1; then
 
 elif type dnf >/dev/null 2>&1; then
     echo Uninstalling packages not needed anymore...
-    sudo dnf -y remove eog firefox gnome-font-viewer
+    sudo dnf -y remove eog gnome-font-viewer libreoffice-*
     sudo dnf -y group remove LibreOffice
 
     echo Installing RPM Fusion
@@ -151,7 +171,7 @@ elif type dnf >/dev/null 2>&1; then
     sudo dnf -y groupupdate core
 
     echo Installing other packages...
-    sudo dnf -y install ffmpeg fish flatpak-builder neofetch neovim ocrmypdf pandoc texlive # TODO
+    sudo dnf -y install ffmpeg fish flatpak-builder git gnome-tweaks gotop htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp
     sudo dnf group install Virtualization
 
     # Docker
@@ -198,15 +218,26 @@ elif type pacman >/dev/null 2>&1; then
     sudo pacman -S neofetch
 fi
 
+if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/null 2>&1; then
+    systemctl --user enable syncthing.service
+fi
 
 
 echo Configuring Apps...
+if [ -f "/usr/share/applications/google-chrome.desktop" ]; then
+    $DOT/linux/chrome/dark_mode.sh
+fi
+
 # TODO
-$DOT/linux/chrome/dark_mode.sh # if chrome is installed
 #git gpg key
-#jellyfin mpv shim flatpak: allow access to screenshot path   ~/Pictures/mpv-screenshots:create
-#mpv ask for sponsorblock.txt
-#gnome terminal, builder...
+#ask for sponsorblock.txt
+#celluloid,gnome terminal, builder...
+#dconf: disable mouse acceleration
+#dconf: enable minimize button, center new windows
+#settings: win+d shortcut (hide all normal windows)
+#change default shell to fish
+#file Templates
+#install extensions
 
 
 echo Installing Fonts...

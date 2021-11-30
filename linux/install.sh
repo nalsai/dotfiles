@@ -73,9 +73,28 @@ ln -sf $DOT/linux/fish/ $HOME/.config/fish
 echo Installing Flatpaks...
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
-flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.iwalton3.jellyfin-mpv-shim com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge
+flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.iwalton3.jellyfin-mpv-shim com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender
 flatpak install NilsFlatpakRepo org.wangqr.Aegisub
 #com.calibre_ebook.calibre com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.celluloid_player.Celluloid io.github.ciromattia.kcc io.github.hakuneko.HakuNeko io.github.lainsce.Notejot org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Epiphany org.gnome.Evolution org.kde.krita org.pitivi.Pitivi
+
+flatpak info org.libreoffice.LibreOffice
+echo ""
+echo ""
+echo "If LibreOffice uses a different Runtime, the script needs to be updated"
+echo "Reinstalling the Locale installs all Locales, instead of just the main one."
+echo "This is needed for Spell Checking in other languages than the main one."
+echo "Reinstall org.freedesktop.Platform.Locale//21.08? [y/n]: "
+# https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script#27875395
+old_stty_cfg=$(stty -g)
+stty raw -echo
+answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+stty $old_stty_cfg
+if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    flatpak install --reinstall flathub org.freedesktop.Platform.Locale//21.08
+else
+    echo n
+fi
 
 echo -n "Add AppCenter (Elementary) flatpak remote and install Ensembles? [y/n]: "
 # https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script#27875395
@@ -171,8 +190,14 @@ elif type dnf >/dev/null 2>&1; then
     sudo dnf -y groupupdate core
 
     echo Installing other packages...
-    sudo dnf -y install ffmpeg fish flatpak-builder git gnome-tweaks gotop htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp
+    sudo dnf -y install ffmpeg fish flatpak-builder git gnome-tweaks gotop htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools
+
+    if [ $? -eq 0 ]; then
+        sudo usermod --shell /bin/fish $USER
+    fi
+
     sudo dnf group install Virtualization
+
 
     # Docker
     sudo dnf -y install dnf-plugins-core

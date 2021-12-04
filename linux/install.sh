@@ -190,14 +190,12 @@ elif type dnf >/dev/null 2>&1; then
     sudo dnf -y groupupdate core
 
     echo Installing other packages...
-    sudo dnf -y install ffmpeg fish flatpak-builder git gnome-tweaks gotop htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools
+    sudo dnf -y install ffmpeg flatpak-builder git gnome-tweaks gotop htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools
+    sudo dnf -y group install "Virtualization"
 
-    if [ $? -eq 0 ]; then
+    if sudo dnf -y install fish; then
         sudo usermod --shell /bin/fish $USER
     fi
-
-    sudo dnf group install Virtualization
-
 
     # Docker
     sudo dnf -y install dnf-plugins-core

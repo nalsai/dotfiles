@@ -73,9 +73,9 @@ ln -sf $DOT/linux/fish/ $HOME/.config/fish
 echo Installing Flatpaks...
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
-flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.iwalton3.jellyfin-mpv-shim com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender
-flatpak install NilsFlatpakRepo org.wangqr.Aegisub
-#com.calibre_ebook.calibre com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.celluloid_player.Celluloid io.github.ciromattia.kcc io.github.hakuneko.HakuNeko io.github.lainsce.Notejot org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Epiphany org.gnome.Evolution org.kde.krita org.pitivi.Pitivi
+flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid
+flatpak install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek
+#com.calibre_ebook.calibre com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.gnome.Connections org.gnome.Epiphany org.gnome.Evolution org.kde.krita org.pitivi.Pitivi
 
 flatpak info org.libreoffice.LibreOffice
 echo ""
@@ -119,6 +119,19 @@ stty $old_stty_cfg
 if echo "$answer" | grep -iq "^y" ;then
     echo y
     flatpak install flathub sh.ppy.osu
+else
+    echo n
+fi
+
+echo -n "Install Mothership Defender 2? [y/n]: "
+# https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script#27875395
+old_stty_cfg=$(stty -g)
+stty raw -echo
+answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+stty $old_stty_cfg
+if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    flatpak install NilsFlatpakRepo de.Nalsai.MothershipDefender2
 else
     echo n
 fi
@@ -190,7 +203,7 @@ elif type dnf >/dev/null 2>&1; then
     sudo dnf -y groupupdate core
 
     echo Installing other packages...
-    sudo dnf -y install ffmpeg flatpak-builder git gnome-tweaks gotop htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools
+    sudo dnf -y install ffmpeg fish flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools lutris dconf
     sudo dnf -y group install "Virtualization"
 
     if sudo dnf -y install fish; then
@@ -251,17 +264,22 @@ if [ -f "/usr/share/applications/google-chrome.desktop" ]; then
     $DOT/linux/chrome/dark_mode.sh
 fi
 
+echo Configuring Gnome \(dconf\)...
+dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps']"
+dconf write /org/gnome/desktop/peripherals/mouse/accel-profile "'flat'"
+dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
+dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
+dconf write /org/gnome/mutter/center-new-windows "true"
+dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Screenshot.desktop']"
+dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
+
 # TODO
 #git gpg key
 #ask for sponsorblock.txt
 #celluloid,gnome terminal, builder...
-#dconf: disable mouse acceleration
-#dconf: enable minimize button, center new windows
-#settings: win+d shortcut (hide all normal windows)
-#change default shell to fish
 #file Templates
 #install extensions
-
+#firefox flatpak or system?
 
 echo Installing Fonts...
 # TODO

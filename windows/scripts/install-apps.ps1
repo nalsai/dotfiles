@@ -18,7 +18,7 @@ choco install figma --ignore-checksums --limit-output
 
 # Run TaskbarX and add to Startup
 Start-Process "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\TaskbarX\TaskbarX.lnk"
-Copy-Item "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\TaskbarX\TaskbarX.lnk" "C:\Users\Nalsai\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\TaskbarX.lnk"  -ErrorAction SilentlyContinue
+Copy-Item "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\TaskbarX\TaskbarX.lnk" "$HOME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\TaskbarX.lnk"  -ErrorAction SilentlyContinue
 
 # Run AltDrag
 Start-Process "$HOME\AppData\Roaming\AltDrag\AltDrag.exe" -ArgumentList "-h"

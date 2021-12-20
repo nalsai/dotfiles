@@ -1,8 +1,7 @@
 [Desktop Entry]
 Type=Application
-Encoding=UTF-8
 Name=Minion
 Comment=Minion Addon Manager
-Exec=/home/nalsai/Apps/Minion3.0.5-java/jre1.8.0_281/bin/java -jar /home/nalsai/Apps/Minion3.0.5-java/Minion-jfx.jar
-Icon=/home/nalsai/Apps/Minion3.0.5-java/minion-logo.png
+Exec=/home/nalsai/Apps/Minion/jre1.8.0_281/bin/java -jar /home/nalsai/Apps/Minion/Minion-jfx.jar
+Icon=/home/nalsai/Apps/Minion/minion-logo.png
 Terminal=false

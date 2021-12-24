@@ -224,6 +224,11 @@ Switch ($key.Character) {
 	N {}
 }
 
+Write-Host "Turning Off Enhance Pointer Precision"
+Set-ItemProperty "HKCU:\Control Panel\Mouse" "MouseSpeed" 0
+Set-ItemProperty "HKCU:\Control Panel\Mouse" "MouseThreshold1" 0
+Set-ItemProperty "HKCU:\Control Panel\Mouse" "MouseThreshold2" 0
+
 Write-Host "Disabling Cortana and Bing Search in Start Menu"
 Set-ItemProperty "HKCU:\Software\Microsoft\InputPersonalization" "RestrictImplicitInkCollection" 1
 Set-ItemProperty "HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore" "HarvestContacts" 0

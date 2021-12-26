@@ -53,11 +53,10 @@ echo Making Symlinks...
 mkdir -p $HOME/.var/app/io.mpv.Mpv/config                       # make parent folder if not exists
 rm -r $HOME/.var/app/io.mpv.Mpv/config/mpv > /dev/null 2>&1     # remove folder to be symlinked if exists
 ln -sf $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv        # make symlink
-#/home/nalsai/.config/plex-mpv-shim
-#/home/nalsai/.var/app/com.github.iwalton3.jellyfin-mpv-shim/config/jellyfin-mpv-shim
-#/home/nalsai/.var/app/io.mpv.Mpv/config/mpv
-#/home/nalsai/.config/mpv
-#celluloid
+#$HOME/.config/plex-mpv-shim
+#$HOME/.var/app/com.github.iwalton3.jellyfin-mpv-shim/config/jellyfin-mpv-shim
+#$HOME/.var/app/io.github.celluloid_player.Celluloid/config/celluloid
+#$HOME/.config/mpv
 
 # Visual Studio Code settings.json and keybindings.json
 mkdir -p $HOME/.config/Code/User

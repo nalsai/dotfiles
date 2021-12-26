@@ -35,10 +35,10 @@ github_latest_release() {
 }
 
 echo Downloading Dotfiles...
-wget -O $TMP/dotfiles.zip "https://github.com/Nalsai/dotfiles/archive/refs/heads/rework.zip"
+wget -O $TMP/dotfiles.zip "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip"
 unzip -u -d $TMP $TMP/dotfiles.zip
 rm -r $DOT > /dev/null 2>&1
-mv $TMP/dotfiles-rework $DOT
+mv $TMP/dotfiles-main $DOT
 
 chmod +x $DOT/linux/connect-ssh.sh
 chmod +x $DOT/linux/install.sh

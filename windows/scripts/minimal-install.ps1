@@ -380,15 +380,15 @@ Write-Host "Configuring Apps..." -ForegroundColor Green
 
 # mpv
 New-Item -ItemType directory -Force -Path "$HOME\AppData\Roaming\mpv" -ErrorAction SilentlyContinue > $null
-wget.exe -O "$HOME\AppData\Roaming\mpv\mpv.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/mpv/mpv-minimal/mpv.conf"
-wget.exe -O "$HOME\AppData\Roaming\mpv\input.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/mpv/mpv-minimal/input.conf"
+wget.exe -O "$HOME\AppData\Roaming\mpv\mpv.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/mpv/mpv-minimal/mpv.conf"
+wget.exe -O "$HOME\AppData\Roaming\mpv\input.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/mpv/mpv-minimal/input.conf"
 
 # Notepad2
 New-Item -ItemType directory -Force -Path "$HOME\AppData\Roaming\Notepad2" -ErrorAction SilentlyContinue > $null
-wget.exe -O "$HOME\AppData\Roaming\Notepad2\Notepad2.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/Notepad2/Notepad2.ini"
+wget.exe -O "$HOME\AppData\Roaming\Notepad2\Notepad2.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/Notepad2/Notepad2.ini"
 
 # AltDrag
-wget.exe -O "$HOME\AppData\Roaming\AltDrag\AltDrag.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/AltDrag/AltDrag.ini"
+wget.exe -O "$HOME\AppData\Roaming\AltDrag\AltDrag.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/AltDrag/AltDrag.ini"
 Start-Process "$HOME\AppData\Roaming\AltDrag\AltDrag.exe" -ArgumentList "-h"
 $action = New-ScheduledTaskAction -Execute $ExecutionContext.InvokeCommand.ExpandString('$HOME\AppData\Roaming\AltDrag\AltDrag.exe') -Argument '-h'
 $trigger = New-ScheduledTaskTrigger -AtLogon
@@ -404,7 +404,7 @@ RegSvr32.exe "C:\Program Files\Icaros\64-bit\IcarosPropertyHandler.dll" /s
 $documents = [Environment]::GetFolderPath("MyDocuments")
 New-Item -ItemType directory -Force -Path "$documents\PowerShell" -ErrorAction SilentlyContinue > $null
 New-Item -ItemType SymbolicLink -Force -Path "$documents\WindowsPowerShell" -Target "$documents\PowerShell"  > $null
-wget.exe -O "$documents\PowerShell\Microsoft.PowerShell_profile.ps1" "https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/PowerShell/Microsoft.PowerShell_profile.ps1"
+wget.exe -O "$documents\PowerShell\Microsoft.PowerShell_profile.ps1" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/PowerShell/Microsoft.PowerShell_profile.ps1"
 
 Write-Host "Done Configuring Apps" -ForegroundColor Green
 

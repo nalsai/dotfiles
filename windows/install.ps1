@@ -18,23 +18,23 @@ New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $
 Switch ($key) {
 	1 {
 		Write-Host "Executing minimal-install.ps1"
-		Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy RemoteSigned -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/scripts/minimal-install.ps1'))`""
+		Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy RemoteSigned -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/scripts/minimal-install.ps1'))`""
 	}
 	2 {
 		Write-Host "Downloading dotfiles"
-		iwr "https://github.com/Nalsai/dotfiles/archive/refs/heads/rework.zip" -O $TMP\dotfiles.zip
+		iwr "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -O $TMP\dotfiles.zip
 		if(-Not $?){throw "Error downloading dotfiles"}
 		$DOT = "$HOME\.dotfiles"
 		Expand-Archive $TMP\dotfiles.zip $TMP
 		Remove-Item $DOT -Recurse -Force -ErrorAction SilentlyContinue # delete old dotfiles
-		Move-Item $TMP\dotfiles-rework $DOT
+		Move-Item $TMP\dotfiles-main $DOT
 		Write-Host "Installing dotfiles"
 
 		Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy RemoteSigned -Force; $DOT\windows\scripts\full-install.ps1`""
 	}
 	3 {
 		Write-Host "Executing declutter-contextmenu.ps1"
-		Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/rework/windows/scripts/declutter-contextmenu.ps1'))`""
+		Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/scripts/declutter-contextmenu.ps1'))`""
 	}
 	Q {}
 }

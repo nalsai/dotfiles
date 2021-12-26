@@ -3,12 +3,20 @@
 !a::Send ä
 !o::Send ö
 !u::Send ü
-!s::Send ß
 !+a::Send Ä
 !+o::Send Ö
 !+u::Send Ü
-!+s::Send ẞ
+
+!q::Send ä
+!p::Send ö
+!y::Send ü
+!+q::Send Ä
+!+p::Send Ö
+!+y::Send Ü
+
 !e::Send €
+!s::Send ß
+!+s::Send ẞ
 
 ^+v::								;Ctrl+Shift+v -- paste clipboard content as plain text
 	ClipboardOld := ClipboardAll	;save original clipboard contents
@@ -18,3 +26,4 @@
 	Clipboard := ClipboardOld		;restore the original clipboard contents
 	ClipboardOld =					;clear temporary variable (potentially contains large data)
 	Return
+

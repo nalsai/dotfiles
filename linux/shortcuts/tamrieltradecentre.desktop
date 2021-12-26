@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=TTC
+Comment=Tamriel Trade Centre
+Exec="/home/nalsai/Documents/Elder Scrolls Online/live/TTC.sh"
+Icon=/home/nalsai/Documents/Elder Scrolls Online/live/TTC_Logo.png
+Terminal=false

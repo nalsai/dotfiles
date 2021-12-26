@@ -1,2 +1,4 @@
-*.db
-mpv/scripts/sponsorblock_shared/sponsorblock.txt
+cred.json
+sponsorblock.db
+sponsorblock.db.tmp
+sponsorblock.txt

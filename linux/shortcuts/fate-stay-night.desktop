@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Fate/stay night
+Comment=Fate/stay night Visual Novel (Realta Nua)
+Exec=env LANG="ja_JP.utf8" flatpak run com.usebottles.bottles -b "Fate" -e "/home/nalsai/Apps/Bottles/Fate Stay Night/Fate.exe"
+Icon=/home/nalsai/Apps/Bottles/fate-stay-night.png
+Terminal=false
+Categories=Game

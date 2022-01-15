@@ -84,7 +84,7 @@ if type apt-get >/dev/null 2>&1; then
 fi
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
-flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge org.gnome.seahorse.Application org.mozilla.firefox org.gnome.Evolution
+flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.leinardi.gst com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge org.gnome.seahorse.Application org.mozilla.firefox org.gnome.Evolution
 flatpak install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek
 #com.calibre_ebook.calibre com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.gnome.Connections org.gnome.Epiphany org.kde.krita org.pitivi.Pitivi
 
@@ -259,6 +259,12 @@ if [ -f "/usr/share/applications/google-chrome.desktop" ]; then
 fi
 
 echo Configuring Gnome \(dconf\)...
+dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
+dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
+dconf write /org/gnome/desktop/privacy/recent-files-max-age "1"
+dconf write /org/gnome/desktop/privacy/remove-old-trash-files "true"
+dconf write /org/gnome/desktop/privacy/remove-old-temp-files "true"
+dconf write /org/gnome/desktop/privacy/old-files-age "uint32 7"
 dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps']"
 dconf write /org/gnome/desktop/peripherals/mouse/accel-profile "'flat'"
 dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"

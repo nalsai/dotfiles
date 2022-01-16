@@ -34,11 +34,58 @@ github_latest_release() {
     grep -Po '"tag_name": "\K.*?(?=")'
 }
 
-echo Downloading Dotfiles...
-wget -O $TMP/dotfiles.zip "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip"
-unzip -u -d $TMP $TMP/dotfiles.zip
-rm -r $DOT > /dev/null 2>&1
-mv $TMP/dotfiles-main $DOT
+echo -n "Install to Documents with git? [y/n]: "
+old_stty_cfg=$(stty -g)
+stty raw -echo
+answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+stty $old_stty_cfg
+if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    echo Installing git and xdg-user-dirs...
+    if type apt-get >/dev/null 2>&1; then
+        sudo apt-get install git xdg-user-dirs -y
+    elif type dnf >/dev/null 2>&1; then
+        sudo dnf -y install git xdg-user-dirs
+    elif type pacman >/dev/null 2>&1; then
+        sudo pacman -S git xdg-user-dirs
+    fi
+    cd "$(xdg-user-dir DOCUMENTS)"
+    echo -n "Clone using ssh or https? [s/h]: "
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    answer=$( while ! head -c 1 | grep -i '[sh]' ;do true ;done )
+    stty $old_stty_cfg
+    if echo "$answer" | grep -iq "^s" ;then
+        echo s
+        if ! git clone git@github.com:Nalsai/dotfiles.git; then
+            echo Error: You need to setup your git ssh key first to clone over ssh.
+            exit 1
+        fi
+    else
+        echo h
+        git clone https://github.com/Nalsai/dotfiles.git
+    fi
+
+    echo -n "Use Documents for symlinks or Home (Home is recommended)? [d/h]: "
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    answer=$( while ! head -c 1 | grep -i '[dh]' ;do true ;done )
+    stty $old_stty_cfg
+    if echo "$answer" | grep -iq "^d" ;then
+        echo d
+        DOT="$(xdg-user-dir DOCUMENTS)/dotfiles"
+    else
+        echo h
+        ln -sf "$(xdg-user-dir DOCUMENTS)/dotfiles" $DOT
+    fi
+else
+    echo n
+    echo Downloading Dotfiles...
+    wget -O $TMP/dotfiles.zip "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip"
+    unzip -u -d $TMP $TMP/dotfiles.zip
+    rm -r $DOT > /dev/null 2>&1
+    mv $TMP/dotfiles-main $DOT
+fi
 
 chmod +x $DOT/linux/connect-ssh.sh
 chmod +x $DOT/linux/install.sh
@@ -76,6 +123,8 @@ ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
 rm -r $HOME/.config/fish > /dev/null 2>&1    # remove folder to be symlinked if exists
 ln -sf $DOT/linux/fish/ $HOME/.config/fish
 
+# Templates
+\cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)
 
 echo Installing Flatpaks...
 if type apt-get >/dev/null 2>&1; then

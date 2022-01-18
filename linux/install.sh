@@ -81,7 +81,7 @@ if echo "$answer" | grep -iq "^y" ;then
         DOT="$(xdg-user-dir DOCUMENTS)/dotfiles"
     else
         echo h
-   	rm -r $DOT > /dev/null 2>&1
+        rm -r $DOT > /dev/null 2>&1
         ln -sf "$(xdg-user-dir DOCUMENTS)/dotfiles" $DOT
     fi
 else

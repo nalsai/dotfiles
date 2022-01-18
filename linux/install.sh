@@ -50,6 +50,7 @@ if echo "$answer" | grep -iq "^y" ;then
         sudo pacman -S git xdg-user-dirs
     fi
     cd "$(xdg-user-dir DOCUMENTS)"
+    rm -r "$(xdg-user-dir DOCUMENTS)/dotfiles" > /dev/null 2>&1
     echo -n "Clone using ssh or https? [s/h]: "
     old_stty_cfg=$(stty -g)
     stty raw -echo
@@ -58,12 +59,16 @@ if echo "$answer" | grep -iq "^y" ;then
     if echo "$answer" | grep -iq "^s" ;then
         echo s
         if ! git clone git@github.com:Nalsai/dotfiles.git; then
-            echo Error: You need to setup your git ssh key first to clone over ssh.
+            echo An error occured!
+            echo You may need to setup your git ssh key first to clone over ssh.
             exit 1
         fi
     else
         echo h
-        git clone https://github.com/Nalsai/dotfiles.git
+        if ! git clone https://github.com/Nalsai/dotfiles.git; then
+            echo An error occured!
+            exit 1
+        fi
     fi
 
     echo -n "Use Documents for symlinks or Home (Home is recommended)? [d/h]: "
@@ -76,6 +81,7 @@ if echo "$answer" | grep -iq "^y" ;then
         DOT="$(xdg-user-dir DOCUMENTS)/dotfiles"
     else
         echo h
+   	rm -r $DOT > /dev/null 2>&1
         ln -sf "$(xdg-user-dir DOCUMENTS)/dotfiles" $DOT
     fi
 else

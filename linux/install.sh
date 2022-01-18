@@ -218,7 +218,11 @@ if type apt-get >/dev/null 2>&1; then
     sudo apt-get remove firefox -y
 
     echo Installing other packages...
-    sudo apt-get install ffmpeg fish git htop neofetch neovim -y
+    sudo apt-get install ffmpeg git htop neofetch neovim -y
+
+    if sudo apt-get install fish -y; then
+        sudo usermod --shell /bin/fish $USER
+    fi
 
     # Docker
     sudo apt-get install ca-certificates curl gnupg lsb-release -y
@@ -260,7 +264,7 @@ elif type dnf >/dev/null 2>&1; then
     sudo dnf -y groupupdate core
 
     echo Installing other packages...
-    sudo dnf -y install ffmpeg fish flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools lutris dconf wireguard-tools
+    sudo dnf -y install ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools lutris dconf wireguard-tools
     sudo dnf -y group install "Virtualization"
 
     if sudo dnf -y install fish; then
@@ -301,6 +305,10 @@ elif type pacman >/dev/null 2>&1; then
 
     echo Installing other packages...
     sudo pacman -S ffmpeg fish git htop neofetch neovim
+
+    if sudo pacman -S fish; then
+        sudo usermod --shell /bin/fish $USER
+    fi
 fi
 
 if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/null 2>&1; then

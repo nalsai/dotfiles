@@ -87,7 +87,7 @@ if echo "$answer" | grep -iq "^y" ;then
 else
     echo n
     echo Downloading Dotfiles...
-    curl -L -o $TMP/dotfiles.zip "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip"
+    curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip
     unzip -u -d $TMP $TMP/dotfiles.zip
     rm -r $DOT > /dev/null 2>&1
     mv $TMP/dotfiles-main $DOT
@@ -315,6 +315,11 @@ if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/n
     systemctl --user enable syncthing.service
 fi
 
+release=$(github_latest_release "xxxserxxx/gotop")
+unamem=$(uname -m)
+curl -SL  https://github.com/xxxserxxx/gotop/releases/download/$release/gotop_$release\_$(uname -s)_${unamem/x86_64/amd64}.tgz -o $TMP/gotop.tgz
+tar -xf $TMP/gotop.tgz -C $TMP
+sudo install $TMP/gotop /usr/bin/
 
 echo Configuring Apps...
 if [ -f "/usr/share/applications/google-chrome.desktop" ]; then

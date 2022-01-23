@@ -87,7 +87,7 @@ if echo "$answer" | grep -iq "^y" ;then
 else
     echo n
     echo Downloading Dotfiles...
-    wget -O $TMP/dotfiles.zip "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip"
+    curl -L -o $TMP/dotfiles.zip "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip"
     unzip -u -d $TMP $TMP/dotfiles.zip
     rm -r $DOT > /dev/null 2>&1
     mv $TMP/dotfiles-main $DOT

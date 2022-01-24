@@ -50,7 +50,7 @@ if echo "$answer" | grep -iq "^y" ;then
         sudo pacman -S git xdg-user-dirs
     fi
     cd "$(xdg-user-dir DOCUMENTS)"
-    rm -r "$(xdg-user-dir DOCUMENTS)/dotfiles" > /dev/null 2>&1
+    sudo rm -rf "$(xdg-user-dir DOCUMENTS)/dotfiles" > /dev/null 2>&1
     echo -n "Clone using ssh or https? [s/h]: "
     old_stty_cfg=$(stty -g)
     stty raw -echo
@@ -81,7 +81,7 @@ if echo "$answer" | grep -iq "^y" ;then
         DOT="$(xdg-user-dir DOCUMENTS)/dotfiles"
     else
         echo h
-        rm -r $DOT > /dev/null 2>&1
+        sudo rm -rf $DOT > /dev/null 2>&1
         ln -sf "$(xdg-user-dir DOCUMENTS)/dotfiles" $DOT
     fi
 else
@@ -89,7 +89,7 @@ else
     echo Downloading Dotfiles...
     curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip
     unzip -u -d $TMP $TMP/dotfiles.zip
-    rm -r $DOT > /dev/null 2>&1
+    sudo rm -rf $DOT > /dev/null 2>&1
     mv $TMP/dotfiles-main $DOT
 fi
 
@@ -103,9 +103,9 @@ $DOT/linux/update-system.sh
 
 echo Making Symlinks...
 # mpv
-mkdir -p $HOME/.var/app/io.mpv.Mpv/config                       # make parent folder if not exists
-rm -r $HOME/.var/app/io.mpv.Mpv/config/mpv > /dev/null 2>&1     # remove folder to be symlinked if exists
-ln -sf $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv        # make symlink
+mkdir -p $HOME/.var/app/io.mpv.Mpv/config                         # make parent folder if not exists
+sudo rm -rf $HOME/.var/app/io.mpv.Mpv/config/mpv > /dev/null 2>&1 # remove folder to be symlinked if exists
+ln -sf $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv          # make symlink
 #$HOME/.config/plex-mpv-shim
 #$HOME/.var/app/com.github.iwalton3.jellyfin-mpv-shim/config/jellyfin-mpv-shim
 #$HOME/.var/app/io.github.celluloid_player.Celluloid/config/celluloid
@@ -126,7 +126,7 @@ ln -sf $DOT/vscode/keybindings.json "$HOME/.config/Code - OSS/User/keybindings.j
 ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
 
 # fish
-rm -r $HOME/.config/fish > /dev/null 2>&1    # remove folder to be symlinked if exists
+sudo rm -rf $HOME/.config/fish > /dev/null 2>&1  # remove folder to be symlinked if exists
 ln -sf $DOT/linux/fish/ $HOME/.config/fish
 
 # Templates
@@ -369,5 +369,5 @@ echo Installing Fonts...
 # TODO
 
 
-rm -r $TMP
+sudo rm -rf $TMP > /dev/null 2>&1
 echo Done!

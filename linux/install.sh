@@ -113,14 +113,14 @@ ln -sf $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv          # make symlink
 
 # Visual Studio Code settings.json and keybindings.json
 mkdir -p $HOME/.config/Code/User
-mkdir -p $HOME/.config/code-oss/User
-mkdir -p "$HOME/.config/Code - OSS/User"
 ln -sf $DOT/vscode/settings.json $HOME/.config/Code/User/settings.json
 ln -sf $DOT/vscode/keybindings.json $HOME/.config/Code/User/keybindings.json
-ln -sf $DOT/vscode/settings.json $HOME/.config/code-oss/User/settings.json
-ln -sf $DOT/vscode/keybindings.json $HOME/.config/code-oss/User/keybindings.json
-ln -sf $DOT/vscode/settings.json "$HOME/.config/Code - OSS/User/settings.json"
-ln -sf $DOT/vscode/keybindings.json "$HOME/.config/Code - OSS/User/keybindings.json"
+#mkdir -p $HOME/.config/code-oss/User
+#ln -sf $DOT/vscode/settings.json $HOME/.config/code-oss/User/settings.json
+#ln -sf $DOT/vscode/keybindings.json $HOME/.config/code-oss/User/keybindings.json
+#mkdir -p "$HOME/.config/Code - OSS/User"
+#ln -sf $DOT/vscode/settings.json "$HOME/.config/Code - OSS/User/settings.json"
+#ln -sf $DOT/vscode/keybindings.json "$HOME/.config/Code - OSS/User/keybindings.json"
 
 # .gitconfig
 ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
@@ -264,12 +264,17 @@ elif type dnf >/dev/null 2>&1; then
     sudo dnf -y groupupdate core
 
     echo Installing other packages...
-    sudo dnf -y install ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive vscode youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools lutris dconf wireguard-tools
+    sudo dnf -y install ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools lutris dconf wireguard-tools
     sudo dnf -y group install "Virtualization"
 
     if sudo dnf -y install fish; then
         sudo usermod --shell /bin/fish $USER
     fi
+
+    # VSCode
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+    sudo dnf -y install code
 
     # Docker
     sudo dnf -y install dnf-plugins-core

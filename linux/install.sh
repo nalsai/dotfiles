@@ -2,73 +2,75 @@
 clear
 echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
 echo
-echo "This script is still work in progress and currently only fully supports Fedora."
-
-# Resources used for writing this script:
-# https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script#27875395
-
-echo -n "Continue? [y/n]: "
-old_stty_cfg=$(stty -g)
-stty raw -echo
-answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-stty $old_stty_cfg
-if echo "$answer" | grep -iq "^y" ;then
-    echo y
-else
-    echo n
-    exit 130
-fi
-
-# TODO:
-# [1] full installation
-# [2] minimal installation (rootless)
-# [3] server installation
-# [4] tools
-
-DOT="$HOME/.dotfiles"
-TMP="/tmp/ZG90ZmlsZXM"
-mkdir -p $TMP
 
 github_latest_release() {
-    curl --silent "https://api.github.com/repos/$1/releases/latest" |
-    grep -Po '"tag_name": "\K.*?(?=")'
+  curl --silent "https://api.github.com/repos/$1/releases/latest" |
+  grep -Po '"tag_name": "\K.*?(?=")'
 }
 
-echo -n "Install to Documents with git? [y/n]: "
-old_stty_cfg=$(stty -g)
-stty raw -echo
-answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-stty $old_stty_cfg
-if echo "$answer" | grep -iq "^y" ;then
+prepare() {
+  DOT="$HOME/.dotfiles"
+  TMP="/tmp/ZG90ZmlsZXM"
+  mkdir -p $TMP
+}
+
+end() {
+  rm -rf $TMP > /dev/null 2>&1
+  echo Done!
+}
+
+FullInstall()
+{
+  echo "This script is work in progress and currently only fully supports Fedora."
+  echo -n "Continue? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
+    echo y
+  else
+    echo n
+    exit 130
+  fi
+
+  prepare
+
+  echo -n "Install to Documents with git? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
     echo y
     echo Installing git and xdg-user-dirs...
     if type apt-get >/dev/null 2>&1; then
-        sudo apt-get install git xdg-user-dirs -y
+      sudo apt-get install git xdg-user-dirs -y
     elif type dnf >/dev/null 2>&1; then
-        sudo dnf -y install git xdg-user-dirs
+      sudo dnf -y install git xdg-user-dirs
     elif type pacman >/dev/null 2>&1; then
-        sudo pacman -S git xdg-user-dirs
+      sudo pacman -S git xdg-user-dirs
     fi
     cd "$(xdg-user-dir DOCUMENTS)"
-    sudo rm -rf "$(xdg-user-dir DOCUMENTS)/dotfiles" > /dev/null 2>&1
+    rm -rf "$(xdg-user-dir DOCUMENTS)/dotfiles" > /dev/null 2>&1
     echo -n "Clone using ssh or https? [s/h]: "
     old_stty_cfg=$(stty -g)
     stty raw -echo
     answer=$( while ! head -c 1 | grep -i '[sh]' ;do true ;done )
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^s" ;then
-        echo s
-        if ! git clone git@github.com:Nalsai/dotfiles.git; then
-            echo An error occured!
-            echo You may need to setup your git ssh key first to clone over ssh.
-            exit 1
-        fi
+      echo s
+      if ! git clone git@github.com:Nalsai/dotfiles.git; then
+        echo An error occured!
+        echo You may need to setup your git ssh key first to clone over ssh.
+        exit 1
+      fi
     else
-        echo h
-        if ! git clone https://github.com/Nalsai/dotfiles.git; then
-            echo An error occured!
-            exit 1
-        fi
+      echo h
+      if ! git clone https://github.com/Nalsai/dotfiles.git; then
+        echo An error occured!
+        exit 1
+      fi
     fi
 
     echo -n "Use Documents for symlinks or Home (Home is recommended)? [d/h]: "
@@ -77,143 +79,143 @@ if echo "$answer" | grep -iq "^y" ;then
     answer=$( while ! head -c 1 | grep -i '[dh]' ;do true ;done )
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^d" ;then
-        echo d
-        DOT="$(xdg-user-dir DOCUMENTS)/dotfiles"
+      echo d
+      DOT="$(xdg-user-dir DOCUMENTS)/dotfiles"
     else
-        echo h
-        sudo rm -rf $DOT > /dev/null 2>&1
-        ln -sf "$(xdg-user-dir DOCUMENTS)/dotfiles" $DOT
+      echo h
+      rm -rf $DOT > /dev/null 2>&1
+      ln -sf "$(xdg-user-dir DOCUMENTS)/dotfiles" $DOT
     fi
-else
+  else
     echo n
     echo Downloading Dotfiles...
     curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip
     unzip -u -d $TMP $TMP/dotfiles.zip
-    sudo rm -rf $DOT > /dev/null 2>&1
+    rm -rf $DOT > /dev/null 2>&1
     mv $TMP/dotfiles-main $DOT
-fi
+  fi
 
-chmod +x $DOT/linux/connect-ssh.sh
-chmod +x $DOT/linux/install.sh
-chmod +x $DOT/linux/update-system.sh
-chmod +x $DOT/linux/chrome/dark_mode.sh
+  chmod +x $DOT/linux/connect-ssh.sh
+  chmod +x $DOT/linux/install.sh
+  chmod +x $DOT/linux/update-system.sh
+  chmod +x $DOT/linux/chrome/dark_mode.sh
 
-echo Updating System...
-$DOT/linux/update-system.sh
+  echo Updating System...
+  $DOT/linux/update-system.sh
 
-echo Making Symlinks...
-# mpv
-mkdir -p $HOME/.var/app/io.mpv.Mpv/config                         # make parent folder if not exists
-sudo rm -rf $HOME/.var/app/io.mpv.Mpv/config/mpv > /dev/null 2>&1 # remove folder to be symlinked if exists
-ln -sf $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv          # make symlink
-#$HOME/.config/plex-mpv-shim
-#$HOME/.var/app/com.github.iwalton3.jellyfin-mpv-shim/config/jellyfin-mpv-shim
-#$HOME/.var/app/io.github.celluloid_player.Celluloid/config/celluloid
-#$HOME/.config/mpv
+  echo Making Symlinks...
+  # mpv
+  mkdir -p $HOME/.var/app/io.mpv.Mpv/config                     # make parent folder if not exists
+  rm -rf $HOME/.var/app/io.mpv.Mpv/config/mpv > /dev/null 2>&1  # remove folder to be symlinked if exists
+  ln -sf $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv      # make symlink
+  #$HOME/.config/plex-mpv-shim
+  #$HOME/.var/app/com.github.iwalton3.jellyfin-mpv-shim/config/jellyfin-mpv-shim
+  #$HOME/.var/app/io.github.celluloid_player.Celluloid/config/celluloid
+  #$HOME/.config/mpv
 
-# Visual Studio Code settings.json and keybindings.json
-mkdir -p $HOME/.config/Code/User
-ln -sf $DOT/vscode/settings.json $HOME/.config/Code/User/settings.json
-ln -sf $DOT/vscode/keybindings.json $HOME/.config/Code/User/keybindings.json
-#mkdir -p $HOME/.config/code-oss/User
-#ln -sf $DOT/vscode/settings.json $HOME/.config/code-oss/User/settings.json
-#ln -sf $DOT/vscode/keybindings.json $HOME/.config/code-oss/User/keybindings.json
-#mkdir -p "$HOME/.config/Code - OSS/User"
-#ln -sf $DOT/vscode/settings.json "$HOME/.config/Code - OSS/User/settings.json"
-#ln -sf $DOT/vscode/keybindings.json "$HOME/.config/Code - OSS/User/keybindings.json"
+  # Visual Studio Code settings.json and keybindings.json
+  mkdir -p $HOME/.config/Code/User
+  ln -sf $DOT/vscode/settings.json $HOME/.config/Code/User/settings.json
+  ln -sf $DOT/vscode/keybindings.json $HOME/.config/Code/User/keybindings.json
+  #mkdir -p $HOME/.config/code-oss/User
+  #ln -sf $DOT/vscode/settings.json $HOME/.config/code-oss/User/settings.json
+  #ln -sf $DOT/vscode/keybindings.json $HOME/.config/code-oss/User/keybindings.json
+  #mkdir -p "$HOME/.config/Code - OSS/User"
+  #ln -sf $DOT/vscode/settings.json "$HOME/.config/Code - OSS/User/settings.json"
+  #ln -sf $DOT/vscode/keybindings.json "$HOME/.config/Code - OSS/User/keybindings.json"
 
-# .gitconfig
-ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
+  # .gitconfig
+  ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
 
-# fish
-sudo rm -rf $HOME/.config/fish > /dev/null 2>&1  # remove folder to be symlinked if exists
-ln -sf $DOT/linux/fish/ $HOME/.config/fish
+  # fish
+  rm -rf $HOME/.config/fish > /dev/null 2>&1  # remove folder to be symlinked if exists
+  ln -sf $DOT/linux/fish/ $HOME/.config/fish
 
-# Templates
-\cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)
+  # Templates
+  \cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)
 
-echo Installing Flatpaks...
-if type apt-get >/dev/null 2>&1; then
+  echo Installing Flatpaks...
+  if type apt-get >/dev/null 2>&1; then
     echo Flatpak needs to be installed first...
     sudo apt-get install flatpak gnome-software-plugin-flatpak -y
-fi
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
-flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.leinardi.gst com.mattjakeman.ExtensionManager com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge org.gnome.seahorse.Application org.mozilla.firefox org.gnome.Evolution
-flatpak install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 net.sourceforge.gMKVExtractGUI
-#com.calibre_ebook.calibre com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.gnome.Connections org.gnome.Epiphany org.kde.krita org.pitivi.Pitivi
+  fi
+  flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
+  flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.leinardi.gst com.mattjakeman.ExtensionManager com.skype.Client com.spotify.Client com.usebottles.bottles io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge org.gnome.seahorse.Application org.mozilla.firefox org.gnome.Evolution
+  flatpak install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 net.sourceforge.gMKVExtractGUI
+  #com.calibre_ebook.calibre com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.gnome.Connections org.gnome.Epiphany org.kde.krita org.pitivi.Pitivi
 
-# allow Bottles to access $HOME/Apps/Bottles
-sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"
+  # allow Bottles to access $HOME/Apps/Bottles
+  sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"
 
-flatpak info org.libreoffice.LibreOffice
-echo ""
-echo ""
-echo "If LibreOffice uses a different Runtime, the script needs to be updated"
-echo "Reinstalling the Locale installs all Locales, instead of just the main one."
-echo "This is needed for Spell Checking in other languages than the main one."
-echo "Reinstall org.freedesktop.Platform.Locale//21.08? [y/n]: "
-old_stty_cfg=$(stty -g)
-stty raw -echo
-answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-stty $old_stty_cfg
-if echo "$answer" | grep -iq "^y" ;then
+  flatpak info org.libreoffice.LibreOffice
+  echo ""
+  echo ""
+  echo "If LibreOffice uses a different Runtime, the script needs to be updated"
+  echo "Reinstalling the Locale installs all Locales, instead of just the main one."
+  echo "This is needed for Spell Checking in other languages than the main one."
+  echo "Reinstall org.freedesktop.Platform.Locale//21.08? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
     echo y
     flatpak install --reinstall flathub org.freedesktop.Platform.Locale//21.08
-else
+  else
     echo n
-fi
+  fi
 
-echo -n "Add AppCenter (Elementary) flatpak remote and install Ensembles? [y/n]: "
-old_stty_cfg=$(stty -g)
-stty raw -echo
-answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-stty $old_stty_cfg
-if echo "$answer" | grep -iq "^y" ;then
+  echo -n "Add AppCenter (Elementary) flatpak remote and install Ensembles? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
     echo y
     flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
     flatpak install ElementaryAppCenter com.github.subhadeepjasu.ensembles
-else
+  else
     echo n
-fi
+  fi
 
-echo -n "Install osu? [y/n]: "
-old_stty_cfg=$(stty -g)
-stty raw -echo
-answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-stty $old_stty_cfg
-if echo "$answer" | grep -iq "^y" ;then
+  echo -n "Install osu? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
     echo y
     flatpak install flathub sh.ppy.osu
-else
+  else
     echo n
-fi
+  fi
 
-echo -n "Install Mothership Defender 2? [y/n]: "
-old_stty_cfg=$(stty -g)
-stty raw -echo
-answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-stty $old_stty_cfg
-if echo "$answer" | grep -iq "^y" ;then
+  echo -n "Install Mothership Defender 2? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
     echo y
     flatpak install NilsFlatpakRepo de.Nalsai.MothershipDefender2
-else
+  else
     echo n
-fi
+  fi
 
-echo -n "Install Tactical Math Returns? [y/n]: "
-old_stty_cfg=$(stty -g)
-stty raw -echo
-answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-stty $old_stty_cfg
-if echo "$answer" | grep -iq "^y" ;then
+  echo -n "Install Tactical Math Returns? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
     echo y
     flatpak install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns
-else
+  else
     echo n
-fi
+  fi
 
-if type apt-get >/dev/null 2>&1; then
+  if type apt-get >/dev/null 2>&1; then
     echo Uninstalling packages not needed anymore...
     sudo apt-get remove firefox -y
 
@@ -221,7 +223,7 @@ if type apt-get >/dev/null 2>&1; then
     sudo apt-get install ffmpeg git htop neofetch neovim -y
 
     if sudo apt-get install fish -y; then
-        sudo usermod --shell /bin/fish $USER
+      sudo usermod --shell /bin/fish $USER
     fi
 
     # Docker
@@ -247,14 +249,14 @@ if type apt-get >/dev/null 2>&1; then
     answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^y" ;then
-        echo y
-        sudo systemctl enable docker
+      echo y
+      sudo systemctl enable docker
     else
-        echo n
+      echo n
     fi
 
 
-elif type dnf >/dev/null 2>&1; then
+  elif type dnf >/dev/null 2>&1; then
     echo Uninstalling packages not needed anymore...
     sudo dnf -y remove eog gnome-font-viewer libreoffice-* firefox
     sudo dnf -y group remove LibreOffice
@@ -268,7 +270,7 @@ elif type dnf >/dev/null 2>&1; then
     sudo dnf -y group install "Virtualization"
 
     if sudo dnf -y install fish; then
-        sudo usermod --shell /bin/fish $USER
+      sudo usermod --shell /bin/fish $USER
     fi
 
     # VSCode
@@ -297,14 +299,14 @@ elif type dnf >/dev/null 2>&1; then
     answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^y" ;then
-        echo y
-        sudo systemctl enable docker
+      echo y
+      sudo systemctl enable docker
     else
-        echo n
+      echo n
     fi
 
 
-elif type pacman >/dev/null 2>&1; then
+  elif type pacman >/dev/null 2>&1; then
     echo Uninstalling packages not needed anymore...
     sudo pacman -R firefox
 
@@ -312,67 +314,120 @@ elif type pacman >/dev/null 2>&1; then
     sudo pacman -S ffmpeg fish git htop neofetch neovim
 
     if sudo pacman -S fish; then
-        sudo usermod --shell /bin/fish $USER
+      sudo usermod --shell /bin/fish $USER
     fi
-fi
+  fi
 
-if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/null 2>&1; then
+  if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/null 2>&1; then
     systemctl --user enable syncthing.service
-fi
+  fi
 
-release=$(github_latest_release "xxxserxxx/gotop")
-unamem=$(uname -m)
-curl -SL  https://github.com/xxxserxxx/gotop/releases/download/$release/gotop_$release\_$(uname -s)_${unamem/x86_64/amd64}.tgz -o $TMP/gotop.tgz
-tar -xf $TMP/gotop.tgz -C $TMP
-sudo install $TMP/gotop /usr/bin/
+  release=$(github_latest_release "xxxserxxx/gotop")
+  unamem=$(uname -m)
+  curl -SL  https://github.com/xxxserxxx/gotop/releases/download/$release/gotop_$release\_$(uname -s)_${unamem/x86_64/amd64}.tgz -o $TMP/gotop.tgz
+  tar -xf $TMP/gotop.tgz -C $TMP
+  sudo install $TMP/gotop /usr/bin/
 
-echo Configuring Apps...
-if [ -f "/usr/share/applications/google-chrome.desktop" ]; then
+  echo Configuring Apps...
+  if [ -f "/usr/share/applications/google-chrome.desktop" ]; then
     $DOT/linux/chrome/dark_mode.sh
-fi
+  fi
 
-echo Configuring Gnome \(dconf\)...
-dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
-dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
-dconf write /org/gnome/desktop/privacy/recent-files-max-age "1"
-dconf write /org/gnome/desktop/privacy/remove-old-trash-files "true"
-dconf write /org/gnome/desktop/privacy/remove-old-temp-files "true"
-dconf write /org/gnome/desktop/privacy/old-files-age "uint32 7"
-dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps']"
-dconf write /org/gnome/desktop/peripherals/mouse/accel-profile "'flat'"
-dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
-dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
-dconf write /org/gnome/mutter/center-new-windows "true"
-dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Screenshot.desktop']"
-dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
+  echo Configuring Gnome \(dconf\)...
+  dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
+  dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
+  dconf write /org/gnome/desktop/privacy/recent-files-max-age "1"
+  dconf write /org/gnome/desktop/privacy/remove-old-trash-files "true"
+  dconf write /org/gnome/desktop/privacy/remove-old-temp-files "true"
+  dconf write /org/gnome/desktop/privacy/old-files-age "uint32 7"
+  dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps']"
+  dconf write /org/gnome/desktop/peripherals/mouse/accel-profile "'flat'"
+  dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
+  dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
+  dconf write /org/gnome/mutter/center-new-windows "true"
+  dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Screenshot.desktop']"
+  dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
 
-echo Making discord rpc work...
-mkdir -p ~/.config/user-tmpfiles.d
-echo 'L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0' > ~/.config/user-tmpfiles.d/discord-rpc.conf
-systemctl --user enable --now systemd-tmpfiles-setup.service
+  echo Making discord rpc work...
+  mkdir -p ~/.config/user-tmpfiles.d
+  echo 'L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0' > ~/.config/user-tmpfiles.d/discord-rpc.conf
+  systemctl --user enable --now systemd-tmpfiles-setup.service
 
-echo -n "Install shortcut for /home/nalsai/Apps/Minion3.0.5-java? [y/n]: "
-old_stty_cfg=$(stty -g)
-stty raw -echo
-answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-stty $old_stty_cfg
-if echo "$answer" | grep -iq "^y" ;then
+  echo -n "Install shortcut for /home/nalsai/Apps/Minion3.0.5-java? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
     echo y
     sudo ln -s $DOT/linux/shortcuts/esoui-minion.desktop $HOME/.local/share/applications/esoui-minion.desktop
-else
+  else
     echo n
-fi
+  fi
 
-# TODO
-#git gpg key
-#ask for sponsorblock.txt
-#celluloid,gnome terminal, builder...
-#file Templates
-#install extensions
+  # TODO
+  #git gpg key
+  #ask for sponsorblock.txt
+  #gnome terminal, builder...
+  #install extensions
 
-echo Installing Fonts...
-# TODO
+  echo Installing Fonts...
+  # TODO
 
+  end
+}
 
-sudo rm -rf $TMP > /dev/null 2>&1
-echo Done!
+ServerInstall() {
+  echo "This script is work in progress and will support Raspbian, Armbian, Fedora and RockyLinux."
+  echo -n "Continue? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
+    echo y
+  else
+    echo n
+    exit 130
+  fi
+
+  prepare
+  echo TODO
+  # see TODO file
+  end
+}
+
+MinimalInstall() {
+  echo TODO
+  # bash/fish/zsh aliases
+  # gtk/plasma settings
+}
+
+Tools() {
+  echo TODO
+  # create shortcuts
+  # connect to my ssh servers
+  # update
+  # clean
+}
+
+select s in "full installation" "server installation" "minimal installation (rootless)" "tools"; do
+  case $s in
+  "full installation")
+    FullInstall
+    break
+    ;;
+  "server installation")
+    ServerInstall
+    break
+    ;;
+  "minimal installation (rootless)")
+    MinimalInstall
+    break
+    ;;
+  "tools")
+    Tools
+    break
+    ;;
+    esac
+done

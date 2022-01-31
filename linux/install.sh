@@ -148,6 +148,18 @@ FullInstall()
   # allow Bottles to access $HOME/Apps/Bottles
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"
 
+  echo -n "Enable Wayland for Firefox? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox
+  else
+    echo n
+  fi
+
   flatpak info org.libreoffice.LibreOffice
   echo ""
   echo ""

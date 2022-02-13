@@ -441,5 +441,5 @@ select s in "full installation" "server installation" "minimal installation (roo
     Tools
     break
     ;;
-    esac
+  esac
 done

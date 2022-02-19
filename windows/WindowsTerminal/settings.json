@@ -34,12 +34,6 @@
                 "hidden": true
             },
             {
-                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-                "name": "Azure Cloud Shell",
-                "source": "Windows.Terminal.Azure",
-                "hidden": true
-            },
-            {
                 "name": "Git Bash",
                 "commandline": "C:/Program Files/Git/bin/bash.exe -li",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/git-for-windows.ico",
@@ -47,11 +41,47 @@
                 "hidden": false
             },
             {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure",
+                "hidden": true
+            },
+            {
                 "guid": "{58ad8b0c-3ef8-5f4d-bc6f-13e4c00f2530}",
                 "name": "WSL Debian",
                 "source": "Windows.Terminal.Wsl",
                 "startingDirectory": "//wsl$/Debian/home/nalsai",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
+            },
+            {
+                "name": "hachiman.nils.moe",
+                "commandline": "ssh root@hachiman.nils.moe -p 2022",
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/fedora.ico"
+            },
+            {
+                "name": "shiina.nils.moe",
+                "commandline": "ssh root@shiina.nils.moe -p 2022",
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
+            },
+            {
+                "name": "vps.nils.moe",
+                "commandline": "ssh nalsai@vps.nils.moe -p 35474",
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
+            },
+            {
+                "name": "minecraft.nils.moe",
+                "commandline": "ssh opc@minecraft.nils.moe",
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
+            },
+            {
+                "name": "pi@raspberrypi",
+                "commandline": "ssh pi@raspberrypi",
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/raspberry-pi.ico"
+            },
+            {
+                "name": "nalsai@odroidxu4",
+                "commandline": "ssh nalsai@odroidxu4",
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/armbian.ico"
             },
             {
                 "name": "nalsai@nanopineo3",
@@ -64,18 +94,8 @@
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/armbian.ico"
             },
             {
-                "name": "nalsai@odroidxu4",
-                "commandline": "ssh nalsai@odroidxu4",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/armbian.ico"
-            },
-            {
-                "name": "nalsai@vps.nils.moe",
-                "commandline": "ssh nalsai@vps.nils.moe -p 35474",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
-            },
-            {
-                "name": "root@vps2.nils.moe",
-                "commandline": "ssh root@vps2.nils.moe -p 65222",
+                "name": "OpenMPTCProuter",
+                "commandline": "ssh ubuntu@138.3.248.255 -p 65222",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
             }
         ]

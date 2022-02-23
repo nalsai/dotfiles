@@ -119,6 +119,10 @@ FullInstall()
   # fish
   rm -rf $HOME/.config/fish > /dev/null 2>&1  # remove folder to be symlinked if exists
   ln -sf $DOT/linux/fish/ $HOME/.config/fish
+  
+  # neovim
+  rm -rf $HOME/.config/nvim > /dev/null 2>&1  # remove folder to be symlinked if exists
+  ln -sf $DOT/linux/nvim/ $HOME/.config/nvim
 
   # Templates
   \cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)

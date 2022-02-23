@@ -1,4 +1,5 @@
 #!/bin/bash
+
 clear
 echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
 echo
@@ -72,20 +73,8 @@ FullInstall()
         exit 1
       fi
     fi
-
-    echo -n "Use Documents for symlinks or Home (Home is recommended)? [d/h]: "
-    old_stty_cfg=$(stty -g)
-    stty raw -echo
-    answer=$( while ! head -c 1 | grep -i '[dh]' ;do true ;done )
-    stty $old_stty_cfg
-    if echo "$answer" | grep -iq "^d" ;then
-      echo d
-      DOT="$(xdg-user-dir DOCUMENTS)/dotfiles"
-    else
-      echo h
-      rm -rf $DOT > /dev/null 2>&1
-      ln -sf "$(xdg-user-dir DOCUMENTS)/dotfiles" $DOT
-    fi
+    rm -rf $DOT > /dev/null 2>&1
+    ln -sf "$(xdg-user-dir DOCUMENTS)/dotfiles" $DOT
   else
     echo n
     echo Downloading Dotfiles...

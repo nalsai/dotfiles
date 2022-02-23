@@ -1,4 +1,6 @@
-echo 'Please select the server' 
+#!/bin/bash
+
+echo 'Please select the server:'
 
 select s in "hachiman.nils.moe" "shiina.nils.moe" "vps.nils.moe" "minecraft.nils.moe" "pi@raspberrypi" "nalsai@odroidxu4" "nalsai@nanopineo3" "nalsai@nanopi-r4s" "138.3.248.255 (OpenMPTCProuter)"; do
   case $s in
@@ -39,7 +41,6 @@ select s in "hachiman.nils.moe" "shiina.nils.moe" "vps.nils.moe" "minecraft.nils
     break
     ;;
   *)
-    echo "Invalid entry."
     break
     ;;
   esac

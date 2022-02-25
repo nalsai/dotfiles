@@ -4,11 +4,6 @@ clear
 echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
 echo
 
-github_latest_release() {
-  curl --silent "https://api.github.com/repos/$1/releases/latest" |
-  grep -Po '"tag_name": "\K.*?(?=")'
-}
-
 prepare() {
   DOT="$HOME/.dotfiles"
   TMP="/tmp/ZG90ZmlsZXM"
@@ -87,7 +82,11 @@ FullInstall()
   chmod +x $DOT/linux/connect-ssh.sh
   chmod +x $DOT/linux/install.sh
   chmod +x $DOT/linux/update-system.sh
-  chmod +x $DOT/linux/chrome/dark_mode.sh
+  chmod +x $DOT/linux/scripts/chrome_dark_mode.sh
+  chmod +x $DOT/linux/scripts/install_docker.sh
+  chmod +x $DOT/linux/scripts/install_gotop.sh
+  chmod +x $DOT/linux/shortcuts/install-shortcuts.sh
+
 
   echo Updating System...
   $DOT/linux/update-system.sh
@@ -117,11 +116,11 @@ FullInstall()
   ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
 
   # fish
-  rm -rf $HOME/.config/fish > /dev/null 2>&1  # remove folder to be symlinked if exists
+  rm -rf $HOME/.config/fish > /dev/null 2>&1
   ln -sf $DOT/linux/fish/ $HOME/.config/fish
   
   # neovim
-  rm -rf $HOME/.config/nvim > /dev/null 2>&1  # remove folder to be symlinked if exists
+  rm -rf $HOME/.config/nvim > /dev/null 2>&1
   ln -sf $DOT/linux/nvim/ $HOME/.config/nvim
 
   # Templates
@@ -232,22 +231,7 @@ FullInstall()
     fi
 
     # Docker
-    sudo apt-get install ca-certificates curl gnupg lsb-release -y
-    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt-get update
-    sudo apt-get install docker-ce docker-ce-cli containerd.io -y
-    sudo usermod -aG docker $USER
-    sudo systemctl start docker
-
-    # Docker Compose V2
-    sudo mkdir -p /usr/local/lib/docker/cli-plugins/
-    sudo curl -SL https://github.com/docker/compose/releases/download/$(github_latest_release "docker/compose")/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/lib/docker/cli-plugins/docker-compose
-    sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-
-    docker --version
-    docker compose version
-
+    $DOT/linux/scripts/install_docker.sh
     echo -n "Enable Docker service? [y/n]: "
     old_stty_cfg=$(stty -g)
     stty raw -echo
@@ -255,7 +239,7 @@ FullInstall()
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^y" ;then
       echo y
-      sudo systemctl enable docker
+      sudo systemctl enable docker --now
     else
       echo n
     fi
@@ -284,20 +268,7 @@ FullInstall()
     sudo dnf -y install code
 
     # Docker
-    sudo dnf -y install dnf-plugins-core
-    sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-    sudo dnf -y install docker-ce docker-ce-cli containerd.io
-    sudo usermod -aG docker $USER
-    sudo systemctl start docker
-
-    # Docker Compose V2
-    sudo mkdir -p /usr/local/lib/docker/cli-plugins/
-    sudo curl -SL https://github.com/docker/compose/releases/download/$(github_latest_release "docker/compose")/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/lib/docker/cli-plugins/docker-compose
-    sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-
-    docker --version
-    docker compose version
-
+    $DOT/linux/scripts/install_docker.sh
     echo -n "Enable Docker service? [y/n]: "
     old_stty_cfg=$(stty -g)
     stty raw -echo
@@ -305,7 +276,7 @@ FullInstall()
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^y" ;then
       echo y
-      sudo systemctl enable docker
+      sudo systemctl enable docker --now
     else
       echo n
     fi
@@ -327,15 +298,11 @@ FullInstall()
     systemctl --user enable syncthing.service
   fi
 
-  release=$(github_latest_release "xxxserxxx/gotop")
-  unamem=$(uname -m)
-  curl -SL  https://github.com/xxxserxxx/gotop/releases/download/$release/gotop_$release\_$(uname -s)_${unamem/x86_64/amd64}.tgz -o $TMP/gotop.tgz
-  tar -xf $TMP/gotop.tgz -C $TMP
-  sudo install $TMP/gotop /usr/bin/
+  $DOT/linux/scripts/install_gotop.sh
 
   echo Configuring Apps...
   if [ -f "/usr/share/applications/google-chrome.desktop" ]; then
-    $DOT/linux/chrome/dark_mode.sh
+    $DOT/linux/scripts/chrome_dark_mode.sh
   fi
 
   echo Configuring Gnome \(dconf\)...
@@ -383,7 +350,7 @@ FullInstall()
 }
 
 ServerInstall() {
-  echo "This script is work in progress and will support Raspbian, Armbian, Fedora and RockyLinux."
+  echo "This script is work in progress and will support Raspbian, Armbian, Debian, Fedora and RockyLinux."
   echo -n "Continue? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
@@ -397,26 +364,139 @@ ServerInstall() {
   fi
 
   prepare
-  echo TODO
-  # see TODO file
+
+  echo Downloading Dotfiles...
+  curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip
+  unzip -u -d $TMP $TMP/dotfiles.zip
+  rm -rf $DOT > /dev/null 2>&1
+  mv $TMP/dotfiles-main $DOT
+
+  chmod +x $DOT/linux/connect-ssh.sh
+  chmod +x $DOT/linux/install.sh
+  chmod +x $DOT/linux/update-system.sh
+  chmod +x $DOT/linux/scripts/chrome_dark_mode.sh
+  chmod +x $DOT/linux/scripts/install_docker.sh
+  chmod +x $DOT/linux/scripts/install_gotop.sh
+  chmod +x $DOT/linux/shortcuts/install-shortcuts.sh
+
+
+  echo Updating System...
+  $DOT/linux/update-system.sh
+
+
+  echo Making Symlinks...
+  # .gitconfig
+  ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
+
+  # fish
+  rm -rf $HOME/.config/fish > /dev/null 2>&1
+  ln -sf $DOT/linux/fish/ $HOME/.config/fish
+
+  # neovim
+  rm -rf $HOME/.config/nvim > /dev/null 2>&1
+  ln -sf $DOT/linux/nvim/ $HOME/.config/nvim
+
+
+  echo Installing packages...
+
+  if type apt-get >/dev/null 2>&1; then
+    sudo apt-get install ca-certificates curl gnupg lsb-release git neovim fish htop neofetch -y
+    # cockpit cockpit-pcp pcp packagekit
+
+    if sudo apt-get install fish -y; then
+      sudo usermod --shell /bin/fish $USER
+    fi
+
+  elif type dnf >/dev/null 2>&1; then
+    ID=
+    [[ -f /etc/os-release ]] && . /etc/os-release
+    if [[ "$ID" != "rocky" ]]; then
+      echo Installing EPEL and RPM Fusion
+      sudo dnf -y install epel-release rpmfusion-free-release rpmfusion-nonfree-release
+
+    elif [[ "$ID" != "fedora" ]]; then
+      echo Installing RPM Fusion
+      sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+      sudo dnf -y groupupdate core
+    fi
+
+    sudo dnf -y install git htop neofetch neovim dnf-utils dnf-plugins-core dnf-automatic cockpit cockpit-pcp pcp packagekit
+
+    if sudo dnf -y install fish; then
+      sudo usermod --shell /bin/fish $USER
+    fi
+  fi
+
+  $DOT/linux/scripts/install_docker.sh
+  sudo systemctl enable docker --now
+
   end
 }
 
 MinimalInstall() {
+  # rootless
   echo TODO
   # bash/fish/zsh aliases
   # gtk/plasma settings
 }
 
 Tools() {
-  echo TODO
-  # create shortcuts
-  # connect to my ssh servers
-  # update
-  # clean
+  while true; do
+    echo
+    echo 'Please select what to do:'
+    select s in "install shortcuts" "connect to ssh server" "update system" "clean package caches" "install docker" "install gotop" "force chrome dark mode" "exit"; do
+      case $s in
+      "install shortcuts")
+        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/shortcuts/install-shortcuts.sh)
+        break
+        ;;
+      "connect to ssh server")
+        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/connect-ssh.sh)
+        break
+        ;;
+      "update system")
+        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/update-system.sh)
+        break
+        ;;
+      "clean package caches")
+        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/update-system.sh) -c
+        break
+        ;;
+      "install docker")
+        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_docker.sh) -c
+        $DOT/linux/scripts/install_docker.sh
+        echo -n "Enable Docker service? [y/n]: "
+        old_stty_cfg=$(stty -g)
+        stty raw -echo
+        answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+        stty $old_stty_cfg
+        if echo "$answer" | grep -iq "^y" ;then
+          echo y
+          sudo systemctl enable docker --now
+        else
+          echo n
+        fi
+        break
+        ;;
+      "install gotop")
+        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_gotop.sh) -c
+        break
+        ;;
+      "force chrome dark mode")
+        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/chrome_dark_mode.sh) -c
+        break
+        ;;
+      "exit")
+        exit
+        break
+        ;;
+      esac
+    done
+  done
 }
 
-select s in "full installation" "server installation" "minimal installation (rootless)" "tools"; do
+#select s in "full installation" "server installation" "rootless installation" "tools"; do
+select s in "full installation" "server installation" "tools"; do
   case $s in
   "full installation")
     FullInstall
@@ -426,7 +506,7 @@ select s in "full installation" "server installation" "minimal installation (roo
     ServerInstall
     break
     ;;
-  "minimal installation (rootless)")
+  "rootless installation")
     MinimalInstall
     break
     ;;
@@ -434,5 +514,5 @@ select s in "full installation" "server installation" "minimal installation (roo
     Tools
     break
     ;;
-    esac
+  esac
 done

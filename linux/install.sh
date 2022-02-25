@@ -32,6 +32,15 @@ FullInstall()
 
   prepare
 
+  echo Making sure everything needed for setup is installed...
+  if type apt-get >/dev/null 2>&1; then
+    sudo apt-get install curl git unzip xdg-user-dirs -y
+  elif type dnf >/dev/null 2>&1; then
+    sudo dnf -y install curl git unzip xdg-user-dirs
+  elif type pacman >/dev/null 2>&1; then
+    sudo pacman -S curl git unzip xdg-user-dirs
+  fi
+
   echo -n "Install to Documents with git? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
@@ -39,14 +48,6 @@ FullInstall()
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    echo Installing git and xdg-user-dirs...
-    if type apt-get >/dev/null 2>&1; then
-      sudo apt-get install git xdg-user-dirs -y
-    elif type dnf >/dev/null 2>&1; then
-      sudo dnf -y install git xdg-user-dirs
-    elif type pacman >/dev/null 2>&1; then
-      sudo pacman -S git xdg-user-dirs
-    fi
     cd "$(xdg-user-dir DOCUMENTS)"
     rm -rf "$(xdg-user-dir DOCUMENTS)/dotfiles" > /dev/null 2>&1
     echo -n "Clone using ssh or https? [s/h]: "
@@ -364,6 +365,14 @@ ServerInstall() {
   fi
 
   prepare
+
+  echo Making sure curl and unzip are installed
+
+  if type apt-get >/dev/null 2>&1; then
+    sudo apt-get install curl unzip -y
+  elif type dnf >/dev/null 2>&1; then
+    sudo dnf -y install curl unzip
+  fi
 
   echo Downloading Dotfiles...
   curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip

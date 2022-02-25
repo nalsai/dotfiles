@@ -419,11 +419,12 @@ ServerInstall() {
   elif type dnf >/dev/null 2>&1; then
     ID=
     [[ -f /etc/os-release ]] && . /etc/os-release
-    if [[ "$ID" != "rocky" ]]; then
+    if [[ "$ID" == "rocky" ]]; then
       echo Installing EPEL and RPM Fusion
-      sudo dnf -y install epel-release rpmfusion-free-release rpmfusion-nonfree-release
+      sudo dnf -y install epel-release
+      sudo dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rocky).noarch.rpmhttps://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rocky).noarch.rpm
 
-    elif [[ "$ID" != "fedora" ]]; then
+    elif [[ "$ID" == "fedora" ]]; then
       echo Installing RPM Fusion
       sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
       sudo dnf -y groupupdate core

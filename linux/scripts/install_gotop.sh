@@ -5,8 +5,14 @@ github_latest_release() {
   grep -Po '"tag_name": "\K.*?(?=")'
 }
 
+TMP="/tmp/ZG90ZmlsZXM"
+mkdir -p $TMP
+
 release=$(github_latest_release "xxxserxxx/gotop")
 unamem=$(uname -m)
 curl -SL  https://github.com/xxxserxxx/gotop/releases/download/$release/gotop_$release\_$(uname -s)_${unamem/x86_64/amd64}.tgz -o $TMP/gotop.tgz
 tar -xf $TMP/gotop.tgz -C $TMP
 sudo install $TMP/gotop /usr/bin/
+
+rm -rf $TMP > /dev/null 2>&1
+echo Done!

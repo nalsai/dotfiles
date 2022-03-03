@@ -13,7 +13,7 @@ if (!(which choco)) {
 
 choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
 choco install vscode --params "/NoDesktopIcon /NoQuicklaunchIcon /NoContextMenuFiles" --limit-output
-choco install 7zip temurin altdrag audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp curl discord eac eartrumpet edgedeflector etcher everything exiftool ffmpeg-full filezilla firefox flacsquisher gimp golang googlechrome hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv nomacs notepad2-mod obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus spotify steam-client synctrayzor taskbarx unity-hub vlc wget winbtrfs windirstat wireshark youtube-dl --limit-output
+choco install 7zip temurin altdrag audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp curl discord eac eartrumpet edgedeflector etcher everything exiftool ffmpeg-full filezilla firefox flacsquisher gimp goggalaxy golang googlechrome hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv nomacs notepad2-mod obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus spotify steam-client synctrayzor taskbarx unity-hub vlc wget winbtrfs windirstat wireshark youtube-dl --limit-output
 choco install figma --ignore-checksums --limit-output
 
 # Run TaskbarX and add to Startup
@@ -65,6 +65,7 @@ $pin_block = {
 #	'discord',
 #	'figma',
 #	'firefox',
+#	'goggalaxy'
 #	'googlechrome',
 #	'spotify',
 	'steam-client'
@@ -141,22 +142,6 @@ Write-Host $key.Character
 Switch ($key.Character) {
 	Y {
 		choco install assaultcube --limit-output
-	}
-	Default {}
-}
-
-Write-Host "Install bethesdanet, goggalaxy? [y/N]: " -ForegroundColor Yellow -NoNewline
-$host.UI.RawUI.FlushInputBuffer()
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
-	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-Write-Host $key.Character
-Switch ($key.Character) {
-	Y {
-		choco install bethesdanet goggalaxy --limit-output
-		choco pin add --name bethesdanet
-		choco pin add --name goggalaxy
 	}
 	Default {}
 }

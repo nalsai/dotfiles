@@ -17,7 +17,8 @@ end() {
 
 FullInstall()
 {
-  echo "This script is work in progress and currently only fully supports Fedora."
+  echo "This script is work in progress and supports Fedora."
+  echo "It partially supports Arch, Debian and Derivatives."
   echo -n "Continue? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
@@ -350,6 +351,28 @@ FullInstall()
   end
 }
 
+MinimalInstall() {
+  echo "This script is work in progress and supports Arch, Debian, Fedora and Derivatives."
+  echo "(including Chrome OS, WSL etc.)"
+  echo -n "Continue? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
+    echo y
+  else
+    echo n
+    exit 130
+  fi
+
+  prepare
+
+  # TODO
+
+  end
+}
+
 ServerInstall() {
   echo "This script is work in progress and will support Raspbian, Armbian, Debian, Fedora and RockyLinux."
   echo -n "Continue? [y/n]: "
@@ -430,7 +453,7 @@ ServerInstall() {
       sudo dnf -y groupupdate core
     fi
 
-    sudo dnf -y install git htop neofetch neovim dnf-utils dnf-plugins-core dnf-automatic cockpit cockpit-pcp pcp packagekit
+    sudo dnf -y install git htop neofetch neovim dnf-utils dnf-plugins-core dnf-automatic cockpit cockpit-pcp pcp PackageKit
 
     if sudo dnf -y install fish; then
       sudo usermod --shell /bin/fish $USER
@@ -441,13 +464,6 @@ ServerInstall() {
   sudo systemctl enable docker --now
 
   end
-}
-
-MinimalInstall() {
-  # rootless
-  echo TODO
-  # bash/fish/zsh aliases
-  # gtk/plasma settings
 }
 
 Tools() {
@@ -505,19 +521,18 @@ Tools() {
   done
 }
 
-#select s in "full installation" "server installation" "rootless installation" "tools"; do
-select s in "full installation" "server installation" "tools"; do
+select s in "full installation" "minimal installation" "server installation" "tools"; do
   case $s in
   "full installation")
     FullInstall
     break
     ;;
-  "server installation")
-    ServerInstall
+  "minimal installation")
+    MinimalInstall
     break
     ;;
-  "rootless installation")
-    MinimalInstall
+  "server installation")
+    ServerInstall
     break
     ;;
   "tools")

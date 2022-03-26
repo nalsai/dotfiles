@@ -146,7 +146,9 @@ Switch ($key.Character) {
 	Default {}
 }
 
-Write-Host "Change git signingkey? [y/N]: " -ForegroundColor Yellow -NoNewline
+git config --global core.editor "code --wait"
+
+Write-Host "Disable git gpgsign? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
@@ -155,15 +157,29 @@ while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKey
 Write-Host $key.Character
 Switch ($key.Character) {
 	Y {
-		Write-Host "Listing keys:" -ForegroundColor Yellow
-		Write-Host "gpg --list-secret-keys --keyid-format=long"
-		gpg --list-secret-keys --keyid-format=long
-
-		Write-Host "GPG key ID: " -ForegroundColor Cyan -NoNewline
-		$keyID = Read-Host
-		git config --global user.signingkey "$keyID"
+		git config --global commit.gpgsign false
 	}
-	Default {}
+	Default {
+		Write-Host "Change git signingkey? [y/N]: " -ForegroundColor Yellow -NoNewline
+		$host.UI.RawUI.FlushInputBuffer()
+		$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+		while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+			$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+		}
+		Write-Host $key.Character
+		Switch ($key.Character) {
+			Y {
+				Write-Host "Listing keys:" -ForegroundColor Yellow
+				Write-Host "gpg --list-secret-keys --keyid-format=long"
+				gpg --list-secret-keys --keyid-format=long
+
+				Write-Host "GPG key ID: " -ForegroundColor Cyan -NoNewline
+				$keyID = Read-Host
+				git config --global user.signingkey "$keyID"
+			}
+			Default {}
+		}
+	}
 }
 
 Write-Host "Done Installing Apps" -ForegroundColor Green

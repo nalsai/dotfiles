@@ -317,7 +317,7 @@ FullInstall()
   echo 'L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0' > ~/.config/user-tmpfiles.d/discord-rpc.conf
   systemctl --user enable --now systemd-tmpfiles-setup.service
 
-  echo -n "Install shortcut for /home/nalsai/Apps/Minion3.0.5-java? [y/n]: "
+  echo -n "Install shortcut for /home/nalsai/Apps/Minion? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
   answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
@@ -329,11 +329,35 @@ FullInstall()
     echo n
   fi
 
-  # TODO
-  #git gpg key
-  #ask for sponsorblock.txt
-  #gnome terminal, builder...
-  #install extensions
+  echo -n "Disable git gpgsign? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    git config --global commit.gpgsign false
+  else
+    echo n
+      echo -n "Change git signingkey? [y/n]: "
+      old_stty_cfg=$(stty -g)
+      stty raw -echo
+      answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+      stty $old_stty_cfg
+      if echo "$answer" | grep -iq "^y" ;then
+        echo y
+        echo "Listing keys:"
+        echo "gpg --list-secret-keys --keyid-format=long"
+        gpg --list-secret-keys --keyid-format=long
+        echo -n "GPG key ID: "
+        read keyID
+        git config --global user.signingkey "$keyID"
+      else
+        echo n
+      fi
+  fi
+
+  # TODO: install extensions
 
   echo Installing Fonts...
   # TODO

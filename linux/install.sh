@@ -84,7 +84,6 @@ FullInstall()
   chmod +x $DOT/linux/connect-ssh.sh
   chmod +x $DOT/linux/install.sh
   chmod +x $DOT/linux/update-system.sh
-  chmod +x $DOT/linux/scripts/chrome_dark_mode.sh
   chmod +x $DOT/linux/scripts/install_docker.sh
   chmod +x $DOT/linux/scripts/install_gotop.sh
   chmod +x $DOT/linux/shortcuts/install-shortcuts.sh
@@ -114,6 +113,14 @@ FullInstall()
   #ln -sf $DOT/vscode/settings.json "$HOME/.config/Code - OSS/User/settings.json"
   #ln -sf $DOT/vscode/keybindings.json "$HOME/.config/Code - OSS/User/keybindings.json"
 
+  # Chrom(e|ium) dark mode and Wayland
+  mkdir -p $HOME/.var/app/com.google.Chrome/config/chrome-flags.conf
+  ln -sf $DOT/linux/chromium-flags.conf $HOME/.var/app/com.google.Chrome/config/chrome-flags.conf
+  mkdir -p $HOME/.var/app/org.chromium.Chromium/config/chromium-flags.conf
+  ln -sf $DOT/linux/chromium-flags.conf $HOME/.var/app/org.chromium.Chromium/config/chromium-flags.conf
+  mkdir -p $HOME/.var/app/com.github.Eloston.UngoogledChromium/config/chromium-flags.conf
+  ln -sf $DOT/linux/chromium-flags.conf $HOME/.var/app/com.github.Eloston.UngoogledChromium/config/chromium-flags.conf
+
   # .gitconfig
   ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
 
@@ -142,17 +149,8 @@ FullInstall()
   # allow Bottles to access $HOME/Apps/Bottles
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"
 
-  echo -n "Enable Wayland for Firefox? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox
-  else
-    echo n
-  fi
+  # Firefox Wayland
+  sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox
 
   flatpak info org.libreoffice.LibreOffice
   echo ""
@@ -470,7 +468,7 @@ Tools() {
   while true; do
     echo
     echo 'Please select what to do:'
-    select s in "install shortcuts" "connect to ssh server" "update system" "clean package caches" "install docker" "install gotop" "force chrome dark mode" "exit"; do
+    select s in "install shortcuts" "connect to ssh server" "update system" "clean package caches" "install docker" "install gotop" "exit"; do
       case $s in
       "install shortcuts")
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/shortcuts/install-shortcuts.sh)
@@ -506,10 +504,6 @@ Tools() {
         ;;
       "install gotop")
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_gotop.sh) -c
-        break
-        ;;
-      "force chrome dark mode")
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/chrome_dark_mode.sh) -c
         break
         ;;
       "exit")

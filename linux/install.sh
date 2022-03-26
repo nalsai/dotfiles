@@ -140,11 +140,20 @@ FullInstall()
     echo Flatpak needs to be installed first...
     sudo apt-get install flatpak gnome-software-plugin-flatpak -y
   fi
+
   flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium com.github.gi_lom.dialect com.github.huluti.Curtail \
+    com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal \
+    com.leinardi.gst com.mattjakeman.ExtensionManager com.github.qarmin.szyszka com.rafaelmardojai.WebfontKitGenerator com.skype.Client com.usebottles.bottles \
+    dev.alextren.Spot fr.romainvigier.MetadataCleaner io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin \
+    nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.Firmware org.gnome.Connections org.gnome.font-viewer \
+    org.gnome.gitg org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice \
+    org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge \
+    org.gnome.seahorse.Application org.mozilla.firefox org.gnome.Evolution re.sonny.Commit
+    #com.calibre_ebook.calibre com.github.qarmin.czkawka com.katawa_shoujo.KatawaShoujo io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.kde.krita org.pitivi.Pitivi
+
   flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
-  flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.gi_lom.dialect com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal com.leinardi.gst com.mattjakeman.ExtensionManager com.skype.Client com.usebottles.bottles dev.alextren.Spot io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge org.gnome.seahorse.Application org.mozilla.firefox org.gnome.Evolution
   flatpak install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 net.sourceforge.gMKVExtractGUI
-  #com.calibre_ebook.calibre com.github.qarmin.czkawka com.github.qarmin.szyszka com.katawa_shoujo.KatawaShoujo com.rafaelmardojai.WebfontKitGenerator fr.romainvigier.MetadataCleaner info.febvre.Komikku io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.gnome.Connections org.gnome.Epiphany org.kde.krita org.pitivi.Pitivi
 
   # allow Bottles to access $HOME/Apps/Bottles
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"
@@ -153,11 +162,9 @@ FullInstall()
   sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox
 
   flatpak info org.libreoffice.LibreOffice
-  echo ""
-  echo ""
-  echo "If LibreOffice uses a different Runtime, the script needs to be updated"
-  echo "Reinstalling the Locale installs all Locales, instead of just the main one."
-  echo "This is needed for Spell Checking in other languages than the main one."
+  echo
+  echo "Reinstalling installs all Locales, instead of just the main one."
+  echo "This is needed for Spell Checking in different languages."
   echo "Reinstall org.freedesktop.Platform.Locale//21.08? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
@@ -170,7 +177,7 @@ FullInstall()
     echo n
   fi
 
-  echo -n "Add AppCenter (Elementary) flatpak remote and install Ensembles? [y/n]: "
+  echo -n "Add Elementary AppCenter flatpak remote and install Ensembles? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
   answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
@@ -195,26 +202,14 @@ FullInstall()
     echo n
   fi
 
-  echo -n "Install Mothership Defender 2? [y/n]: "
+  echo -n "Install Mothership Defender 2 and Tactical Math Returns? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
   answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    flatpak install NilsFlatpakRepo de.Nalsai.MothershipDefender2
-  else
-    echo n
-  fi
-
-  echo -n "Install Tactical Math Returns? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    flatpak install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns
+    flatpak install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2
   else
     echo n
   fi
@@ -301,9 +296,6 @@ FullInstall()
   $DOT/linux/scripts/install_gotop.sh
 
   echo Configuring Apps...
-  if [ -f "/usr/share/applications/google-chrome.desktop" ]; then
-    $DOT/linux/scripts/chrome_dark_mode.sh
-  fi
 
   echo Configuring Gnome \(dconf\)...
   dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
@@ -404,7 +396,6 @@ ServerInstall() {
   chmod +x $DOT/linux/connect-ssh.sh
   chmod +x $DOT/linux/install.sh
   chmod +x $DOT/linux/update-system.sh
-  chmod +x $DOT/linux/scripts/chrome_dark_mode.sh
   chmod +x $DOT/linux/scripts/install_docker.sh
   chmod +x $DOT/linux/scripts/install_gotop.sh
   chmod +x $DOT/linux/shortcuts/install-shortcuts.sh

@@ -64,11 +64,6 @@
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
             },
             {
-                "name": "vps.nils.moe",
-                "commandline": "ssh nalsai@vps.nils.moe -p 35474",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
-            },
-            {
                 "name": "minecraft.nils.moe",
                 "commandline": "ssh opc@minecraft.nils.moe",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"

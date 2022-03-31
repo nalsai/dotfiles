@@ -127,6 +127,11 @@ FullInstall()
   # fish
   rm -rf $HOME/.config/fish > /dev/null 2>&1
   ln -sf $DOT/linux/fish/ $HOME/.config/fish
+
+  # bash
+  rm -rf $HOME/.bash_aliases > /dev/null 2>&1
+  ln -sf $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
+  grep -q '. ~/.bash_aliases' $HOME/.bashrc || echo -e '\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n' >> $HOME/.bashrc
   
   # neovim
   rm -rf $HOME/.config/nvim > /dev/null 2>&1

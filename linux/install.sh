@@ -10,6 +10,103 @@ prepare() {
   mkdir -p $TMP
 }
 
+download() {
+  echo Downloading Dotfiles...
+  echo -n "Download with git? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    echo Making sure git is installed
+    if type apt-get >/dev/null 2>&1; then
+      sudo apt-get install git -y
+    elif type dnf >/dev/null 2>&1; then
+      sudo dnf -y install git
+    elif type pacman >/dev/null 2>&1; then
+      sudo pacman -S git
+    fi
+    echo -n "Clone using ssh or https? [s/h]: "
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    answer=$( while ! head -c 1 | grep -i "[sh]" ;do true ;done )
+    stty $old_stty_cfg
+    if echo "$answer" | grep -iq "^s" ;then
+      echo s
+      rm -rf $DOT > /dev/null 2>&1
+      if ! git clone git@github.com:Nalsai/dotfiles.git $DOT; then
+        echo An error occured while cloning!
+        echo Did you setup your git ssh key?
+        exit 1
+      fi
+    else
+      echo h
+      rm -rf $DOT > /dev/null 2>&1
+      if ! git clone https://github.com/Nalsai/dotfiles.git $DOT; then
+        echo An error occured while cloning!
+        exit 1
+      fi
+    fi
+  else
+    echo n
+    echo Making sure curl and unzip are installed
+    if type apt-get >/dev/null 2>&1; then
+      sudo apt-get install curl unzip -y
+    elif type dnf >/dev/null 2>&1; then
+      sudo dnf -y install curl unzip
+    fi
+    elif type pacman >/dev/null 2>&1; then
+      sudo pacman -S curl unzip
+    fi
+    if ! curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip; then
+        echo An error occured while downloading!
+        exit 1
+      fi
+    if ! unzip -u -d $TMP $TMP/dotfiles.zip; then
+        echo An error occured while unzipping!
+        exit 1
+      fi
+    rm -rf $DOT > /dev/null 2>&1
+    if ! mv $TMP/dotfiles-main $DOT; then
+        echo An error occured while moving the dotfiles into place!
+        exit 1
+      fi
+  fi
+
+  echo -n "Install symlink to Documents? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    echo Making sure xdg-user-dirs is installed
+    if type apt-get >/dev/null 2>&1; then
+      sudo apt-get install xdg-user-dirs -y
+    elif type dnf >/dev/null 2>&1; then
+      sudo dnf -y install xdg-user-dirs
+    elif type pacman >/dev/null 2>&1; then
+      sudo pacman -S xdg-user-dirs
+    fi
+    ln -sf $DOT "$(xdg-user-dir DOCUMENTS)/dotfiles"
+  else
+    echo n
+  fi
+
+  chmod +x $DOT/linux/connect-ssh.sh
+  chmod +x $DOT/linux/install.sh
+  chmod +x $DOT/linux/update-system.sh
+  chmod +x $DOT/linux/scripts/install_docker.sh
+  chmod +x $DOT/linux/scripts/install_gotop.sh
+  chmod +x $DOT/linux/shortcuts/install-shortcuts.sh
+}
+
+update() {
+  echo Updating System...
+  $DOT/linux/update-system.sh
+}
+
 end() {
   rm -rf $TMP > /dev/null 2>&1
   echo Done!
@@ -22,7 +119,7 @@ FullInstall()
   echo -n "Continue? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -32,65 +129,8 @@ FullInstall()
   fi
 
   prepare
-
-  echo Making sure everything needed for setup is installed...
-  if type apt-get >/dev/null 2>&1; then
-    sudo apt-get install curl git unzip xdg-user-dirs -y
-  elif type dnf >/dev/null 2>&1; then
-    sudo dnf -y install curl git unzip xdg-user-dirs
-  elif type pacman >/dev/null 2>&1; then
-    sudo pacman -S curl git unzip xdg-user-dirs
-  fi
-
-  echo -n "Install to Documents with git? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    cd "$(xdg-user-dir DOCUMENTS)"
-    rm -rf "$(xdg-user-dir DOCUMENTS)/dotfiles" > /dev/null 2>&1
-    echo -n "Clone using ssh or https? [s/h]: "
-    old_stty_cfg=$(stty -g)
-    stty raw -echo
-    answer=$( while ! head -c 1 | grep -i '[sh]' ;do true ;done )
-    stty $old_stty_cfg
-    if echo "$answer" | grep -iq "^s" ;then
-      echo s
-      if ! git clone git@github.com:Nalsai/dotfiles.git; then
-        echo An error occured!
-        echo You may need to setup your git ssh key first to clone over ssh.
-        exit 1
-      fi
-    else
-      echo h
-      if ! git clone https://github.com/Nalsai/dotfiles.git; then
-        echo An error occured!
-        exit 1
-      fi
-    fi
-    rm -rf $DOT > /dev/null 2>&1
-    ln -sf "$(xdg-user-dir DOCUMENTS)/dotfiles" $DOT
-  else
-    echo n
-    echo Downloading Dotfiles...
-    curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip
-    unzip -u -d $TMP $TMP/dotfiles.zip
-    rm -rf $DOT > /dev/null 2>&1
-    mv $TMP/dotfiles-main $DOT
-  fi
-
-  chmod +x $DOT/linux/connect-ssh.sh
-  chmod +x $DOT/linux/install.sh
-  chmod +x $DOT/linux/update-system.sh
-  chmod +x $DOT/linux/scripts/install_docker.sh
-  chmod +x $DOT/linux/scripts/install_gotop.sh
-  chmod +x $DOT/linux/shortcuts/install-shortcuts.sh
-
-
-  echo Updating System...
-  $DOT/linux/update-system.sh
+  download
+  update
 
   echo Making Symlinks...
   # mpv
@@ -131,8 +171,8 @@ FullInstall()
   # bash
   rm -rf $HOME/.bash_aliases > /dev/null 2>&1
   ln -sf $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
-  grep -q '. ~/.bash_aliases' $HOME/.bashrc || echo -e '\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n' >> $HOME/.bashrc
-  
+  grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >> $HOME/.bashrc
+
   # neovim
   rm -rf $HOME/.config/nvim > /dev/null 2>&1
   ln -sf $DOT/linux/nvim/ $HOME/.config/nvim
@@ -173,7 +213,7 @@ FullInstall()
   echo "Reinstall org.freedesktop.Platform.Locale//21.08? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -185,7 +225,7 @@ FullInstall()
   echo -n "Add Elementary AppCenter flatpak remote and install Ensembles? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -198,7 +238,7 @@ FullInstall()
   echo -n "Install osu? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -210,7 +250,7 @@ FullInstall()
   echo -n "Install Mothership Defender 2 and Tactical Math Returns? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -224,7 +264,7 @@ FullInstall()
     sudo apt-get remove firefox -y
 
     echo Installing other packages...
-    sudo apt-get install ffmpeg git htop neofetch neovim -y
+    sudo apt-get install curl ffmpeg git htop neofetch neovim unzip -y
 
     if sudo apt-get install fish -y; then
       sudo usermod --shell /bin/fish $USER
@@ -235,7 +275,7 @@ FullInstall()
     echo -n "Enable Docker service? [y/n]: "
     old_stty_cfg=$(stty -g)
     stty raw -echo
-    answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+    answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^y" ;then
       echo y
@@ -255,7 +295,7 @@ FullInstall()
     sudo dnf -y groupupdate core
 
     echo Installing other packages...
-    sudo dnf -y install ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl pandoc radeontop steam syncthing texlive youtube-dl yt-dlp tesseract-langpack-deu librsvg2-tools lutris dconf wireguard-tools
+    sudo dnf -y install curl dconf ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl librsvg2-tools lutris pandoc radeontop steam syncthing tesseract-langpack-deu texlive unzip wireguard-tools youtube-dl yt-dlp
     sudo dnf -y group install "Virtualization"
 
     if sudo dnf -y install fish; then
@@ -264,7 +304,7 @@ FullInstall()
 
     # VSCode
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+    sudo sh -c "echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo"
     sudo dnf -y install code
 
     # Docker
@@ -272,7 +312,7 @@ FullInstall()
     echo -n "Enable Docker service? [y/n]: "
     old_stty_cfg=$(stty -g)
     stty raw -echo
-    answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+    answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^y" ;then
       echo y
@@ -287,7 +327,7 @@ FullInstall()
     sudo pacman -R firefox
 
     echo Installing other packages...
-    sudo pacman -S ffmpeg fish git htop neofetch neovim
+    sudo pacman -S curl ffmpeg fish git htop neofetch neovim unzip
 
     if sudo pacman -S fish; then
       sudo usermod --shell /bin/fish $USER
@@ -303,29 +343,29 @@ FullInstall()
   echo Configuring Apps...
 
   echo Configuring Gnome \(dconf\)...
-  dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
+  dconf write /org/gnome/desktop/interface/gtk-theme ""Adwaita-dark""
   dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
   dconf write /org/gnome/desktop/privacy/recent-files-max-age "1"
   dconf write /org/gnome/desktop/privacy/remove-old-trash-files "true"
   dconf write /org/gnome/desktop/privacy/remove-old-temp-files "true"
   dconf write /org/gnome/desktop/privacy/old-files-age "uint32 7"
-  dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps']"
-  dconf write /org/gnome/desktop/peripherals/mouse/accel-profile "'flat'"
-  dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
-  dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
+  dconf write /org/gnome/desktop/input-sources/xkb-options "["lv3:ralt_switch", "compose:caps"]"
+  dconf write /org/gnome/desktop/peripherals/mouse/accel-profile ""flat""
+  dconf write /org/gnome/desktop/wm/keybindings/show-desktop "["<Super>d"]"
+  dconf write /org/gnome/desktop/wm/preferences/button-layout ""appmenu:minimize,close""
   dconf write /org/gnome/mutter/center-new-windows "true"
-  dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Screenshot.desktop']"
+  dconf write /org/gnome/shell/favorite-apps "["org.mozilla.firefox.desktop", "org.gnome.Nautilus.desktop", "org.gnome.TextEditor.desktop", "org.gnome.Terminal.desktop", "org.gnome.Screenshot.desktop"]"
   dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
 
   echo Making discord rpc work...
   mkdir -p ~/.config/user-tmpfiles.d
-  echo 'L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0' > ~/.config/user-tmpfiles.d/discord-rpc.conf
+  echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" > ~/.config/user-tmpfiles.d/discord-rpc.conf
   systemctl --user enable --now systemd-tmpfiles-setup.service
 
   echo -n "Install shortcut for /home/nalsai/Apps/Minion? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -337,7 +377,7 @@ FullInstall()
   echo -n "Disable git gpgsign? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -347,7 +387,7 @@ FullInstall()
       echo -n "Change git signingkey? [y/n]: "
       old_stty_cfg=$(stty -g)
       stty raw -echo
-      answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+      answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
       stty $old_stty_cfg
       if echo "$answer" | grep -iq "^y" ;then
         echo y
@@ -376,7 +416,7 @@ MinimalInstall() {
   echo -n "Continue? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -397,7 +437,7 @@ ServerInstall() {
   echo -n "Continue? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -407,32 +447,8 @@ ServerInstall() {
   fi
 
   prepare
-
-  echo Making sure curl and unzip are installed
-
-  if type apt-get >/dev/null 2>&1; then
-    sudo apt-get install curl unzip -y
-  elif type dnf >/dev/null 2>&1; then
-    sudo dnf -y install curl unzip
-  fi
-
-  echo Downloading Dotfiles...
-  curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip
-  unzip -u -d $TMP $TMP/dotfiles.zip
-  rm -rf $DOT > /dev/null 2>&1
-  mv $TMP/dotfiles-main $DOT
-
-  chmod +x $DOT/linux/connect-ssh.sh
-  chmod +x $DOT/linux/install.sh
-  chmod +x $DOT/linux/update-system.sh
-  chmod +x $DOT/linux/scripts/install_docker.sh
-  chmod +x $DOT/linux/scripts/install_gotop.sh
-  chmod +x $DOT/linux/shortcuts/install-shortcuts.sh
-
-
-  echo Updating System...
-  $DOT/linux/update-system.sh
-
+  download
+  update
 
   echo Making Symlinks...
   # .gitconfig
@@ -442,6 +458,11 @@ ServerInstall() {
   rm -rf $HOME/.config/fish > /dev/null 2>&1
   ln -sf $DOT/linux/fish/ $HOME/.config/fish
 
+  # bash
+  rm -rf $HOME/.bash_aliases > /dev/null 2>&1
+  ln -sf $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
+  grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >> $HOME/.bashrc
+
   # neovim
   rm -rf $HOME/.config/nvim > /dev/null 2>&1
   ln -sf $DOT/linux/nvim/ $HOME/.config/nvim
@@ -450,9 +471,7 @@ ServerInstall() {
   echo Installing packages...
 
   if type apt-get >/dev/null 2>&1; then
-    sudo apt-get install ca-certificates curl gnupg lsb-release git neovim fish htop neofetch -y
-    # cockpit cockpit-pcp pcp packagekit
-
+    sudo apt-get install ca-certificates cockpit cockpit-pcp curl git gnupg htop lsb-release neofetch neovim packagekit pcp -y
     if sudo apt-get install fish -y; then
       sudo usermod --shell /bin/fish $USER
     fi
@@ -471,11 +490,39 @@ ServerInstall() {
       sudo dnf -y groupupdate core
     fi
 
-    sudo dnf -y install git htop neofetch neovim dnf-utils dnf-plugins-core dnf-automatic cockpit cockpit-pcp pcp PackageKit
+    sudo dnf -y install cockpit cockpit-pcp dnf-automatic dnf-plugins-core dnf-utils git htop neofetch neovim pcp PackageKit
 
     if sudo dnf -y install fish; then
       sudo usermod --shell /bin/fish $USER
     fi
+  fi
+
+  echo -n "Disable git gpgsign? [y/n]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y" ;then
+    echo y
+    git config --global commit.gpgsign false
+  else
+    echo n
+      echo -n "Change git signingkey? [y/n]: "
+      old_stty_cfg=$(stty -g)
+      stty raw -echo
+      answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+      stty $old_stty_cfg
+      if echo "$answer" | grep -iq "^y" ;then
+        echo y
+        echo "Listing keys:"
+        echo "gpg --list-secret-keys --keyid-format=long"
+        gpg --list-secret-keys --keyid-format=long
+        echo -n "GPG key ID: "
+        read keyID
+        git config --global user.signingkey "$keyID"
+      else
+        echo n
+      fi
   fi
 
   $DOT/linux/scripts/install_docker.sh
@@ -487,7 +534,7 @@ ServerInstall() {
 Tools() {
   while true; do
     echo
-    echo 'Please select what to do:'
+    echo "Please select what to do:"
     select s in "install shortcuts" "connect to ssh server" "update system" "clean package caches" "install docker" "install gotop" "exit"; do
       case $s in
       "install shortcuts")
@@ -512,7 +559,7 @@ Tools() {
         echo -n "Enable Docker service? [y/n]: "
         old_stty_cfg=$(stty -g)
         stty raw -echo
-        answer=$( while ! head -c 1 | grep -i '[ny]' ;do true ;done )
+        answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
         stty $old_stty_cfg
         if echo "$answer" | grep -iq "^y" ;then
           echo y

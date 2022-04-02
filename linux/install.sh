@@ -55,7 +55,6 @@ download() {
       sudo apt-get install curl unzip -y
     elif type dnf >/dev/null 2>&1; then
       sudo dnf -y install curl unzip
-    fi
     elif type pacman >/dev/null 2>&1; then
       sudo pacman -S curl unzip
     fi

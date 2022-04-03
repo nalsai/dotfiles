@@ -7,7 +7,12 @@ github_latest_release() {
 
 
 echo "This script is WIP, using the official install script."
-curl -sSL https://get.docker.com/ | sh
+
+if type docker >/dev/null 2>&1; then
+  echo "Docker is already installed, skipping"
+else
+  curl -sSL https://get.docker.com/ | sh
+fi
 
 
 # Debian

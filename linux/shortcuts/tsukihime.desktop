@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Tsukihime
-Path=/home/nalsai/Apps/tsukihime
-Exec=/home/nalsai/Apps/tsukihime/onscripter-en -s ./
-Icon=/home/nalsai/Apps/tsukihime/icon.png
+Path=/home/nalsai/Apps/Tsukihime
+Exec=/home/nalsai/Apps/Tsukihime/onscripter-en -s ./
+Icon=/home/nalsai/Apps/Tsukihime/icon.png
 Categories=Game

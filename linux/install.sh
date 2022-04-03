@@ -342,18 +342,18 @@ FullInstall()
   echo Configuring Apps...
 
   echo Configuring Gnome \(dconf\)...
-  dconf write /org/gnome/desktop/interface/gtk-theme ""Adwaita-dark""
+   dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
   dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
   dconf write /org/gnome/desktop/privacy/recent-files-max-age "1"
   dconf write /org/gnome/desktop/privacy/remove-old-trash-files "true"
   dconf write /org/gnome/desktop/privacy/remove-old-temp-files "true"
   dconf write /org/gnome/desktop/privacy/old-files-age "uint32 7"
-  dconf write /org/gnome/desktop/input-sources/xkb-options "["lv3:ralt_switch", "compose:caps"]"
-  dconf write /org/gnome/desktop/peripherals/mouse/accel-profile ""flat""
-  dconf write /org/gnome/desktop/wm/keybindings/show-desktop "["<Super>d"]"
-  dconf write /org/gnome/desktop/wm/preferences/button-layout ""appmenu:minimize,close""
+  dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps']"
+  dconf write /org/gnome/desktop/peripherals/mouse/accel-profile "'flat'"
+  dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
+  dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
   dconf write /org/gnome/mutter/center-new-windows "true"
-  dconf write /org/gnome/shell/favorite-apps "["org.mozilla.firefox.desktop", "org.gnome.Nautilus.desktop", "org.gnome.TextEditor.desktop", "org.gnome.Terminal.desktop", "org.gnome.Screenshot.desktop"]"
+  dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Screenshot.desktop']"
   dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
 
   echo Making discord rpc work...

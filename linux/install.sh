@@ -192,7 +192,7 @@ FullInstall()
     dev.alextren.Spot fr.romainvigier.MetadataCleaner io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin \
     nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.Firmware org.gnome.Connections org.gnome.font-viewer \
     org.gnome.gitg org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice \
-    org.gnome.Extensions org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge \
+    org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge \
     org.gnome.seahorse.Application org.mozilla.firefox org.gnome.Evolution re.sonny.Commit
     #com.calibre_ebook.calibre com.github.qarmin.czkawka com.katawa_shoujo.KatawaShoujo io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.kde.krita org.pitivi.Pitivi
 
@@ -301,6 +301,9 @@ FullInstall()
       sudo usermod --shell /bin/fish $USER
     fi
 
+    echo Installing gnome shell extensions...
+    sudo dnf install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect gnome-shell-extension-sound-output-device-chooser --setopt=install_weak_deps=false
+
     # VSCode
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     sudo sh -c "echo -e '[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc' > /etc/yum.repos.d/vscode.repo"
@@ -400,8 +403,6 @@ FullInstall()
         echo n
       fi
   fi
-
-  # TODO: install extensions
 
   echo Installing Fonts...
   # TODO

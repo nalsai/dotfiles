@@ -78,32 +78,6 @@ Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimi
 
 . $PSScriptRoot\declutter-contextmenu.ps1 script
 
-Write-Host "Installing VSCode Extensions"
-$installation_block = {
-	$extensions =
-	'bungcip.better-toml',
-	'DavidAnson.vscode-markdownlint',
-	'DotJoshJohnson.xml',
-	'ecmel.vscode-html-css',
-	'golang.go',
-	'MikuroXina.cherry-petals-theme',
-	'ms-dotnettools.csharp',
-	'ms-vscode-remote.remote-wsl',
-	'ms-vscode.cpptools',
-	'ms-vscode.powershell',
-	'PKief.material-icon-theme',
-	'platformio.platformio-ide',
-	'ritwickdey.LiveServer',
-	'slevesque.vscode-autohotkey',
-	'Yummygum.city-lights-icon-vsc',
-	'yummygum.city-lights-theme',
-	'Zignd.html-css-class-completion'
-	for ($i = 0; $i -lt $extensions.Count; $i++) {
-		code.cmd --install-extension $extensions[$i]
-	}
-}
-Start-Process powershell -ArgumentList "-command refreshenv $installation_block"
-
 Write-Host "Install Cinebench, CrystalDiskMark, Furmark, Prime95? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

@@ -142,9 +142,9 @@ FullInstall()
   #$HOME/.config/mpv
 
   # Visual Studio Code settings.json and keybindings.json
-  mkdir -p $HOME/.config/Code/User
-  ln -sf $DOT/vscode/settings.json $HOME/.config/Code/User/settings.json
-  ln -sf $DOT/vscode/keybindings.json $HOME/.config/Code/User/keybindings.json
+  #mkdir -p $HOME/.config/Code/User
+  #ln -sf $DOT/vscode/settings.json $HOME/.config/Code/User/settings.json
+  #ln -sf $DOT/vscode/keybindings.json $HOME/.config/Code/User/keybindings.json
   #mkdir -p $HOME/.config/code-oss/User
   #ln -sf $DOT/vscode/settings.json $HOME/.config/code-oss/User/settings.json
   #ln -sf $DOT/vscode/keybindings.json $HOME/.config/code-oss/User/keybindings.json
@@ -302,7 +302,7 @@ FullInstall()
     fi
 
     echo Installing gnome shell extensions...
-    sudo dnf install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect gnome-shell-extension-sound-output-device-chooser --setopt=install_weak_deps=false
+    sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect gnome-shell-extension-sound-output-device-chooser --setopt=install_weak_deps=false
 
     # VSCode
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc

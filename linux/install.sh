@@ -405,7 +405,17 @@ FullInstall()
   fi
 
   echo Installing Fonts...
+  mkdir $TMP/fonts
+
+  curl -SL "https://www.fontsquirrel.com/fonts/download/gandhi-sans" -o $TMP/fonts/gandhi-sans.zip
+  unzip -u -d $TMP/fonts $TMP/fonts/gandhi-sans.zip
+  sudo mkdir /usr/share/fonts/gandhi-sans
+  sudo cp $TMP/fonts/GandhiSans-*.otf /usr/share/fonts/gandhi-sans
+
   # TODO
+  
+  sudo fc-cache -v
+
 
   end
 }

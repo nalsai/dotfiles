@@ -141,7 +141,8 @@ FullInstall()
   #$HOME/.var/app/io.github.celluloid_player.Celluloid/config/celluloid
   #$HOME/.config/mpv
 
-  # Visual Studio Code settings.json and keybindings.json
+  # Visual Studio Code
+  ln -sf $DOT/vscode/code-flags.conf $HOME/.config/code-flags.conf
   #mkdir -p $HOME/.config/Code/User
   #ln -sf $DOT/vscode/settings.json $HOME/.config/Code/User/settings.json
   #ln -sf $DOT/vscode/keybindings.json $HOME/.config/Code/User/keybindings.json

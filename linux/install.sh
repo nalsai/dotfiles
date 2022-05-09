@@ -190,7 +190,7 @@ FullInstall()
   flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium com.github.gi_lom.dialect com.github.huluti.Curtail \
     com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal \
     com.leinardi.gst com.mattjakeman.ExtensionManager com.github.qarmin.szyszka com.rafaelmardojai.WebfontKitGenerator com.skype.Client com.usebottles.bottles \
-    dev.alextren.Spot fr.romainvigier.MetadataCleaner io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin \
+    dev.alextren.Spot fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin \
     nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.Firmware org.gnome.Connections org.gnome.font-viewer \
     org.gnome.gitg org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice \
     org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge \

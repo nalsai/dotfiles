@@ -346,7 +346,8 @@ FullInstall()
   echo Configuring Apps...
 
   echo Configuring Gnome \(dconf\)...
-   dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
+  #dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
+  dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
   dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
   dconf write /org/gnome/desktop/privacy/recent-files-max-age "1"
   dconf write /org/gnome/desktop/privacy/remove-old-trash-files "true"

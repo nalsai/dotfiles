@@ -2,7 +2,7 @@
 
 echo 'Please select the server:'
 
-select s in "hachiman.nils.moe" "shiina.nils.moe" "minecraft.nils.moe" "pi@raspberrypi" "nalsai@odroidxu4" "nalsai@nanopineo3" "nalsai@nanopi-r4s" "138.3.248.255 (OpenMPTCProuter)"; do
+select s in "hachiman.nils.moe" "shiina.nils.moe" "minecraft.nils.moe" "nalsai@nanopineo3"; do
   case $s in
   "hachiman.nils.moe")
     ssh root@hachiman.nils.moe -p 2022
@@ -16,24 +16,8 @@ select s in "hachiman.nils.moe" "shiina.nils.moe" "minecraft.nils.moe" "pi@raspb
     ssh opc@minecraft.nils.moe
     break
     ;;
-  "pi@raspberrypi")
-    ssh pi@raspberrypi
-    break
-    ;;
-  "nalsai@odroidxu4")
-    ssh nalsai@odroidxu4
-    break
-    ;;
   "nalsai@nanopineo3")
     ssh nalsai@nanopineo3
-    break
-    ;;
-  "nalsai@nanopi-r4s")
-    ssh nalsai@nanopi-r4s
-    break
-    ;;
-  "138.3.248.255 (OpenMPTCProuter)")
-    ssh ubuntu@138.3.248.255 -p 65222
     break
     ;;
   *)

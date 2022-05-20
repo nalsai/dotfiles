@@ -69,29 +69,9 @@
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
             },
             {
-                "name": "pi@raspberrypi",
-                "commandline": "ssh pi@raspberrypi",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/raspberry-pi.ico"
-            },
-            {
-                "name": "nalsai@odroidxu4",
-                "commandline": "ssh nalsai@odroidxu4",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/armbian.ico"
-            },
-            {
                 "name": "nalsai@nanopineo3",
                 "commandline": "ssh nalsai@nanopineo3",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/armbian.ico"
-            },
-            {
-                "name": "nalsai@nanopi-r4s",
-                "commandline": "ssh nalsai@nanopi-r4s",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/armbian.ico"
-            },
-            {
-                "name": "OpenMPTCProuter",
-                "commandline": "ssh ubuntu@138.3.248.255 -p 65222",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
             }
         ]
     },

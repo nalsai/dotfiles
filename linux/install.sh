@@ -480,6 +480,12 @@ ServerInstall() {
   rm -rf $HOME/.config/nvim > /dev/null 2>&1
   ln -sf $DOT/linux/nvim/ $HOME/.config/nvim
 
+  [[ -f /etc/os-release ]] && . /etc/os-release
+  if [[ "$ID" == "rocky" ]]; then
+    echo Configuring ip_tables and iptable_mangle kernel modules to load at boot
+    echo ip_tables > /etc/modules-load.d/ip_tables.conf
+    echo iptable_mangle > /etc/modules-load.d/iptable_mangle.conf
+  fi
 
   echo Installing packages...
 
@@ -493,8 +499,9 @@ ServerInstall() {
     ID=
     [[ -f /etc/os-release ]] && . /etc/os-release
     if [[ "$ID" == "rocky" ]]; then
-      echo Installing EPEL and RPM Fusion
+      echo Installing EPEL, ELRepo and RPM Fusion
       sudo dnf -y install epel-release
+      sudo dnf -y install elrepo-release
       sudo dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rocky).noarch.rpmhttps://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rocky).noarch.rpm
 
     elif [[ "$ID" == "fedora" ]]; then
@@ -503,7 +510,7 @@ ServerInstall() {
       sudo dnf -y groupupdate core
     fi
 
-    sudo dnf -y install cockpit cockpit-pcp dnf-automatic dnf-plugins-core dnf-utils git htop neofetch neovim pcp PackageKit
+    sudo dnf -y install cockpit cockpit-pcp dnf-automatic dnf-plugins-core dnf-utils git htop kmod-wireguard neofetch neovim pcp PackageKit wireguard-tools
 
     if sudo dnf -y install fish; then
       sudo usermod --shell /bin/fish $USER

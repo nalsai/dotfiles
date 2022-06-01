@@ -295,7 +295,7 @@ FullInstall()
     sudo dnf -y groupupdate core
 
     echo Installing other packages...
-    sudo dnf -y install curl dconf ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl librsvg2-tools lutris pandoc radeontop steam syncthing tesseract-langpack-deu texlive unzip wireguard-tools youtube-dl yt-dlp
+    sudo dnf -y install curl dconf ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl librsvg2-tools lutris pandoc perl-Image-ExifTool radeontop steam syncthing tesseract-langpack-deu texlive unzip wireguard-tools youtube-dl yt-dlp
     sudo dnf -y group install "Virtualization"
 
     if sudo dnf -y install fish; then

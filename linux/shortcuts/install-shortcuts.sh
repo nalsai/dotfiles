@@ -5,12 +5,8 @@ DOT="$HOME/.dotfiles"
 while true; do
   echo
   echo 'Please select what to do:'
-  select s in "install Minion shortcut" "install Fate shortcut" "install TTC shortcut" "install Tsukihime shortcut" "install ESO symlink" "install Fate symlink" "install MBTL symlink" "exit"; do
+  select s in "install Fate shortcut" "install TTC shortcut" "install Tsukihime shortcut" "install ESO symlink" "install Fate symlink" "install MBTL symlink" "exit"; do
     case $s in
-    "install Minion shortcut")
-      ln -s $DOT/linux/shortcuts/esoui-minion.desktop $HOME/.local/share/applications/
-      break
-      ;;
     "install Fate shortcut")
       ln -s $DOT/linux/shortcuts/fate-stay-night.desktop $HOME/.local/share/applications/
       break

@@ -198,7 +198,7 @@ FullInstall()
     #com.calibre_ebook.calibre com.github.qarmin.czkawka com.katawa_shoujo.KatawaShoujo io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.kde.krita org.pitivi.Pitivi
 
   flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
-  flatpak install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 net.sourceforge.gMKVExtractGUI
+  flatpak install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
 
   # allow Bottles to access $HOME/Apps/Bottles
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"
@@ -366,18 +366,6 @@ FullInstall()
   mkdir -p ~/.config/user-tmpfiles.d
   echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" > ~/.config/user-tmpfiles.d/discord-rpc.conf
   systemctl --user enable --now systemd-tmpfiles-setup.service
-
-  echo -n "Install shortcut for /home/nalsai/Apps/Minion? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    sudo ln -s $DOT/linux/shortcuts/esoui-minion.desktop $HOME/.local/share/applications/esoui-minion.desktop
-  else
-    echo n
-  fi
 
   echo -n "Disable git gpgsign? [y/n]: "
   old_stty_cfg=$(stty -g)

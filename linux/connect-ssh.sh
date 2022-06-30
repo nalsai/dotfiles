@@ -2,7 +2,7 @@
 
 echo 'Please select the server:'
 
-select s in "hachiman.nils.moe" "shiina.nils.moe" "minecraft.nils.moe" "nalsai@nanopineo3"; do
+select s in "hachiman.nils.moe" "shiina.nils.moe" "shion.nils.moe"; do
   case $s in
   "hachiman.nils.moe")
     ssh root@hachiman.nils.moe -p 2022

@@ -12,12 +12,8 @@ select s in "hachiman.nils.moe" "shiina.nils.moe" "minecraft.nils.moe" "nalsai@n
     ssh root@shiina.nils.moe -p 2022
     break
     ;;
-  "minecraft.nils.moe")
-    ssh opc@minecraft.nils.moe
-    break
-    ;;
-  "nalsai@nanopineo3")
-    ssh nalsai@nanopineo3
+  "shion.nils.moe")
+    ssh opc@shion.nils.moe
     break
     ;;
   *)

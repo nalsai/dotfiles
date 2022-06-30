@@ -64,14 +64,9 @@
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
             },
             {
-                "name": "minecraft.nils.moe",
-                "commandline": "ssh opc@minecraft.nils.moe",
+                "name": "shion.nils.moe",
+                "commandline": "ssh opc@shion.nils.moe",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
-            },
-            {
-                "name": "nalsai@nanopineo3",
-                "commandline": "ssh nalsai@nanopineo3",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/armbian.ico"
             }
         ]
     },

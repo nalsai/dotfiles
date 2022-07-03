@@ -132,6 +132,8 @@ FullInstall()
   update
 
   echo Making Symlinks...
+  mkdir $HOME/.config
+
   # mpv
   mkdir -p $HOME/.var/app/io.mpv.Mpv/config                     # make parent folder if not exists
   rm -rf $HOME/.var/app/io.mpv.Mpv/config/mpv > /dev/null 2>&1  # remove folder to be symlinked if exists
@@ -452,6 +454,8 @@ ServerInstall() {
   update
 
   echo Making Symlinks...
+  mkdir $HOME/.config
+
   # .gitconfig
   ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
 
@@ -506,7 +510,9 @@ ServerInstall() {
       sudo dnf -y groupupdate core
     fi
 
-    sudo dnf -y install cockpit cockpit-pcp dnf-automatic dnf-plugins-core dnf-utils git htop kmod-wireguard neofetch neovim pcp PackageKit wireguard-tools
+    sudo dnf -y install cockpit cockpit-pcp dnf-automatic dnf-plugins-core dnf-utils git pcp PackageKit wireguard-tools
+    sudo dnf -y install htop neofetch neovim
+    sudo dnf -y install kmod-wireguard
 
     if sudo dnf -y install fish; then
       sudo usermod --shell /bin/fish $USER

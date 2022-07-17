@@ -11,8 +11,19 @@ echo "This script is WIP, using the official install script."
 if type docker >/dev/null 2>&1; then
   echo "Docker is already installed, skipping"
 else
-  curl -sSL https://get.docker.com/ | sh
 
+  ID=
+  [[ -f /etc/os-release ]] && . /etc/os-release
+  if [[ "$ID" == "ol" ]]; then
+    echo Installing Docker manually on Oracle Linux
+    sudo dnf -y install dnf-plugins-core
+    sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo  # Fedora
+    sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo  # CentOS
+    sudo dnf -y install docker-ce docker-ce-cli containerd.io
+  else 
+    curl -sSL https://get.docker.com/ | sh
+  fi
+  
   # Debian (and Raspberry Pi - Raspbian)
   # sudo apt-get install ca-certificates curl gnupg lsb-release -y
   # curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg

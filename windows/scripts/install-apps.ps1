@@ -78,7 +78,7 @@ Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimi
 
 . $PSScriptRoot\declutter-contextmenu.ps1 script
 
-Write-Host "Install Cinebench, CrystalDiskMark, Furmark, Prime95? [y/N]: " -ForegroundColor Yellow -NoNewline
+Write-Host "Install Cinebench, Furmark, Prime95? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
@@ -87,7 +87,7 @@ while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKey
 Write-Host $key.Character
 Switch ($key.Character) {
 	Y {
-		choco install cinebench crystaldiskmark furmark prime95 --limit-output
+		choco install cinebench furmark prime95 --limit-output
 	}
 	Default {}
 }

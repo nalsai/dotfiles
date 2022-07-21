@@ -7,8 +7,8 @@ SETUVAR __git_plugin_initialized:Fri\x20Feb\x2025\x2001\x3a28\x3a18\x20PM\x20CET
 SETUVAR _fish_abbr_c:clear
 SETUVAR _fish_abbr_d:docker
 SETUVAR _fish_abbr_dcd:docker\x20compose\x20down
-SETUVAR _fish_abbr_dcp:docker\x20compose\x20pull
 SETUVAR _fish_abbr_dcl:docker\x20compose\x20pull
+SETUVAR _fish_abbr_dcp:docker\x20compose\x20pull
 SETUVAR _fish_abbr_dcu:docker\x20compose\x20up
 SETUVAR _fish_abbr_dcud:docker\x20compose\x20up\x20\x2dd\x20\x2d\x2dforce\x2drecreate
 SETUVAR _fish_abbr_dcuf:docker\x20compose\x20up\x20\x2d\x2dforce\x2drecreate
@@ -104,8 +104,8 @@ SETUVAR _fish_abbr_gm:git\x20merge
 SETUVAR _fish_abbr_gmom:git\x20merge\x20origin/\x28__git\x2edefault_branch\x29
 SETUVAR _fish_abbr_gmt:git\x20mergetool\x20\x2d\x2dno\x2dprompt
 SETUVAR _fish_abbr_gp:git\x20push
-SETUVAR _fish_abbr_gpf:git\x20push\x20--force
 SETUVAR _fish_abbr_gp_21_:git\x20push\x20\x2d\x2dforce\x2dwith\x2dlease
+SETUVAR _fish_abbr_gpf:git\x20push\x20\x2d\x2dforce
 SETUVAR _fish_abbr_gpl:git\x20pull
 SETUVAR _fish_abbr_gpo:git\x20push\x20origin
 SETUVAR _fish_abbr_gpo_21_:git\x20push\x20\x2d\x2dforce\x2dwith\x2dlease\x20origin

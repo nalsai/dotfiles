@@ -57,3 +57,7 @@ $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
 	Import-Module "$ChocolateyProfile"
 }
+
+Set-Alias c Clear-Host
+function e {exit}
+new-alias ^D e		# exit with Ctrl+D

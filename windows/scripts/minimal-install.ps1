@@ -340,7 +340,21 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue | Test-Path)) {
 }
 
 choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
-choco install 7zip temurinjre altdrag cdburnerxp crystaldiskinfo curl everything ffmpeg-full firefox gimp googlechrome hwinfo icaros libreoffice-fresh microsoft-windows-terminal mpv nomacs notepad2-mod paint.net vlc wget winbtrfs windirstat youtube-dl --limit-output
+choco install 7zip temurinjre altdrag crystaldiskinfo curl everything ffmpeg-full firefox gimp googlechrome hwinfo icaros libreoffice-fresh microsoft-windows-terminal mpv nomacs notepad2-mod paint.net vlc wget winbtrfs windirstat youtube-dl --limit-output
+
+Write-Host "Install CDBurnerXP? [y/N]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Y {
+		choco install cdburnerxp --limit-output
+	}
+	Default {}
+}
 
 Write-Host "Install Cinebench, CrystalDiskMark, Furmark, Prime95? [y/N]: " -ForegroundColor Yellow -NoNewline
 $host.UI.RawUI.FlushInputBuffer()

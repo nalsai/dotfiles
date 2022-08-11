@@ -211,6 +211,7 @@ $folders = @(
 	"HKLM:\Software\Policies\Microsoft\Windows\Explorer"
 	"HKLM:\Software\Policies\Microsoft\Windows\System"
 	"HKLM:\Software\Policies\Microsoft\Windows\Windows Search"
+	"HKLM:\Software\Policies\Microsoft\Windows\Explorer"
 	"HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate"
 	"HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU"
 	"HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
@@ -236,7 +237,8 @@ Set-ItemProperty "HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore
 Set-ItemProperty "HKCU:\Software\Microsoft\Personalization\Settings" "AcceptedPrivacyPolicy" 0
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" "BingSearchEnabled" 0
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Windows Search" "AllowCortana" 0
-Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Windows Search" "DisableWebSearch" 1
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Windows Search" "DisableWebSearch" 1		# Windows 10
+Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\Explorer" "DisableSearchBoxSuggestions" 1	# Windows 11
 
 Write-Output "Disabling Windows Feedback Experience program"
 Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" 0

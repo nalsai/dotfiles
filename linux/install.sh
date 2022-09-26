@@ -11,15 +11,15 @@ prepare() {
 }
 
 download() {
-  echo Downloading Dotfiles...
+  echo "Downloading Dotfiles..."
   echo -n "Download with git? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
+  if echo "$answer" | grep -iq "^y"; then
     echo y
-    echo Making sure git is installed
+    echo "Making sure git is installed"
     if type apt-get >/dev/null 2>&1; then
       sudo apt-get install git -y
     elif type dnf >/dev/null 2>&1; then
@@ -27,30 +27,39 @@ download() {
     elif type pacman >/dev/null 2>&1; then
       sudo pacman -S git
     fi
-    echo -n "Clone using ssh or https? [s/h]: "
-    old_stty_cfg=$(stty -g)
-    stty raw -echo
-    answer=$( while ! head -c 1 | grep -i "[sh]" ;do true ;done )
-    stty $old_stty_cfg
-    if echo "$answer" | grep -iq "^s" ;then
-      echo s
-      rm -rf $DOT > /dev/null 2>&1
-      if ! git clone git@github.com:Nalsai/dotfiles.git $DOT; then
-        echo An error occured while cloning!
-        echo Did you setup your git ssh key?
-        exit 1
-      fi
+    if [ -d "$DOT/.git" ]; then
+      echo "Found existing git repository: running git pull"
+      echo "To prevent data loss this script won't change the git repo."
+      echo "You need to resolve any issues yourself," 
+      echo "or delete the folder $HOME/.dotfiles and rerun this script."
+      # git pull from main origin
     else
-      echo h
       rm -rf $DOT > /dev/null 2>&1
-      if ! git clone https://github.com/Nalsai/dotfiles.git $DOT; then
-        echo An error occured while cloning!
-        exit 1
+      echo -n "Clone using ssh or https? [s/h]: "
+      old_stty_cfg=$(stty -g)
+      stty raw -echo
+      answer=$( while ! head -c 1 | grep -i "[sh]"; do true; done )
+      stty $old_stty_cfg
+      if echo "$answer" | grep -iq "^s" ;then
+        echo s
+        rm -rf $DOT > /dev/null 2>&1
+        if ! git clone git@github.com:Nalsai/dotfiles.git $DOT; then
+          echo "An error occured while cloning!"
+          echo "Did you setup your git ssh key?"
+          exit 1
+        fi
+      else
+        echo h
+        rm -rf $DOT > /dev/null 2>&1
+        if ! git clone https://github.com/Nalsai/dotfiles.git $DOT; then
+          echo "An error occured while cloning!"
+          exit 1
+        fi
       fi
     fi
   else
     echo n
-    echo Making sure curl and unzip are installed
+    echo "Making sure curl and unzip are installed"
     if type apt-get >/dev/null 2>&1; then
       sudo apt-get install curl unzip -y
     elif type dnf >/dev/null 2>&1; then
@@ -59,16 +68,16 @@ download() {
       sudo pacman -S curl unzip
     fi
     if ! curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip; then
-        echo An error occured while downloading!
+        echo "An error occured while downloading!"
         exit 1
       fi
     if ! unzip -u -d $TMP $TMP/dotfiles.zip; then
-        echo An error occured while unzipping!
+        echo "An error occured while unzipping!"
         exit 1
       fi
     rm -rf $DOT > /dev/null 2>&1
     if ! mv $TMP/dotfiles-main $DOT; then
-        echo An error occured while moving the dotfiles into place!
+        echo "An error occured while moving the dotfiles into place!"
         exit 1
       fi
   fi
@@ -76,11 +85,11 @@ download() {
   echo -n "Install symlink to Documents? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    echo Making sure xdg-user-dirs is installed
+    echo "Making sure xdg-user-dirs is installed"
     if type apt-get >/dev/null 2>&1; then
       sudo apt-get install xdg-user-dirs -y
     elif type dnf >/dev/null 2>&1; then
@@ -118,7 +127,7 @@ FullInstall()
   echo -n "Continue? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -131,8 +140,8 @@ FullInstall()
   download
   update
 
-  echo Making Symlinks...
-  mkdir $HOME/.config
+  echo "Making Symlinks..."
+  mkdir -p $HOME/.config
 
   # mpv
   mkdir -p $HOME/.var/app/io.mpv.Mpv/config                     # make parent folder if not exists
@@ -144,7 +153,7 @@ FullInstall()
   #$HOME/.config/mpv
 
   # Visual Studio Code
-  ln -sf $DOT/vscode/code-flags.conf $HOME/.config/code-flags.conf
+  ln -sf $DOT/vscode/code-flags.conf $HOME/.config/code-flags.conf # sadly this only works on arch
   #mkdir -p $HOME/.config/Code/User
   #ln -sf $DOT/vscode/settings.json $HOME/.config/Code/User/settings.json
   #ln -sf $DOT/vscode/keybindings.json $HOME/.config/Code/User/keybindings.json
@@ -182,25 +191,27 @@ FullInstall()
   # Templates
   \cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)
 
-  echo Installing Flatpaks...
+  echo "Installing Flatpaks..."
   if type apt-get >/dev/null 2>&1; then
-    echo Flatpak needs to be installed first...
+    echo "Flatpak needs to be installed first..."
     sudo apt-get install flatpak gnome-software-plugin-flatpak -y
   fi
 
   flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-  flatpak install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium com.github.gi_lom.dialect com.github.huluti.Curtail \
+	flatpak remote-modify --enable flathub
+  flatpak -y install flathub app.drey.Dialect com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium com.github.huluti.Curtail \
     com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal \
     com.leinardi.gst com.mattjakeman.ExtensionManager com.github.qarmin.szyszka com.rafaelmardojai.WebfontKitGenerator com.skype.Client com.usebottles.bottles \
-    dev.alextren.Spot fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin \
-    nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.Firmware org.gnome.Connections org.gnome.font-viewer \
-    org.gnome.gitg org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice \
+    dev.alextren.Spot fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin
+  flatpak -y install flathub nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.Firmware org.gnome.Connections \
+    org.gnome.font-viewer org.gnome.gitg org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice \
     org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge \
     org.gnome.seahorse.Application org.mozilla.firefox org.gnome.Evolution re.sonny.Commit
     #com.calibre_ebook.calibre com.github.qarmin.czkawka com.katawa_shoujo.KatawaShoujo io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.kde.krita org.pitivi.Pitivi
 
-  flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/NilsFlatpakRepo.flatpakrepo
-  flatpak install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
+  flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
+  flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
+  flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//21.08 # required for net.sourceforge.gMKVExtractGUI
 
   # allow Bottles to access $HOME/Apps/Bottles
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"
@@ -215,11 +226,11 @@ FullInstall()
   echo -n "Reinstall org.freedesktop.Platform.Locale//21.08? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    flatpak install --reinstall flathub org.freedesktop.Platform.Locale//21.08
+    flatpak -y install --reinstall flathub org.freedesktop.Platform.Locale//21.08
   else
     echo n
   fi
@@ -227,12 +238,12 @@ FullInstall()
   echo -n "Add Elementary AppCenter flatpak remote and install Ensembles? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
     flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
-    flatpak install ElementaryAppCenter com.github.subhadeepjasu.ensembles
+    flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles
   else
     echo n
   fi
@@ -240,11 +251,11 @@ FullInstall()
   echo -n "Install osu? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    flatpak install flathub sh.ppy.osu
+    flatpak -y install flathub sh.ppy.osu
   else
     echo n
   fi
@@ -252,20 +263,20 @@ FullInstall()
   echo -n "Install Mothership Defender 2 and Tactical Math Returns? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    flatpak install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2
+    flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2
   else
     echo n
   fi
 
   if type apt-get >/dev/null 2>&1; then
-    echo Uninstalling packages not needed anymore...
+    echo "Uninstalling packages not needed anymore..."
     sudo apt-get remove firefox -y
 
-    echo Installing other packages...
+    echo "Installing other packages..."
     sudo apt-get install curl ffmpeg git htop neofetch neovim unzip -y
 
     if sudo apt-get install fish -y; then
@@ -277,7 +288,7 @@ FullInstall()
     echo -n "Enable Docker service? [y/n]: "
     old_stty_cfg=$(stty -g)
     stty raw -echo
-    answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+    answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^y" ;then
       echo y
@@ -288,15 +299,15 @@ FullInstall()
 
 
   elif type dnf >/dev/null 2>&1; then
-    echo Uninstalling packages not needed anymore...
+    echo "Uninstalling packages not needed anymore..."
     sudo dnf -y remove eog gnome-font-viewer libreoffice-* firefox
     sudo dnf -y group remove LibreOffice
 
-    echo Installing RPM Fusion
+    echo "Installing RPM Fusion"
     sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     sudo dnf -y groupupdate core
 
-    echo Installing other packages...
+    echo "Installing other packages..."
     sudo dnf -y install curl dconf ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl librsvg2-tools lutris pandoc perl-Image-ExifTool radeontop steam syncthing tesseract-langpack-deu texlive unzip wireguard-tools youtube-dl yt-dlp
     sudo dnf -y group install "Virtualization"
 
@@ -304,7 +315,7 @@ FullInstall()
       sudo usermod --shell /bin/fish $USER
     fi
 
-    echo Installing gnome shell extensions...
+    echo "Installing gnome shell extensions..."
     sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect gnome-shell-extension-sound-output-device-chooser --setopt=install_weak_deps=false
 
     # VSCode
@@ -317,7 +328,7 @@ FullInstall()
     echo -n "Enable Docker service? [y/n]: "
     old_stty_cfg=$(stty -g)
     stty raw -echo
-    answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+    answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
     stty $old_stty_cfg
     if echo "$answer" | grep -iq "^y" ;then
       echo y
@@ -328,10 +339,10 @@ FullInstall()
 
 
   elif type pacman >/dev/null 2>&1; then
-    echo Uninstalling packages not needed anymore...
+    echo "Uninstalling packages not needed anymore..."
     sudo pacman -R firefox
 
-    echo Installing other packages...
+    echo "Installing other packages..."
     sudo pacman -S curl ffmpeg fish git htop neofetch neovim unzip
 
     if sudo pacman -S fish; then
@@ -345,9 +356,9 @@ FullInstall()
 
   $DOT/linux/scripts/install_gotop.sh
 
-  echo Configuring Apps...
+  echo "Configuring Apps..."
 
-  echo Configuring Gnome \(dconf\)...
+  echo "Configuring Gnome (dconf)..."
   #dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
   dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
   dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
@@ -361,10 +372,10 @@ FullInstall()
   dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
   dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
   dconf write /org/gnome/mutter/center-new-windows "true"
-  dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Screenshot.desktop']"
+  dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop']"
   dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
 
-  echo Making discord rpc work...
+  echo "Making discord rpc work..."
   mkdir -p ~/.config/user-tmpfiles.d
   echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" > ~/.config/user-tmpfiles.d/discord-rpc.conf
   systemctl --user enable --now systemd-tmpfiles-setup.service
@@ -372,7 +383,7 @@ FullInstall()
   echo -n "Disable git gpgsign? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -382,7 +393,7 @@ FullInstall()
       echo -n "Change git signingkey? [y/n]: "
       old_stty_cfg=$(stty -g)
       stty raw -echo
-      answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+      answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
       stty $old_stty_cfg
       if echo "$answer" | grep -iq "^y" ;then
         echo y
@@ -397,8 +408,8 @@ FullInstall()
       fi
   fi
 
-  echo Installing Fonts...
-  mkdir $TMP/fonts
+  echo "Installing Fonts..."
+  mkdir -p $TMP/fonts
 
   curl -SL "https://www.fontsquirrel.com/fonts/download/gandhi-sans" -o $TMP/fonts/gandhi-sans.zip
   unzip -u -d $TMP/fonts $TMP/fonts/gandhi-sans.zip
@@ -419,7 +430,7 @@ MinimalInstall() {
   echo -n "Continue? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -440,7 +451,7 @@ ServerInstall() {
   echo -n "Continue? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -453,7 +464,7 @@ ServerInstall() {
   download
   update
 
-  echo Making Symlinks...
+  echo "Making Symlinks..."
   mkdir $HOME/.config
 
   # .gitconfig
@@ -474,12 +485,12 @@ ServerInstall() {
 
   [[ -f /etc/os-release ]] && . /etc/os-release
   if [[ "$ID" == "rocky" ]]; then
-    echo Configuring ip_tables and iptable_mangle kernel modules to load at boot
+    echo "Configuring ip_tables and iptable_mangle kernel modules to load at boot"
     echo ip_tables > /etc/modules-load.d/ip_tables.conf
     echo iptable_mangle > /etc/modules-load.d/iptable_mangle.conf
   fi
 
-  echo Installing packages...
+  echo "Installing packages..."
 
   if type apt-get >/dev/null 2>&1; then
     sudo apt-get install ca-certificates cockpit cockpit-pcp curl git gnupg htop lsb-release neofetch neovim packagekit pcp -y
@@ -491,13 +502,13 @@ ServerInstall() {
     ID=
     [[ -f /etc/os-release ]] && . /etc/os-release
     if [[ "$ID" == "rocky" ]]; then
-      echo Installing EPEL, ELRepo and RPM Fusion
+      echo "Installing EPEL, ELRepo and RPM Fusion"
       sudo dnf -y install epel-release
       sudo dnf -y install elrepo-release
       sudo dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rocky).noarch.rpmhttps://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rocky).noarch.rpm
 
     elif [[ "$ID" == "ol" ]]; then
-      echo Installing EPEL and RPM Fusion
+      echo "Installing EPEL and RPM Fusion"
       sudo dnf -y install epel-release
       sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 
       #sudo dnf -y install https://www.elrepo.org/elrepo-release-$(rpm -E %rhel).el$(rpm -E %rhel).elrepo.noarch.rpm
@@ -505,7 +516,7 @@ ServerInstall() {
       sudo dnf -y install --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
 
     elif [[ "$ID" == "fedora" ]]; then
-      echo Installing RPM Fusion
+      echo "Installing RPM Fusion"
       sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
       sudo dnf -y groupupdate core
     fi
@@ -522,7 +533,7 @@ ServerInstall() {
   echo -n "Disable git gpgsign? [y/n]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
@@ -532,7 +543,7 @@ ServerInstall() {
       echo -n "Change git signingkey? [y/n]: "
       old_stty_cfg=$(stty -g)
       stty raw -echo
-      answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+      answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
       stty $old_stty_cfg
       if echo "$answer" | grep -iq "^y" ;then
         echo y
@@ -581,7 +592,7 @@ Tools() {
         echo -n "Enable Docker service? [y/n]: "
         old_stty_cfg=$(stty -g)
         stty raw -echo
-        answer=$( while ! head -c 1 | grep -i "[ny]" ;do true ;done )
+        answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
         stty $old_stty_cfg
         if echo "$answer" | grep -iq "^y" ;then
           echo y

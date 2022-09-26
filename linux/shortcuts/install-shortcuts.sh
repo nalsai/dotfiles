@@ -28,7 +28,7 @@ while true; do
       break
       ;;
     "install MBTL symlink")
-      ln -s "/home/nalsai/Sync/Files/Documents/Melty Blood Type Lumina Save" "/home/nalsai/.local/share/Steam/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925"
+      ln -s "/home/nalsai/.local/share/Steam/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925" "/home/nalsai/Sync/Files/Documents/Melty Blood Type Lumina Save"
       break
       ;;
     "exit")

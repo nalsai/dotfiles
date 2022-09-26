@@ -370,10 +370,27 @@ FullInstall()
   dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps']"
   dconf write /org/gnome/desktop/peripherals/mouse/accel-profile "'flat'"
   dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
+  dconf write /org/gnome/shell/keybindings/show-screenshot-ui  "['<Shift><Super>s']"
+  dconf write /org/gnome/shell/keybindings/screenshot  "['Print']"
   dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
   dconf write /org/gnome/mutter/center-new-windows "true"
   dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop']"
   dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
+  dconf write /org/gnome/desktop/input-sources/mru-sources "[('xkb', 'us'), ('ibus', 'anthy'), ('xkb', 'de'), ('xkb', 'jp')]"
+  dconf write /org/gnome/desktop/session/idle-delay "uint32 900" # blank screen after 15 minutes inactivity
+  dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'suspend'" # suspend after 2 hours idle
+  dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout "7200"
+  dconf write /org/gnome/settings-daemon/plugins/color/night-light-temperature "uint32 4700"
+  dconf write /org/gnome/settings-daemon/plugins/color/night-light-schedule-automatic "true"
+  # extensions:
+  dconf write /org/gnome/shell/disabled-extensions "['background-logo@fedorahosted.org']"
+  dconf write /org/gnome/shell/enabled-extensions "['gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info', 'sound-output-device-chooser@kgshank.net']"
+  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/hide-on-single-device "true"
+  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/show-profiles "false"
+  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/expand-volume-menu "false"
+  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/cannot-activate-hidden-device "false"
+  dconf write /org/gnome/shell/extensions/caffeine/show-notifications "false"
+  dconf write /org/gnome/shell/extensions/caffeine/enable-fullscreen "false"
 
   echo "Making discord rpc work..."
   mkdir -p ~/.config/user-tmpfiles.d

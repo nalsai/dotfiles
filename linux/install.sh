@@ -374,6 +374,7 @@ FullInstall()
   dconf write /org/gnome/shell/keybindings/screenshot  "['Print']"
   dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
   dconf write /org/gnome/mutter/center-new-windows "true"
+  dconf write /org/gnome/mutter/experimental-features "['scale-monitor-framebuffer']"
   dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop']"
   dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
   dconf write /org/gnome/desktop/input-sources/mru-sources "[('xkb', 'us'), ('ibus', 'anthy'), ('xkb', 'de'), ('xkb', 'jp')]"

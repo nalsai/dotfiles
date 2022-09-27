@@ -318,6 +318,20 @@ Set-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\AppModelUnlock
 Write-Host "Enabling WSL"
 Enable-WindowsOptionalFeature -Online -All -FeatureName "Microsoft-Windows-Subsystem-Linux" -NoRestart -WarningAction SilentlyContinue > $null
 
+Write-Host "Disable Hiberboot (Fast Startup)? [y/N]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Y {
+		powercfg.exe /hibernate off
+	}
+	Default {}
+}
+
 Write-Host "Current Name of Computer: " -NoNewline
 Write-Host (Get-CimInstance -ClassName Win32_ComputerSystem).Name
 Write-Host "Change Name of Computer? [y/N]: " -ForegroundColor Yellow -NoNewline

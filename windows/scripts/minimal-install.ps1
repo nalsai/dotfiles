@@ -311,6 +311,20 @@ Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "N
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU" "NoAutoUpdate" 0
 (New-Object -ComObject Microsoft.Update.ServiceManager -Strict).AddService2("7971f918-a847-4430-9279-4a52d1efe18d", 7, "") > $null
 
+Write-Host "Disable Hiberboot (Fast Startup)? [y/N]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Y {
+		powercfg.exe /hibernate off
+	}
+	Default {}
+}
+
 Write-Host "Current Name of Computer: " -NoNewline
 Write-Host (Get-CimInstance -ClassName Win32_ComputerSystem).Name
 Write-Host "Change Name of Computer? [y/N]: " -ForegroundColor Yellow -NoNewline

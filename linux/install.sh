@@ -367,7 +367,7 @@ FullInstall()
   dconf write /org/gnome/desktop/privacy/remove-old-trash-files "true"
   dconf write /org/gnome/desktop/privacy/remove-old-temp-files "true"
   dconf write /org/gnome/desktop/privacy/old-files-age "uint32 7"
-  dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps']"
+  dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps', 'caps:escape_shifted_capslock']"
   dconf write /org/gnome/desktop/peripherals/mouse/accel-profile "'flat'"
   dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
   dconf write /org/gnome/shell/keybindings/show-screenshot-ui  "['<Shift><Super>s']"

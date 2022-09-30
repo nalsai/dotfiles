@@ -27,7 +27,7 @@ if ((Get-Process OneDrive -ErrorAction SilentlyContinue) -Or (Test-Path "$env:LO
 	}
 }
 
-if ([Environment]::OSVersion.Version.Major -eq "10") {
+if ((Get-WmiObject Win32_OperatingSystem).Caption -contains " 11 ") {
 	Write-Output "Unpinning all tiles from the start menu"
 	$START_MENU_LAYOUT = @"
 <LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">

@@ -16,7 +16,7 @@ choco install vscode --params "/NoDesktopIcon /NoQuicklaunchIcon /NoContextMenuF
 choco install 7zip temurin altdrag audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp curl discord eac eartrumpet etcher everything exiftool ffmpeg-full filezilla firefox flacsquisher gimp goggalaxy golang googlechrome hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv nomacs notepad2-mod obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus spotify steam-client synctrayzor unity-hub vlc wget winbtrfs windirstat wireshark youtube-dl --limit-output
 choco install figma --ignore-checksums --limit-output
 
-if ([Environment]::OSVersion.Version.Major -eq "10") {
+if ((Get-WmiObject Win32_OperatingSystem).Caption -contains " 11 ") {
 	choco install taskbarx --limit-output
 
 	# Run TaskbarX and add to Startup

@@ -197,21 +197,27 @@ FullInstall()
     sudo apt-get install flatpak gnome-software-plugin-flatpak -y
   fi
 
-  flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-	flatpak remote-modify --enable flathub
-  flatpak -y install flathub app.drey.Dialect com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium com.github.huluti.Curtail \
-    com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd com.github.liferooter.textpieces com.github.tchx84.Flatseal \
-    com.leinardi.gst com.mattjakeman.ExtensionManager com.github.qarmin.szyszka com.rafaelmardojai.WebfontKitGenerator com.skype.Client com.usebottles.bottles \
-    dev.alextren.Spot fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.seadve.Kooha io.mpv.Mpv net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin
-  flatpak -y install flathub nl.hjdskes.gcolor3 org.bunkus.mkvtoolnix-gui org.gnome.Builder org.gnome.TextEditor org.gnome.eog org.gnome.Firmware org.gnome.Connections \
-    org.gnome.font-viewer org.gnome.gitg org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.inkscape.Inkscape org.libreoffice.LibreOffice \
-    org.deluge_torrent.deluge org.blender.Blender io.github.celluloid_player.Celluloid org.gnome.meld org.gimp.GIMP org.nomacs.ImageLounge \
-    org.gnome.seahorse.Application org.mozilla.firefox org.gnome.Evolution re.sonny.Commit
-    #com.calibre_ebook.calibre com.github.qarmin.czkawka com.katawa_shoujo.KatawaShoujo io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.kde.krita org.pitivi.Pitivi
+  sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+	sudo flatpak remote-modify --enable flathub         # enable flathub on fedora
+  sudo flatpak remote-modify --no-filter flathub      # and remove filter
+  sudo flatpak remote-modify --title=Flathub flathub
+  sudo flatpak remote-modify --comment="Central repository of Flatpak applications" flathub
+  sudo flatpak remote-modify --description="Central repository of Flatpak applications" flathub
+  sudo flatpak -y install flathub app.drey.Dialect com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
+    com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd \
+    com.github.liferooter.textpieces com.github.qarmin.czkawka com.github.qarmin.szyszka com.github.tchx84.Flatseal com.leinardi.gst \
+    com.mattjakeman.ExtensionManager com.rafaelmardojai.WebfontKitGenerator com.skype.Client com.usebottles.bottles dev.alextren.Spot 
+    fr.romainvigier.MetadataCleaner io.github.celluloid_player.Celluloid  io.github.f3d_app.f3d io.github.seadve.Kooha io.mpv.Mpv
+  sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.blender.Blender \
+    org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gimp.GIMP org.gnome.Builder org.gnome.Connections org.gnome.Evolution \
+    org.gnome.Firmware org.gnome.TextEditor org.gnome.World.PikaBackup org.gnome.eog org.gnome.font-viewer org.gnome.gitg \
+    org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.gnome.meld org.gnome.seahorse.Application org.gustavoperedo.FontDownloader \
+    org.inkscape.Inkscape org.libreoffice.LibreOffice org.mozilla.firefox org.nomacs.ImageLounge re.sonny.Commit
+    #com.calibre_ebook.calibre com.katawa_shoujo.KatawaShoujo io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.kde.krita org.pitivi.Pitivi
 
-  flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
-  flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
-  flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//21.08 # required for net.sourceforge.gMKVExtractGUI
+  sudo flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
+  sudo flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
+  sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//21.08 # required for net.sourceforge.gMKVExtractGUI
 
   # allow Bottles to access $HOME/Apps/Bottles
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"
@@ -230,7 +236,7 @@ FullInstall()
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    flatpak -y install --reinstall flathub org.freedesktop.Platform.Locale//21.08
+    sudo flatpak -y install --reinstall flathub org.freedesktop.Platform.Locale//21.08
   else
     echo n
   fi
@@ -242,8 +248,8 @@ FullInstall()
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
-    flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles
+    sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
+    sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles
   else
     echo n
   fi
@@ -255,7 +261,7 @@ FullInstall()
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    flatpak -y install flathub sh.ppy.osu
+    sudo flatpak -y install flathub sh.ppy.osu
   else
     echo n
   fi
@@ -267,7 +273,7 @@ FullInstall()
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y" ;then
     echo y
-    flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2
+    sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2
   else
     echo n
   fi
@@ -308,7 +314,7 @@ FullInstall()
     sudo dnf -y groupupdate core
 
     echo "Installing other packages..."
-    sudo dnf -y install curl dconf ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl librsvg2-tools lutris pandoc perl-Image-ExifTool radeontop steam syncthing tesseract-langpack-deu texlive unzip wireguard-tools youtube-dl yt-dlp
+    sudo dnf -y install cargo curl dconf ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl librsvg2-tools lutris pandoc perl-Image-ExifTool radeontop rust steam syncthing tesseract-langpack-deu texlive unzip wireguard-tools youtube-dl yt-dlp
     sudo dnf -y group install "Virtualization"
 
     if sudo dnf -y install fish; then

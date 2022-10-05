@@ -517,7 +517,7 @@ ServerInstall() {
   echo "Installing packages..."
 
   if type apt-get >/dev/null 2>&1; then
-    sudo apt-get install ca-certificates cockpit cockpit-pcp curl git gnupg htop lsb-release neofetch neovim packagekit pcp -y
+    sudo apt-get install ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl git gnupg htop lsb-release neofetch neovim packagekit pcp -y
     if sudo apt-get install fish -y; then
       sudo usermod --shell /bin/fish $USER
     fi

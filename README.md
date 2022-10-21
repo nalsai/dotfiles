@@ -49,5 +49,5 @@ You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Mi
 
 - ![LightArrowsEXE Profile Picture](https://avatars.githubusercontent.com/LightArrowsEXE?s=12) LightArrowsEXE's [dotfiles](https://github.com/LightArrowsEXE/dotfiles) (mpv config)
 - ![Sycnex Profile Picture](https://avatars.githubusercontent.com/Sycnex?s=12) Sycnex's [Windows10Debloater](https://github.com/Sycnex/Windows10Debloater)
-- ![ChristianChiarulli Profile Picture](https://avatars.githubusercontent.com/ChristianChiarulli?s=12) ChristianChiarulli's [Neovim Setings](https://www.chrisatmachine.com/Neovim/02-vim-general-settings/)
+- ![ChristianChiarulli Profile Picture](https://avatars.githubusercontent.com/ChristianChiarulli?s=12) ChristianChiarulli's [Neovim Setings](https://www.chrisatmachine.com/blog/category/neovim/02-vim-general-settings)
 - <https://rentry.co/windows_for_retards>

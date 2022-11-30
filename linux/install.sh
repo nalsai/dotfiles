@@ -225,6 +225,9 @@ FullInstall()
   # Firefox Wayland
   sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox
 
+  # Firefox U2F access
+  sudo flatpak override --device=all org.mozilla.firefox
+
   flatpak info org.libreoffice.LibreOffice
   echo
   echo "Reinstalling installs all Locales, instead of just the main one."

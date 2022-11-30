@@ -205,9 +205,9 @@ FullInstall()
   sudo flatpak remote-modify --description="Central repository of Flatpak applications" flathub
   sudo flatpak -y install flathub app.drey.Dialect com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
     com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd \
-    com.github.liferooter.textpieces com.github.qarmin.czkawka com.github.qarmin.szyszka com.github.tchx84.Flatseal com.leinardi.gst \
+    com.github.liferooter.textpieces com.github.nihui.waifu2x-ncnn-vulkan com.github.qarmin.czkawka com.github.qarmin.szyszka com.github.tchx84.Flatseal com.leinardi.gst \
     com.mattjakeman.ExtensionManager com.rafaelmardojai.WebfontKitGenerator com.skype.Client com.usebottles.bottles dev.alextren.Spot 
-    fr.romainvigier.MetadataCleaner io.github.celluloid_player.Celluloid  io.github.f3d_app.f3d io.github.seadve.Kooha io.mpv.Mpv
+    fr.romainvigier.MetadataCleaner io.github.celluloid_player.Celluloid  io.github.f3d_app.f3d io.github.seadve.Kooha io.gitlab.theevilskeleton.Upscaler io.mpv.Mpv
   sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.blender.Blender \
     org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gimp.GIMP org.gnome.Builder org.gnome.Connections org.gnome.Evolution \
     org.gnome.Firmware org.gnome.TextEditor org.gnome.World.PikaBackup org.gnome.eog org.gnome.font-viewer org.gnome.gitg \

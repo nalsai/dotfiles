@@ -13,7 +13,13 @@ if (!(which choco)) {
 
 choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
 choco install vscode --params "/NoDesktopIcon /NoQuicklaunchIcon /NoContextMenuFiles" --limit-output
-choco install 7zip temurin altdrag audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp curl discord eac eartrumpet etcher everything exiftool ffmpeg-full filezilla firefox flacsquisher gimp goggalaxy golang googlechrome hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld microsoft-windows-terminal mkvtoolnix mpv nomacs notepad2-mod obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus spotify steam-client synctrayzor unity-hub vlc wget winbtrfs windirstat wireshark youtube-dl --limit-output
+
+# Windows Terminal is included in Windows 11 and only needs to be installed on Windows 10
+if ([Environment]::OSVersion.Version.Major -eq "10" -and -not ((Get-WmiObject Win32_OperatingSystem).Caption -contains " 11 ")) {
+	choco install microsoft-windows-terminal --limit-output
+}
+
+choco install 7zip temurin altdrag audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp curl discord eac eartrumpet etcher everything exiftool ffmpeg-full filezilla firefox flacsquisher gimp goggalaxy golang googlechrome hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld mkvtoolnix mpv nomacs notepad2-mod obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus steam-client synctrayzor unity-hub vlc wget winbtrfs windirstat wireshark youtube-dl --limit-output
 choco install figma --ignore-checksums --limit-output
 
 if ((Get-WmiObject Win32_OperatingSystem).Caption -contains " 11 ") {
@@ -71,7 +77,6 @@ $pin_block = {
 #	'firefox',
 #	'goggalaxy'
 #	'googlechrome',
-#	'spotify',
 	'steam-client'
 #	'unity-hub'
 	for ($i = 0; $i -lt $apps.Count; $i++) {

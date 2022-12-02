@@ -206,8 +206,8 @@ FullInstall()
   sudo flatpak -y install flathub app.drey.Dialect com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
     com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd \
     com.github.liferooter.textpieces com.github.nihui.waifu2x-ncnn-vulkan com.github.qarmin.czkawka com.github.qarmin.szyszka com.github.tchx84.Flatseal com.leinardi.gst \
-    com.mattjakeman.ExtensionManager com.rafaelmardojai.WebfontKitGenerator com.skype.Client com.usebottles.bottles dev.alextren.Spot 
-    fr.romainvigier.MetadataCleaner io.github.celluloid_player.Celluloid  io.github.f3d_app.f3d io.github.seadve.Kooha io.gitlab.theevilskeleton.Upscaler io.mpv.Mpv
+    com.mattjakeman.ExtensionManager com.rafaelmardojai.WebfontKitGenerator com.skype.Client com.usebottles.bottles \
+    fr.romainvigier.MetadataCleaner io.github.celluloid_player.Celluloid  io.github.f3d_app.f3d io.github.seadve.Kooha io.gitlab.theevilskeleton.Upscaler io.mpv.Mpv \
   sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.blender.Blender \
     org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gimp.GIMP org.gnome.Builder org.gnome.Connections org.gnome.Evolution \
     org.gnome.Firmware org.gnome.TextEditor org.gnome.World.PikaBackup org.gnome.eog org.gnome.font-viewer org.gnome.gitg \
@@ -317,7 +317,7 @@ FullInstall()
     sudo dnf -y groupupdate core
 
     echo "Installing other packages..."
-    sudo dnf -y install cargo curl dconf ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl librsvg2-tools lutris pandoc perl-Image-ExifTool radeontop rust steam syncthing tesseract-langpack-deu texlive unzip wireguard-tools youtube-dl yt-dlp
+    sudo dnf -y install cargo curl dconf ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl librsvg2-tools lutris pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive unzip wireguard-tools youtube-dl yt-dlp
     sudo dnf -y group install "Virtualization"
 
     if sudo dnf -y install fish; then

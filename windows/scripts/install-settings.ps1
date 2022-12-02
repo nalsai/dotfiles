@@ -332,6 +332,20 @@ Switch ($key.Character) {
 	Default {}
 }
 
+Write-Host "Change hardware clock to UTC [Y/n]: " -ForegroundColor Yellow -NoNewline
+$host.UI.RawUI.FlushInputBuffer()
+$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+Write-Host $key.Character
+Switch ($key.Character) {
+	Default {
+		Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" "RealTimeIsUniversal" 1
+	}
+	N {}
+}
+
 Write-Host "Current Name of Computer: " -NoNewline
 Write-Host (Get-CimInstance -ClassName Win32_ComputerSystem).Name
 Write-Host "Change Name of Computer? [y/N]: " -ForegroundColor Yellow -NoNewline

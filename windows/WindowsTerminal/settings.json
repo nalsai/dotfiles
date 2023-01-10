@@ -67,6 +67,11 @@
                 "name": "shion.nils.moe",
                 "commandline": "ssh opc@shion.nils.moe",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
+            },
+            {
+                "name": "odroidxu4.nils.moe",
+                "commandline": "ssh root@odroidxu4.nils.moe -p 2223",
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
             }
         ]
     },

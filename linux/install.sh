@@ -257,6 +257,9 @@ FullInstall()
     sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect gnome-shell-extension-sound-output-device-chooser --setopt=install_weak_deps=false
     sudo dnf -y install cargo dconf flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools lutris pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
     sudo dnf -y group install "Virtualization"
+
+    sudo dnf -y copr enable nickavem/adw-gtk3
+    sudo dnf -y install adw-gtk3
   fi
   install_pkgs curl ffmpeg fish git htop neofetch neovim unzip
   if install_pkgs fish; then sudo usermod --shell /bin/fish $USER fi
@@ -280,9 +283,12 @@ FullInstall()
 
   echo "Configuring Apps..."
 
-  # TODO: download https://github.com/lassekongo83/adw-gtk3
   echo "Configuring Gnome..."
-  dconf write /org/gnome/desktop/interface/gtk-theme "'adw-gtk3-dark'" # TODO
+  if [ -d "/usr/share/themes/adw-gtk3-dark" ] || [ -d "$HOME/.local/share/themes/adw-gtk3-dark" ]; then
+    dconf write /org/gnome/desktop/interface/gtk-theme "'adw-gtk3-dark'"
+  else 
+    dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
+  fi
   dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
   dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
   dconf write /org/gnome/desktop/interface/gtk-enable-primary-paste "false"

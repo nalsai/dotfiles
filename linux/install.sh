@@ -255,9 +255,6 @@ FullInstall()
   install_pkgs curl dconf fastfetch ffmpeg fish git htop neovim unzip
   if install_pkgs fish; then sudo usermod --shell /bin/fish $USER fi
 
-  $DOT/linux/scripts/install_docker.sh
-  ask_yn "Enable Docker service" "sudo systemctl enable docker --now"
-
   echo "Uninstalling replaced packages..."
   uninstall_pkgs firefox eog gnome-font-viewer libreoffice libreoffice-*
 
@@ -409,9 +406,6 @@ ServerInstall() {
   fi
 
   configure_gpgsign
-
-  $DOT/linux/scripts/install_docker.sh
-  sudo systemctl enable docker --now
 
   end
 }

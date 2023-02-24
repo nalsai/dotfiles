@@ -14,6 +14,7 @@ SETUVAR _fish_abbr_dcud:docker\x20compose\x20up\x20\x2dd\x20\x2d\x2dforce\x2drec
 SETUVAR _fish_abbr_dcuf:docker\x20compose\x20up\x20\x2d\x2dforce\x2drecreate
 SETUVAR _fish_abbr_dps:docker\x20ps
 SETUVAR _fish_abbr_e:exit
+SETUVAR _fish_abbr_de:distrobox\x20enter
 SETUVAR _fish_abbr_g:git
 SETUVAR _fish_abbr_ga:git\x20add
 SETUVAR _fish_abbr_ga_2E_:git\x20add\x20\x2e

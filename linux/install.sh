@@ -199,10 +199,10 @@ FullInstall() {
   grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >>$HOME/.bashrc
 
   # New File templates
-  mkdir -p $DOT/linux/io.github.Foldex.AdwSteamGtk
   \cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)
 
   # Flatpak app configs
+  mkdir -p $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/
   cp -f $DOT/linux/io.github.Foldex.AdwSteamGtk/keyfile $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/keyfile
 
   # TTC shortcut
@@ -211,7 +211,10 @@ FullInstall() {
 
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     echo "Uninstalling preinstalled Flatpaks..."
-    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Contacts org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.gnome.font-viewer org.mozilla.firefox
+    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Contacts org.gnome.Extensions org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.gnome.font-viewer org.mozilla.firefox
+
+    echo "Removing firefox rpm..."
+    rpm-ostree override remove firefox
   fi
 
   echo "Installing Flatpaks..."
@@ -252,16 +255,19 @@ FullInstall() {
     org.gnome.gitlab.YaLTeR.Identity com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader sh.ppy.osu \
     net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.github.Anuken.Mindustry com.heroicgameslauncher.hgl
 
-  ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo \&\& sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles"
+  install_ensembles() {
+    sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
+    sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles
+  }
+  ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "install_ensembles"
   ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
 
   echo "Installing other packages..."
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
+    sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install distrobox syncthing
-    sudo flatpak -y install flathub com.valvesoftware.Steam
-    mkdir -p $HOME/.var/app/com.valvesoftware.Steam/.steam/steam
-
+    rpm-ostree install distrobox gnome-shell-extension-caffeine steam-devices syncthing
+    sudo flatpak -y install flathub org.gnome.Cheese com.valvesoftware.Steam
   else
     if type dnf >/dev/null 2>&1; then
       sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
@@ -274,8 +280,6 @@ FullInstall() {
       sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect --setopt=install_weak_deps=false
       sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
       sudo dnf -y group install "Virtualization"
-
-      mkdir -p $HOME/.steam/steam
     fi
     install_pkgs curl dconf fastfetch ffmpeg fish git htop neovim unzip
     if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
@@ -327,18 +331,19 @@ FullInstall() {
   dconf write /org/gnome/shell/extensions/caffeine/show-notifications "false"
   dconf write /org/gnome/shell/extensions/caffeine/enable-fullscreen "false"
 
+  # Defaults
+  #xdg-settings set default-web-browser firefox.desktop
+
   echo "Making discord rpc work..."
   mkdir -p ~/.config/user-tmpfiles.d
   echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" >$HOME/.config/user-tmpfiles.d/discord-rpc.conf
   systemctl --user enable --now systemd-tmpfiles-setup.service
 
-  echo "Installing Adwaita for Steam ..."
-  git clone https://github.com/tkashkin/Adwaita-for-Steam $TMP/Adwaita-for-Steam
-  cd $TMP/Adwaita-for-Steam
-  ./install.py -c adwaita -w full -we login/hover_qr -we library/hide_whats_new
-  rm -rf $TMP/Adwaita-for-Steam
-
-  ask_yn "Activate fcc-unlock (needed for WWAN)" "sudo mkdir -p /etc/ModemManager/fcc-unlock.d \&\& sudo ln -sft /etc/ModemManager/fcc-unlock.d /usr/share/ModemManager/fcc-unlock.available.d/\*"
+  fcc_unlock() {
+    sudo mkdir -p /etc/ModemManager/fcc-unlock.d
+    sudo ln -sft /etc/ModemManager/fcc-unlock.d /usr/share/ModemManager/fcc-unlock.available.d/*
+  }
+  ask_yn "Activate fcc-unlock (needed for WWAN)" "fcc_unlock"
 
   configure_gpgsign
 

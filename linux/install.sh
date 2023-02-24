@@ -208,6 +208,9 @@ FullInstall()
   # New File templates
   \cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)
 
+  # Flatpak app configs
+  cp -f $DOT/linux/io.github.Foldex.AdwSteamGtk/keyfile $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/keyfile
+
   echo "Installing Flatpaks..."
   install_pkgs flatpak
   [ type apt-get >/dev/null 2>&1 ] && apt-get install gnome-software-plugin-flatpak -y
@@ -328,6 +331,13 @@ FullInstall()
   mkdir -p ~/.config/user-tmpfiles.d
   echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" > ~/.config/user-tmpfiles.d/discord-rpc.conf
   systemctl --user enable --now systemd-tmpfiles-setup.service
+
+  echo "Installing Adwaita for Steam ..."
+
+  git clone https://github.com/tkashkin/Adwaita-for-Steam $TMP/Adwaita-for-Steam
+  cd $TMP/Adwaita-for-Steam
+  ./install.py -c adwaita -w full -we login/hover_qr -we library/hide_whats_new
+  rm -rf $TMP/Adwaita-for-Steam
 
   configure_gpgsign
 

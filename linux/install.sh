@@ -214,7 +214,7 @@ FullInstall() {
     sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Contacts org.gnome.Extensions org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.gnome.font-viewer org.mozilla.firefox
 
     echo "Removing firefox rpm..."
-    rpm-ostree override remove firefox
+    rpm-ostree override remove firefox firefox-langpacks
   fi
 
   echo "Installing Flatpaks..."

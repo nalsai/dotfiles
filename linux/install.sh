@@ -183,26 +183,14 @@ FullInstall()
 
   echo "Making Symlinks..."
   force_symlink $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv
-  force_symlink $DOT/vscode/code-flags.conf $HOME/.config/code-flags.conf # sadly this only works on arch
+  force_symlink $DOT/vscode/code-flags.conf $HOME/.config/code-flags.conf # Only works on arch
   force_symlink $DOT/linux/chromium-flags.conf $HOME/.var/app/com.github.Eloston.UngoogledChromium/config/chromium-flags.conf
   force_symlink $DOT/git/.gitconfig $HOME/.gitconfig
   force_symlink $DOT/linux/fish/ $HOME/.config/fish
   force_symlink $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
   force_symlink $DOT/linux/nvim/ $HOME/.config/nvim
-  #force_symlink $DOT/mpv/mpv $HOME/.config/mpv
-  #force_symlink $DOT/mpv/mpv-minimal $HOME/.var/app/io.github.celluloid_player.Celluloid/config/celluloid
-  #force_symlink $DOT/mpv/jellyfin-mpv-shim $HOME/.config/plex-mpv-shim
-  #force_symlink $DOT/mpv/jellyfin-mpv-shim $HOME/.var/app/com.github.iwalton3.jellyfin-mpv-shim/config/jellyfin-mpv-shim
-  #force_symlink $DOT/linux/chromium-flags.conf $HOME/.var/app/com.google.Chrome/config/chrome-flags.conf
-  #force_symlink $DOT/linux/chromium-flags.conf $HOME/.var/app/org.chromium.Chromium/config/chromium-flags.conf
-  #force_symlink $DOT/vscode/settings.json $HOME/.config/Code/User/settings.json
-  #force_symlink $DOT/vscode/keybindings.json $HOME/.config/Code/User/keybindings.json
-  #force_symlink $DOT/vscode/settings.json $HOME/.config/code-oss/User/settings.json
-  #force_symlink $DOT/vscode/keybindings.json $HOME/.config/code-oss/User/keybindings.json
-  #force_symlink $DOT/vscode/settings.json "$HOME/.config/Code - OSS/User/settings.json"
-  #force_symlink $DOT/vscode/keybindings.json "$HOME/.config/Code - OSS/User/keybindings.json"
 
-  # make sure bash loads bash_aliases
+  # Make sure bash loads bash_aliases
   grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >> $HOME/.bashrc
 
   # New File templates
@@ -216,8 +204,8 @@ FullInstall()
   [ type apt-get >/dev/null 2>&1 ] && apt-get install gnome-software-plugin-flatpak -y
 
   sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-	sudo flatpak remote-modify --enable flathub         # enable flathub on fedora
-  sudo flatpak remote-modify --no-filter flathub      # and remove filter
+	sudo flatpak remote-modify --enable flathub         # Enable flathub on fedora
+  sudo flatpak remote-modify --no-filter flathub      # And remove filter
   sudo flatpak remote-modify --title=Flathub flathub
   sudo flatpak remote-modify --comment="Central repository of Flatpak applications" flathub
   sudo flatpak remote-modify --description="Central repository of Flatpak applications" flathub
@@ -227,24 +215,26 @@ FullInstall()
 
   sudo flatpak -y install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
     com.github.iwalton3.jellyfin-media-player com.github.jeromerobert.pdfarranger com.github.liferooter.textpieces com.github.qarmin.czkawka \
-    com.github.qarmin.szyszka  com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
+    com.github.qarmin.szyszka com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
     com.skype.Client com.usebottles.bottles fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk io.github.seadve.Kooha
 
   sudo flatpak -y install flathub net.ankiw3eb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
-    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.Builder org.gnome.Firmware \
-    org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.gitlab.YaLTeR.Identity org.gnome.meld \
-    org.gnome.seahorse.Application org.gtk.Gtk3theme.adw-gtk3-dark org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit 
+    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.Firmware \
+    org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.meld \
+    org.gnome.seahorse.Application org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit 
 
   sudo flatpak -y install --reinstall flathub org.freedesktop.Platform.Locale//22.08    # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages 
-  sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"        # allow Bottles to access $HOME/Apps/Bottles
+  sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"        # Allow Bottles to access $HOME/Apps/Bottles
   sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox # Firefox Wayland
   sudo flatpak override --device=all org.mozilla.firefox                                # Firefox U2F access
 
   sudo flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
   sudo flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
-  sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # required for net.sourceforge.gMKVExtractGUI
+  sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # Required for net.sourceforge.gMKVExtractGUI
 
-  install_optional_flatpaks com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution com.wps.Office com.calibre_ebook.calibre rocks.koreader.KOReader sh.ppy.osu net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.raggesilver.BlackBox com.github.Anuken.Mindustry
+  install_optional_flatpaks com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder org.gnome.gitlab.YaLTeR.Identity com.wps.Office com.calibre_ebook.calibre \
+    rocks.koreader.KOReader sh.ppy.osu net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.raggesilver.BlackBox \
+    com.github.Anuken.Mindustry com.heroicgameslauncher.hgl # TODO: sort 
 
   ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo && sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles"
   ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
@@ -258,14 +248,11 @@ FullInstall()
     sudo sh -c "echo -e '[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc' > /etc/yum.repos.d/vscode.repo"
     sudo dnf -y install code
 
-    sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect gnome-shell-extension-sound-output-device-chooser --setopt=install_weak_deps=false
-    sudo dnf -y install cargo dconf flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools lutris pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
+    sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect --setopt=install_weak_deps=false
+    sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
     sudo dnf -y group install "Virtualization"
-
-    sudo dnf -y copr enable nickavem/adw-gtk3
-    sudo dnf -y install adw-gtk3
   fi
-  install_pkgs curl fastfetch ffmpeg fish git htop neovim unzip
+  install_pkgs curl dconf fastfetch ffmpeg fish git htop neovim unzip
   if install_pkgs fish; then sudo usermod --shell /bin/fish $USER fi
 
   $DOT/linux/scripts/install_docker.sh
@@ -284,15 +271,8 @@ FullInstall()
 
   $DOT/linux/scripts/install_gotop.sh
 
-
-  echo "Configuring Apps..."
-
   echo "Configuring Gnome..."
-  if [ -d "/usr/share/themes/adw-gtk3-dark" ] || [ -d "$HOME/.local/share/themes/adw-gtk3-dark" ]; then
-    dconf write /org/gnome/desktop/interface/gtk-theme "'adw-gtk3-dark'"
-  else 
-    dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
-  fi
+  dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'" 
   dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
   dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
   dconf write /org/gnome/desktop/interface/gtk-enable-primary-paste "false"
@@ -311,19 +291,15 @@ FullInstall()
   dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop']"
   dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
   dconf write /org/gnome/desktop/input-sources/mru-sources "[('xkb', 'us'), ('ibus', 'anthy'), ('xkb', 'de'), ('xkb', 'jp')]"
-  dconf write /org/gnome/desktop/session/idle-delay "uint32 900" # blank screen after 15 minutes inactivity
-  dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'suspend'" # suspend after 2 hours idle
+  dconf write /org/gnome/desktop/session/idle-delay "uint32 900" # Blank screen after 15 minutes inactivity
+  dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'suspend'" # Suspend after 2 hours idle
   dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout "7200"
   dconf write /org/gnome/settings-daemon/plugins/color/night-light-temperature "uint32 4700"
   dconf write /org/gnome/settings-daemon/plugins/color/night-light-schedule-automatic "true"
 
-  # extensions
+  # Extensions
   dconf write /org/gnome/shell/disabled-extensions "['background-logo@fedorahosted.org']"
-  dconf write /org/gnome/shell/enabled-extensions "['gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info', 'sound-output-device-chooser@kgshank.net']"
-  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/hide-on-single-device "true"
-  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/show-profiles "false"
-  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/expand-volume-menu "false"
-  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/cannot-activate-hidden-device "false"
+  dconf write /org/gnome/shell/enabled-extensions "['gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info',]"
   dconf write /org/gnome/shell/extensions/caffeine/show-notifications "false"
   dconf write /org/gnome/shell/extensions/caffeine/enable-fullscreen "false"
 
@@ -333,11 +309,12 @@ FullInstall()
   systemctl --user enable --now systemd-tmpfiles-setup.service
 
   echo "Installing Adwaita for Steam ..."
-
   git clone https://github.com/tkashkin/Adwaita-for-Steam $TMP/Adwaita-for-Steam
   cd $TMP/Adwaita-for-Steam
   ./install.py -c adwaita -w full -we login/hover_qr -we library/hide_whats_new
   rm -rf $TMP/Adwaita-for-Steam
+
+  ask_yn "Activate fcc-unlock (needed for WWAN)" "sudo mkdir -p /etc/ModemManager/fcc-unlock.d && sudo ln -sft /etc/ModemManager/fcc-unlock.d /usr/share/ModemManager/fcc-unlock.available.d/*"
 
   configure_gpgsign
 
@@ -371,7 +348,7 @@ MinimalInstall() {
 }
 
 ServerInstall() {
-  echo "This script is work in progress and will support Raspbian, Armbian, Debian, Fedora and RockyLinux."
+  echo "This script is work in progress and supports Raspbian, Armbian, Debian, Fedora and RockyLinux."
   ask_yn "Continue" "" "exit 130"
   prepare
   download
@@ -383,7 +360,7 @@ ServerInstall() {
   force_symlink $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
   force_symlink $DOT/linux/nvim/ $HOME/.config/nvim
 
-  # make sure bash loads bash_aliases
+  # Make sure bash loads bash_aliases
   grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >> $HOME/.bashrc
 
   [[ -f /etc/os-release ]] && . /etc/os-release
@@ -395,16 +372,13 @@ ServerInstall() {
 
   echo "Installing packages..."
 
-  install_pkgs ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl fastfetch fish git gnupg htop pcp unzip  # neovim needs epel
+  install_pkgs ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl fastfetch fish git gnupg htop pcp unzip
+  if install_pkgs fish; then sudo usermod --shell /bin/fish $USER fi
 
   if type apt-get >/dev/null 2>&1; then
     sudo apt-get install libblockdev-crypto2 lsb-release neovim packagekit xfsprogs -y
-    if sudo apt-get install fish -y; then
-      sudo usermod --shell /bin/fish $USER
-    fi
 
   elif type dnf >/dev/null 2>&1; then
-    ID=
     [[ -f /etc/os-release ]] && . /etc/os-release
     if [[ "$ID" == "rocky" ]]; then
       echo "Installing EPEL, ELRepo and RPM Fusion"
@@ -416,7 +390,7 @@ ServerInstall() {
       echo "Installing EPEL and RPM Fusion"
       sudo dnf -y install epel-release
       sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 
-      #sudo dnf -y install https://www.elrepo.org/elrepo-release-$(rpm -E %rhel).el$(rpm -E %rhel).elrepo.noarch.rpm
+      #sudo dnf -y install https://www.elrepo.org/elrepo-release-$(rpm -E %rhel).el$(rpm -E %rhel).elrepo.noarch.rpm # Broken on Oracle Linux
       sudo dnf -y install --nogpgcheck https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm
       sudo dnf -y install --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
 
@@ -435,6 +409,7 @@ ServerInstall() {
   fi
 
   configure_gpgsign
+
   $DOT/linux/scripts/install_docker.sh
   sudo systemctl enable docker --now
 

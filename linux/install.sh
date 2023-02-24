@@ -114,6 +114,8 @@ download() {
       echo "To prevent data loss this script won't change the git repo."
       echo "You need to resolve any issues yourself,"
       echo "or delete the folder $HOME/.dotfiles and rerun this script."
+      cd $DOT
+      git pull origin main
       # TODO: git pull from main origin
     else
       rm -rf $DOT >/dev/null 2>&1
@@ -203,9 +205,13 @@ FullInstall() {
   # Flatpak app configs
   cp -f $DOT/linux/io.github.Foldex.AdwSteamGtk/keyfile $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/keyfile
 
+  # TTC shortcut
+  rm -f $HOME/.local/share/applications/tamrieltradecentre.desktop >/dev/null 2>&1
+  ln -s $DOT/linux/shortcuts/tamrieltradecentre.desktop $HOME/.local/share/applications/tamrieltradecentre.desktop
+
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     echo "Uninstalling preinstalled Flatpaks..."
-    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Contacts org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.mozilla.firefox
+    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Contacts org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.gnome.font-viewer org.mozilla.firefox
   fi
 
   echo "Installing Flatpaks..."
@@ -246,7 +252,7 @@ FullInstall() {
     org.gnome.gitlab.YaLTeR.Identity com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader sh.ppy.osu \
     net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.github.Anuken.Mindustry com.heroicgameslauncher.hgl
 
-  ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo && sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles"
+  ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo \&\& sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles"
   ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
 
   echo "Installing other packages..."
@@ -332,7 +338,7 @@ FullInstall() {
   ./install.py -c adwaita -w full -we login/hover_qr -we library/hide_whats_new
   rm -rf $TMP/Adwaita-for-Steam
 
-  ask_yn "Activate fcc-unlock (needed for WWAN)" "sudo mkdir -p /etc/ModemManager/fcc-unlock.d && sudo ln -sft /etc/ModemManager/fcc-unlock.d /usr/share/ModemManager/fcc-unlock.available.d/*"
+  ask_yn "Activate fcc-unlock (needed for WWAN)" "sudo mkdir -p /etc/ModemManager/fcc-unlock.d \&\& sudo ln -sft /etc/ModemManager/fcc-unlock.d /usr/share/ModemManager/fcc-unlock.available.d/\*"
 
   configure_gpgsign
 
@@ -341,7 +347,7 @@ FullInstall() {
 
   curl -SL "https://www.fontsquirrel.com/fonts/download/gandhi-sans" -o $TMP/fonts/gandhi-sans.zip
   unzip -u -d $TMP/fonts $TMP/fonts/gandhi-sans.zip
-  sudo mkdir  $HOME/.local/share/fonts/gandhi-sans
+  sudo mkdir -p $HOME/.local/share/fonts/gandhi-sans
   sudo cp $TMP/fonts/GandhiSans-*.otf $HOME/.local/share/fonts/gandhi-sans
 
   # TODO
@@ -418,12 +424,11 @@ Tools() {
     clear
     echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
     echo
-    select s in "Setup distrobox" "Install docker" "Install gotop" "Install TTC shortcut" "Install ESO symlink" "Install MBTL symlink" "Install osu symlinks" "Exit"; do
+    select s in "Setup distrobox" "Install docker" "Install gotop" "Install ESO symlink" "Install MBTL symlink" "Install osu symlinks" "Exit"; do
       case $s in
       "Setup distrobox")
         distrobox create -Y -n my-distrobox --init-hooks "echo TODO"
         distrobox create -Y -n arch -i archlinux --init-hooks "echo TODO"
-        # TODO
         break
         ;;
       "Install docker")
@@ -436,34 +441,23 @@ Tools() {
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_gotop.sh) -c
         break
         ;;
-      "Install TTC shortcut")
-        rm -f $HOME/.local/share/applications/tamrieltradecentre.desktop >/dev/null 2>&1
-        ln -s $DOT/linux/shortcuts/tamrieltradecentre.desktop $HOME/.local/share/applications/tamrieltradecentre.desktop
-        break
-        ;;
-      "Install Tsukihime shortcut")
-        rm -f $HOME/.local/share/applications/tsukihime.desktop >/dev/null 2>&1
-        ln -s $DOT/linux/shortcuts/tsukihime.desktop $HOME/.local/share/applications/tsukihime.desktop
-        break
-        ;;
       "Install ESO symlink")
-        rm -rf "$HOME/Documents/Elder Scrolls Online" >/dev/null 2>&1
-        mkdir -p $HOME/.local/share/Steam/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/
-        ln -s "$HOME/.local/share/Steam/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online" "$HOME/Documents/Elder Scrolls Online"
+        STEAMSHARE=$HOME/.local/share/Steam
+        if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then STEAMSHARE=$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam; fi
+        mkdir -p "$STEAMSHARE/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online"
+        force_symlink "$STEAMSHARE/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online" "$HOME/Documents/Elder Scrolls Online"
         break
         ;;
       "Install MBTL symlink")
-        rm -rf "$HOME/.local/share/Steam/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925" >/dev/null 2>&1
-        ln -s "$HOME/Sync/Files/Documents/Melty Blood Type Lumina Save" "$HOME/.local/share/Steam/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925"
+        STEAMSHARE=$HOME/.local/share/Steam
+        if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then STEAMSHARE=$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam; fi
+        force_symlink "$HOME/Sync/Files/Documents/Melty Blood Type Lumina Save" "$STEAMSHARE/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925"
         break
         ;;
       "Install osu symlinks")
         sudo flatpak override sh.ppy.osu --filesystem="$HOME/Sync/Files/osu"
-        mkdir -p $HOME/.var/app/sh.ppy.osu/data/osu
-        rm -rf $HOME/.var/app/sh.ppy.osu/data/osu/files >/dev/null 2>&1
-        ln -sf $HOME/Sync/Files/osu/files $HOME/.var/app/sh.ppy.osu/data/osu/files
-        rm -f $HOME/.var/app/sh.ppy.osu/data/osu/client.realm >/dev/null 2>&1
-        ln -sf $HOME/Sync/Files/osu/client.realm $HOME/.var/app/sh.ppy.osu/data/osu/client.realm
+        force_symlink $HOME/Sync/Files/osu/files $HOME/.var/app/sh.ppy.osu/data/osu/files
+        force_symlink $HOME/Sync/Files/osu/client.realm $HOME/.var/app/sh.ppy.osu/data/osu/client.realm
         break
         ;;
       "Exit")

@@ -223,9 +223,9 @@ FullInstall()
     org.libreoffice.LibreOffice org.mozilla.firefox
 
   sudo flatpak -y install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
-    com.github.iwalton3.jellyfin-media-player com.github.liferooter.textpieces com.github.qarmin.czkawka \
+    com.github.iwalton3.jellyfin-media-player com.github.jeromerobert.pdfarranger com.github.liferooter.textpieces com.github.qarmin.czkawka \
     com.github.qarmin.szyszka  com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
-    com.skype.Client com.usebottles.bottles fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.seadve.Kooha
+    com.skype.Client com.usebottles.bottles fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk io.github.seadve.Kooha
 
   sudo flatpak -y install flathub net.ankiw3eb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
     org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.Builder org.gnome.Firmware \
@@ -241,7 +241,8 @@ FullInstall()
   sudo flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
   sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # required for net.sourceforge.gMKVExtractGUI
 
-  install_optional_flatpaks com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution com.wps.Office com.calibre_ebook.calibre rocks.koreader.KOReader sh.ppy.osu
+  install_optional_flatpaks com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution com.wps.Office com.calibre_ebook.calibre rocks.koreader.KOReader sh.ppy.osu net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.raggesilver.BlackBox com.github.Anuken.Mindustry
+
   ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo && sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles"
   ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
 
@@ -261,7 +262,7 @@ FullInstall()
     sudo dnf -y copr enable nickavem/adw-gtk3
     sudo dnf -y install adw-gtk3
   fi
-  install_pkgs curl ffmpeg fish git htop neofetch neovim unzip
+  install_pkgs curl fastfetch ffmpeg fish git htop neovim unzip
   if install_pkgs fish; then sudo usermod --shell /bin/fish $USER fi
 
   $DOT/linux/scripts/install_docker.sh
@@ -352,7 +353,7 @@ MinimalInstall() {
   download
   update
 
-  install_pkgs curl ffmpeg fish git htop neofetch neovim unzip
+  install_pkgs curl fastfetch ffmpeg fish git htop neovim unzip
   if install_pkgs fish; then sudo usermod --shell /bin/fish $USER fi
   # TODO
 
@@ -384,8 +385,10 @@ ServerInstall() {
 
   echo "Installing packages..."
 
+  install_pkgs ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl fastfetch fish git gnupg htop pcp unzip  # neovim needs epel
+
   if type apt-get >/dev/null 2>&1; then
-    sudo apt-get install ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl git gnupg htop libblockdev-crypto2 lsb-release neofetch neovim packagekit pcp xfsprogs -y
+    sudo apt-get install libblockdev-crypto2 lsb-release neovim packagekit xfsprogs -y
     if sudo apt-get install fish -y; then
       sudo usermod --shell /bin/fish $USER
     fi
@@ -413,8 +416,8 @@ ServerInstall() {
     fi
 
     sudo dnf -y groupupdate core
-    sudo dnf -y install cockpit cockpit-pcp dnf-automatic dnf-plugins-core dnf-utils git pcp PackageKit wireguard-tools
-    sudo dnf -y install htop neofetch neovim
+    sudo dnf -y install dnf-automatic dnf-plugins-core dnf-utils PackageKit wireguard-tools
+    sudo dnf -y install neovim
 
     if sudo dnf -y install fish; then
       sudo usermod --shell /bin/fish $USER

@@ -101,6 +101,7 @@ prepare() {
   DOT="$HOME/.dotfiles"
   TMP="/tmp/ZG90ZmlsZXM"
   mkdir -p $TMP
+  [[ -f /etc/os-release ]] && . /etc/os-release
 }
 
 download() {
@@ -180,9 +181,6 @@ end() {
 }
 
 FullInstall() {
-  echo "This script is work in progress and supports Fedora."
-  echo "It partially supports Arch, Debian and Derivatives."
-  ask_yn "Continue" "" "exit 130"
   prepare
   download
   update
@@ -204,6 +202,11 @@ FullInstall() {
 
   # Flatpak app configs
   cp -f $DOT/linux/io.github.Foldex.AdwSteamGtk/keyfile $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/keyfile
+
+  if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
+    echo "Uninstalling preinstalled Flatpaks..."
+    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Contacts org.gnome.Weather org.mozilla.firefox
+  fi
 
   echo "Installing Flatpaks..."
   install_pkgs flatpak
@@ -240,40 +243,46 @@ FullInstall() {
   sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # Required for net.sourceforge.gMKVExtractGUI
 
   install_optional_flatpaks com.raggesilver.BlackBox com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
-    org.gnome.gitlab.YaLTeR.Identity com.wps.Office com.calibre_ebook.calibre rocks.koreader.KOReader sh.ppy.osu \
+    org.gnome.gitlab.YaLTeR.Identity com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader sh.ppy.osu \
     net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.github.Anuken.Mindustry com.heroicgameslauncher.hgl
 
   ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo && sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles"
   ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
 
   echo "Installing other packages..."
-  if type dnf >/dev/null 2>&1; then
-    sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-    sudo dnf -y groupupdate core
+  if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
+    if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
+    rpm-ostree install distrobox syncthing
 
-    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    sudo sh -c "echo -e '[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc' > /etc/yum.repos.d/vscode.repo"
-    sudo dnf -y install code
+  else
+    if type dnf >/dev/null 2>&1; then
+      sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+      sudo dnf -y groupupdate core
 
-    sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect --setopt=install_weak_deps=false
-    sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
-    sudo dnf -y group install "Virtualization"
-  fi
-  install_pkgs curl dconf fastfetch ffmpeg fish git htop neovim unzip
-  if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
+      sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+      sudo sh -c "echo -e '[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc' > /etc/yum.repos.d/vscode.repo"
+      sudo dnf -y install code
 
-  echo "Uninstalling replaced packages..."
-  uninstall_pkgs firefox eog gnome-font-viewer libreoffice libreoffice-*
+      sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect --setopt=install_weak_deps=false
+      sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
+      sudo dnf -y group install "Virtualization"
+    fi
+    install_pkgs curl dconf fastfetch ffmpeg fish git htop neovim unzip
+    if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
 
-  if type dnf >/dev/null 2>&1; then
-    sudo dnf -y group remove LibreOffice
+    echo "Uninstalling replaced packages..."
+    uninstall_pkgs firefox eog gnome-font-viewer libreoffice libreoffice-*
+
+    if type dnf >/dev/null 2>&1; then
+      sudo dnf -y group remove LibreOffice
+    fi
+
+    $DOT/linux/scripts/install_gotop.sh
   fi
 
   if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/null 2>&1; then
     systemctl --user enable syncthing.service
   fi
-
-  $DOT/linux/scripts/install_gotop.sh
 
   echo "Configuring Gnome..."
   dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
@@ -309,7 +318,7 @@ FullInstall() {
 
   echo "Making discord rpc work..."
   mkdir -p ~/.config/user-tmpfiles.d
-  echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" >~/.config/user-tmpfiles.d/discord-rpc.conf
+  echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" >$HOME/.config/user-tmpfiles.d/discord-rpc.conf
   systemctl --user enable --now systemd-tmpfiles-setup.service
 
   echo "Installing Adwaita for Steam ..."
@@ -337,32 +346,7 @@ FullInstall() {
   end
 }
 
-FullInstallSilverblue() {
-  echo "This script is work in progress and supports Fedora Silverblue."
-  ask_yn "Continue" "" "exit 130"
-  prepare
-  download
-  # update
-
-  end
-}
-
-MinimalInstall() {
-  echo "This script is work in progress and supports Arch, Debian, Fedora and derivatives."
-  ask_yn "Continue" "" "exit 130"
-  prepare
-  download
-  update
-
-  install_pkgs curl fastfetch ffmpeg fish git htop neovim unzip
-  if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
-
-  end
-}
-
 ServerInstall() {
-  echo "This script is work in progress and supports Raspbian, Armbian, Debian, Fedora and RockyLinux."
-  ask_yn "Continue" "" "exit 130"
   prepare
   download
   update
@@ -376,7 +360,6 @@ ServerInstall() {
   # Make sure bash loads bash_aliases
   grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >>$HOME/.bashrc
 
-  [[ -f /etc/os-release ]] && . /etc/os-release
   if [[ "$ID" == "rocky" ]]; then
     echo "Configuring ip_tables and iptable_mangle kernel modules to load at boot"
     echo ip_tables >/etc/modules-load.d/ip_tables.conf
@@ -392,14 +375,13 @@ ServerInstall() {
     sudo apt-get install libblockdev-crypto2 lsb-release neovim packagekit xfsprogs -y
 
   elif type dnf >/dev/null 2>&1; then
-    [[ -f /etc/os-release ]] && . /etc/os-release
-    if [[ "$ID" == "rocky" ]]; then
+    if [[ $ID == "rocky" ]]; then
       echo "Installing EPEL, ELRepo and RPM Fusion"
       sudo dnf -y install epel-release
       sudo dnf -y install elrepo-release
       sudo dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rocky).noarch.rpmhttps://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rocky).noarch.rpm
 
-    elif [[ "$ID" == "ol" ]]; then
+    elif [[ $ID == "ol" ]]; then
       echo "Installing EPEL and RPM Fusion"
       sudo dnf -y install epel-release
       sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
@@ -407,7 +389,7 @@ ServerInstall() {
       sudo dnf -y install --nogpgcheck https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm
       sudo dnf -y install --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
 
-    elif [[ "$ID" == "fedora" ]]; then
+    elif [[ $ID == "fedora" ]]; then
       echo "Installing RPM Fusion"
       sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     fi
@@ -431,35 +413,55 @@ Tools() {
     clear
     echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
     echo
-    select s in "install shortcuts" "connect to ssh server" "update system" "clean package caches" "install docker" "install gotop" "exit"; do
+    select s in "Setup distrobox" "Install docker" "Install gotop" "Install TTC shortcut" "Install ESO symlink" "Install MBTL symlink" "Install osu symlinks" "Exit"; do
       case $s in
-      "install shortcuts")
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/shortcuts/install-shortcuts.sh)
+      "Setup distrobox")
+        distrobox create -Y -n my-distrobox --init-hooks "echo TODO"
+        distrobox create -Y -n arch -i archlinux --init-hooks "echo TODO"
+        # TODO
         break
         ;;
-      "connect to ssh server")
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/connect-ssh.sh)
-        break
-        ;;
-      "update system")
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/update-system.sh)
-        break
-        ;;
-      "clean package caches")
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/update-system.sh) -c
-        break
-        ;;
-      "install docker")
+      "Install docker")
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_docker.sh) -c
         $DOT/linux/scripts/install_docker.sh
         ask_yn "Enable Docker service" "sudo systemctl enable docker --now"
         break
         ;;
-      "install gotop")
+      "Install gotop")
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_gotop.sh) -c
         break
         ;;
-      "exit")
+      "Install TTC shortcut")
+        rm -f $HOME/.local/share/applications/tamrieltradecentre.desktop >/dev/null 2>&1
+        ln -s $DOT/linux/shortcuts/tamrieltradecentre.desktop $HOME/.local/share/applications/tamrieltradecentre.desktop
+        break
+        ;;
+      "Install Tsukihime shortcut")
+        rm -f $HOME/.local/share/applications/tsukihime.desktop >/dev/null 2>&1
+        ln -s $DOT/linux/shortcuts/tsukihime.desktop $HOME/.local/share/applications/tsukihime.desktop
+        break
+        ;;
+      "Install ESO symlink")
+        rm -rf "$HOME/Documents/Elder Scrolls Online" >/dev/null 2>&1
+        mkdir -p $HOME/.local/share/Steam/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/
+        ln -s "$HOME/.local/share/Steam/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online" "$HOME/Documents/Elder Scrolls Online"
+        break
+        ;;
+      "Install MBTL symlink")
+        rm -rf "$HOME/.local/share/Steam/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925" >/dev/null 2>&1
+        ln -s "$HOME/Sync/Files/Documents/Melty Blood Type Lumina Save" "$HOME/.local/share/Steam/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925"
+        break
+        ;;
+      "Install osu symlinks")
+        sudo flatpak override sh.ppy.osu --filesystem="$HOME/Sync/Files/osu"
+        mkdir -p $HOME/.var/app/sh.ppy.osu/data/osu
+        rm -rf $HOME/.var/app/sh.ppy.osu/data/osu/files >/dev/null 2>&1
+        ln -sf $HOME/Sync/Files/osu/files $HOME/.var/app/sh.ppy.osu/data/osu/files
+        rm -f $HOME/.var/app/sh.ppy.osu/data/osu/client.realm >/dev/null 2>&1
+        ln -sf $HOME/Sync/Files/osu/client.realm $HOME/.var/app/sh.ppy.osu/data/osu/client.realm
+        break
+        ;;
+      "Exit")
         break 2
         ;;
       esac
@@ -471,29 +473,21 @@ while true; do
   clear
   echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
   echo
-  select s in "full installation" "full installation silverblue" "minimal installation" "server installation" "tools" "exit"; do
+  select s in "Desktop" "Server" "Tools" "Exit"; do
     case $s in
-    "full installation")
+    "Desktop")
       FullInstall
       exit
       ;;
-    "full installation silverblue")
-      FullInstallSilverblue
-      exit
-      ;;
-    "minimal installation")
-      MinimalInstall
-      exit
-      ;;
-    "server installation")
+    "Server")
       ServerInstall
       exit
       ;;
-    "tools")
+    "Tools")
       Tools
       break
       ;;
-    "exit")
+    "Exit")
       exit
       ;;
     esac

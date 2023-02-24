@@ -167,7 +167,6 @@ download() {
   chmod +x $DOT/linux/update-system.sh
   chmod +x $DOT/linux/scripts/install_docker.sh
   chmod +x $DOT/linux/scripts/install_gotop.sh
-  chmod +x $DOT/linux/shortcuts/install-shortcuts.sh
 }
 
 update() {
@@ -198,6 +197,7 @@ FullInstall() {
   grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >>$HOME/.bashrc
 
   # New File templates
+  mkdir -p $DOT/linux/io.github.Foldex.AdwSteamGtk
   \cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)
 
   # Flatpak app configs
@@ -205,7 +205,7 @@ FullInstall() {
 
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     echo "Uninstalling preinstalled Flatpaks..."
-    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Contacts org.gnome.Weather org.mozilla.firefox
+    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Contacts org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.mozilla.firefox
   fi
 
   echo "Installing Flatpaks..."
@@ -228,7 +228,7 @@ FullInstall() {
     com.skype.Client com.usebottles.bottles fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk \
     io.github.seadve.Kooha
 
-  sudo flatpak -y install flathub net.ankiw3eb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
+  sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
     org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.Firmware \
     org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.meld org.gnome.seahorse.Application \
     org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit
@@ -253,6 +253,8 @@ FullInstall() {
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
     rpm-ostree install distrobox syncthing
+    sudo flatpak -y install flathub com.valvesoftware.Steam
+    mkdir -p $HOME/.var/app/com.valvesoftware.Steam/.steam/steam
 
   else
     if type dnf >/dev/null 2>&1; then
@@ -266,6 +268,8 @@ FullInstall() {
       sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect --setopt=install_weak_deps=false
       sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
       sudo dnf -y group install "Virtualization"
+
+      mkdir -p $HOME/.steam/steam
     fi
     install_pkgs curl dconf fastfetch ffmpeg fish git htop neovim unzip
     if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
@@ -301,6 +305,7 @@ FullInstall() {
   dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
   dconf write /org/gnome/mutter/center-new-windows "true"
   dconf write /org/gnome/mutter/experimental-features "['scale-monitor-framebuffer']"
+  dconf write /org/gnome/nautilus/preferences/default-folder-viewer "['list-view']"
   dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop']"
   dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
   dconf write /org/gnome/desktop/input-sources/mru-sources "[('xkb', 'us'), ('ibus', 'anthy'), ('xkb', 'de'), ('xkb', 'jp')]"
@@ -312,7 +317,7 @@ FullInstall() {
 
   # Extensions
   dconf write /org/gnome/shell/disabled-extensions "['background-logo@fedorahosted.org']"
-  dconf write /org/gnome/shell/enabled-extensions "['gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info',]"
+  dconf write /org/gnome/shell/enabled-extensions "['gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info']"
   dconf write /org/gnome/shell/extensions/caffeine/show-notifications "false"
   dconf write /org/gnome/shell/extensions/caffeine/enable-fullscreen "false"
 
@@ -336,8 +341,8 @@ FullInstall() {
 
   curl -SL "https://www.fontsquirrel.com/fonts/download/gandhi-sans" -o $TMP/fonts/gandhi-sans.zip
   unzip -u -d $TMP/fonts $TMP/fonts/gandhi-sans.zip
-  sudo mkdir /usr/share/fonts/gandhi-sans
-  sudo cp $TMP/fonts/GandhiSans-*.otf /usr/share/fonts/gandhi-sans
+  sudo mkdir  $HOME/.local/share/fonts/gandhi-sans
+  sudo cp $TMP/fonts/GandhiSans-*.otf $HOME/.local/share/fonts/gandhi-sans
 
   # TODO
 

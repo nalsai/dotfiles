@@ -364,7 +364,15 @@ FullInstall() {
   sudo mkdir -p $HOME/.local/share/fonts/gandhi-sans
   sudo cp $TMP/fonts/GandhiSans-*.otf $HOME/.local/share/fonts/gandhi-sans
 
-  # TODO
+  if [[ "$ID" == "fedora" ]]; then
+    if [[ $VARIANT_ID == "silverblue" ]]; then
+      sudo wget -P /etc/yum.repos.d/ https://copr.fedorainfracloud.org/coprs/hyperreal/better_fonts/repo/fedora-$(rpm -E %fedora)/dawid-better_fonts-fedora-$(rpm -E %fedora).repo
+      rpm-ostree install fontconfig-font-replacements
+    else
+      sudo dnf -y copr enable hyperreal/better_fonts
+      sudo dnf -y install fontconfig-font-replacements
+    fi
+  fi
 
   sudo fc-cache -v
 

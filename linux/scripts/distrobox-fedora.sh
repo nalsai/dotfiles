@@ -5,7 +5,7 @@ sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-rel
 sudo dnf -y groupupdate core
 
 echo "Installing packages..."
-sudo dnf -y install cargo curl fastfetch ffmpeg flatpak-builder git htop hugo neovim ocrmypdf librsvg2-tools pandoc perl-Image-ExifTool rust tesseract-langpack-deu tesseract-langpack-eng unzip yt-dlp
+sudo dnf -y install bat cargo curl exa fastfetch ffmpeg flatpak-builder git htop hugo neovim ocrmypdf librsvg2-tools pandoc perl-Image-ExifTool ripgrep rust tesseract-langpack-deu tesseract-langpack-eng unzip yt-dlp
 #openssl radeontop rustfmt texlive wireguard-tools
 
 echo "Installing VSCode..."
@@ -16,6 +16,10 @@ sudo dnf -y install code
 echo "Adding xdg-open wrapper ..."
 echo -e "if [[ -f \"/run/.containerenv\" ]]; then\n\tflatpak-spawn --host /usr/bin/xdg-open \"\$@\"\nelse\n\t/usr/bin/xdg-open \"\$@\"\nfi" | sudo tee /usr/local/bin/xdg-open
 sudo chmod +x /usr/local/bin/xdg-open
+
+echo "Installing PowerShell..."
+curl https://packages.microsoft.com/config/rhel/8/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
+sudo dnf -y install powershell
 
 echo "Exporting apps..."
 distrobox-export --app code

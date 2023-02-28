@@ -196,6 +196,7 @@ FullInstall() {
   force_symlink $DOT/linux/fish/ $HOME/.config/fish
   force_symlink $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
   force_symlink $DOT/linux/nvim/ $HOME/.config/nvim
+  force_symlink $DOT/windows/PowerShell/Microsoft.PowerShell_profile.ps1 $HOME/.config/powershell/Microsoft.PowerShell_profile.ps1
 
   # Make sure bash loads bash_aliases
   grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >>$HOME/.bashrc
@@ -275,7 +276,7 @@ FullInstall() {
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install distrobox gnome-shell-extension-caffeine libratbag-ratbagd steam-devices syncthing
+    rpm-ostree install bat distrobox exa gnome-shell-extension-caffeine libratbag-ratbagd ripgrep steam-devices syncthing
     sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Cheese
   else
     if type dnf >/dev/null 2>&1; then
@@ -290,7 +291,7 @@ FullInstall() {
       sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl libratbag-ratbagd librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
       sudo dnf -y group install "Virtualization"
     fi
-    install_pkgs curl dconf fastfetch ffmpeg fish git htop neovim unzip
+    install_pkgs bat curl dconf exa fastfetch ffmpeg fish git ripgrep htop neovim unzip
     if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
 
     echo "Uninstalling replaced packages..."
@@ -341,7 +342,7 @@ FullInstall() {
   dconf write /org/gnome/shell/extensions/caffeine/enable-fullscreen "false"
 
   # Defaults
-  #xdg-settings set default-web-browser firefox.desktop
+  xdg-settings set default-web-browser org.mozilla.firefox.desktop
 
   echo "Making discord rpc work..."
   mkdir -p ~/.config/user-tmpfiles.d

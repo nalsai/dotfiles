@@ -1,10 +1,9 @@
 # Nalsai's Dotfiles
 
 Dotfiles for my installations of Linux and Windows.  
-The folder *windows* includes a collection of PowerShell files for Windows to install applications and configure them, as well as dotfiles for applications that are Windows exclusive. 
-The folder *linux* has the same things except for Linux.
+The folder *windows* includes a collection of PowerShell files for Windows to install applications and configure them, as well as dotfiles for applications that are Windows exclusive.
+The folder *linux* has the same things except for Linux. I mainly use Fedora. Other (arch- or debian-based) distros are partially supported.
 Config files for cross-platform application are in their respective folders at the root of this repository.
-
 
 ## Installation
 
@@ -44,6 +43,31 @@ Boot from the USB Stick and follow the prompts to install Windows (When asked fo
 Buy a license from [Microsoft](https://www.microsoft.com/) and enter your product key in the settings.
 
 You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Microsoft-Activation-Scripts/releases) (run `iwr -useb https://massgrave.dev/get | iex` in PowerShell), [KMS_VL_ALL_AIO](https://pastebin.com/cpdmr6HZ) or <https://kms.nils.moe>.
+
+### Manual Steps
+
+- Setup GPG keys
+- Setup SSH keys
+- Copy proprietary fonts from Windows, if needed
+- Setup Firefox
+  - Sign in
+  - Setup Extensions
+    - Bitwarden: Sign in
+    - uBlock Origin: enable cloud storage support, import from cloud storage
+    - Translate Web Pages: disable popup and release notes
+    - Enhancer for YouTube: set theme, disable controls, set quality, disable autoplay
+    - Violent Monkey: Sync to Google Drive
+    - Web Scrobbler: Sign in
+  - Customize toolbar and shortcuts
+  - `curl -s -o- https://raw.githubusercontent.com/rafaelmardojai/firefox-gnome-theme/master/scripts/install-by-curl.sh | bash`
+- Setup Steam
+  - Enable Steam Play (Proton)
+  - Disable "Notify me about ..."
+  - Change default window to "Library"
+  - Change skin to "Adwaita"
+  - Install games
+- Sign in to VSCode (with GitHub) to enable settings sync
+- Setup Deluge headless mode
 
 ## Thanks to
 

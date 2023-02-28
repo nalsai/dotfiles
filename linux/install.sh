@@ -119,7 +119,6 @@ download() {
       echo "or delete the folder $HOME/.dotfiles and rerun this script."
       cd $DOT
       git pull origin main
-      # TODO: git pull from main origin
     else
       rm -rf $DOT >/dev/null 2>&1
       echo -n "Clone using ssh or https? [s/h]: "
@@ -189,7 +188,7 @@ FullInstall() {
   download
   update
 
-  echo "Making Symlinks..."
+  echo "Making symlinks and copying config files..."
   force_symlink $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv
   force_symlink $DOT/linux/code-flags.conf $HOME/.config/code-flags.conf # Only works on arch
   force_symlink $DOT/linux/chromium-flags.conf $HOME/.var/app/com.github.Eloston.UngoogledChromium/config/chromium-flags.conf
@@ -205,8 +204,14 @@ FullInstall() {
   \cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)
 
   # Flatpak app configs
+  mkdir -p $HOME/.var/app/com.raggesilver.BlackBox/config/glib-2.0/settings/
+  \cp -f $DOT/linux/com.raggesilver.BlackBox/keyfile $HOME/.var/app/com.raggesilver.BlackBox/config/glib-2.0/settings/keyfile
   mkdir -p $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/
-  cp -f $DOT/linux/io.github.Foldex.AdwSteamGtk/keyfile $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/keyfile
+  \cp -f $DOT/linux/io.github.Foldex.AdwSteamGtk/keyfile $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/keyfile
+  mkdir -p $HOME/.var/app/org.gnome.TextEditor/config/glib-2.0/settings/
+  \cp -f $DOT/linux/org.gnome.TextEditor/keyfile $HOME/.var/app/org.gnome.TextEditor/config/glib-2.0/settings/keyfile
+  mkdir -p $HOME/.var/app/org.nomacs.ImageLounge/config/nomacs/
+  \cp -f "$DOT/nomacs/Image Lounge.conf" "$HOME/.var/app/org.nomacs.ImageLounge/config/nomacs/Image Lounge.conf"
 
   # TTC shortcut
   rm -f $HOME/.local/share/applications/tamrieltradecentre.desktop >/dev/null 2>&1
@@ -232,7 +237,7 @@ FullInstall() {
   sudo flatpak remote-modify --description="Central repository of Flatpak applications" flathub
 
   sudo flatpak -y install flathub com.github.tchx84.Flatseal io.mpv.Mpv org.gimp.GIMP org.gnome.TextEditor org.gnome.eog \
-    org.libreoffice.LibreOffice org.mozilla.firefox
+    org.libreoffice.LibreOffice org.mozilla.firefox com.raggesilver.BlackBox
 
   sudo flatpak -y install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
     com.github.iwalton3.jellyfin-media-player com.github.jeromerobert.pdfarranger com.github.liferooter.textpieces com.github.qarmin.czkawka \
@@ -254,8 +259,8 @@ FullInstall() {
   sudo flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
   sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # Required for net.sourceforge.gMKVExtractGUI
 
-  install_optional_flatpaks com.raggesilver.BlackBox com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
-    org.gnome.gitlab.YaLTeR.Identity com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader \
+  install_optional_flatpaks com.prusa3d.PrusaSlicer com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
+    com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader \
     com.parsecgaming.parsec sh.ppy.osu net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart \
     com.github.Anuken.Mindustry com.heroicgameslauncher.hgl
 
@@ -270,7 +275,7 @@ FullInstall() {
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install distrobox fastfetch gnome-shell-extension-caffeine libratbag-ratbagd steam-devices syncthing
+    rpm-ostree install distrobox gnome-shell-extension-caffeine libratbag-ratbagd steam-devices syncthing
     sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Cheese
   else
     if type dnf >/dev/null 2>&1; then

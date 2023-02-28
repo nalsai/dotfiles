@@ -3,5 +3,5 @@ Type=Application
 Name=TTC
 Comment=Tamriel Trade Centre
 Exec=/home/nalsai/Documents/dotfiles/linux/scripts/ttc.sh
-Icon=/home/nalsai/Sync/Files/Pictures/Saved Pictures/Icons/png/TTC.png
+Icon=/home/nalsai/Sync/Files/Pictures/Icons/png/TTC.png
 Terminal=true

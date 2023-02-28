@@ -241,7 +241,7 @@ FullInstall() {
     io.github.seadve.Kooha
 
   sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
-    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.baobab org.gnome.Firmware \
+    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.freedesktop.Piper org.gnome.baobab org.gnome.Firmware \
     org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.meld org.gnome.seahorse.Application org.gnome.SimpleScan \
     org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit
 
@@ -270,7 +270,7 @@ FullInstall() {
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install distrobox fastfetch gnome-shell-extension-caffeine steam-devices syncthing
+    rpm-ostree install distrobox fastfetch gnome-shell-extension-caffeine libratbag-ratbagd steam-devices syncthing
     sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Cheese
   else
     if type dnf >/dev/null 2>&1; then
@@ -282,7 +282,7 @@ FullInstall() {
       sudo dnf -y install code
 
       sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect --setopt=install_weak_deps=false
-      sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
+      sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl libratbag-ratbagd librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
       sudo dnf -y group install "Virtualization"
     fi
     install_pkgs curl dconf fastfetch ffmpeg fish git htop neovim unzip

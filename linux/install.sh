@@ -11,17 +11,20 @@ force_symlink() {
 }
 
 ask_yn() {
-  echo -n "$1? [y/n]: "
+  echo -n "$1? [y/n/q]: "
   old_stty_cfg=$(stty -g)
   stty raw -echo
-  answer=$(while ! head -c 1 | grep -i "[ny]"; do true; done)
+  answer=$(while ! head -c 1 | grep -i "[nyq]"; do true; done)
   stty $old_stty_cfg
   if echo "$answer" | grep -iq "^y"; then
     echo y
     $2
-  else
+  elif echo "$answer" | grep -iq "^n"; then
     echo n
     $3
+  else
+    echo q
+    exit
   fi
 }
 
@@ -188,7 +191,7 @@ FullInstall() {
 
   echo "Making Symlinks..."
   force_symlink $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv
-  force_symlink $DOT/vscode/code-flags.conf $HOME/.config/code-flags.conf # Only works on arch
+  force_symlink $DOT/linux/code-flags.conf $HOME/.config/code-flags.conf # Only works on arch
   force_symlink $DOT/linux/chromium-flags.conf $HOME/.var/app/com.github.Eloston.UngoogledChromium/config/chromium-flags.conf
   force_symlink $DOT/git/.gitconfig $HOME/.gitconfig
   force_symlink $DOT/linux/fish/ $HOME/.config/fish
@@ -211,7 +214,7 @@ FullInstall() {
 
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     echo "Uninstalling preinstalled Flatpaks..."
-    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.Connections org.gnome.Contacts org.gnome.Extensions org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.gnome.font-viewer org.mozilla.firefox
+    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.baobab org.gnome.Connections org.gnome.Contacts org.gnome.Extensions org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.gnome.font-viewer org.mozilla.firefox
 
     echo "Removing firefox rpm..."
     rpm-ostree override remove firefox firefox-langpacks
@@ -238,8 +241,8 @@ FullInstall() {
     io.github.seadve.Kooha
 
   sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
-    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.Firmware \
-    org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.meld org.gnome.seahorse.Application \
+    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.baobab org.gnome.Firmware \
+    org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.meld org.gnome.seahorse.Application org.gnome.SimpleScan \
     org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit
 
   sudo flatpak -y install --reinstall flathub org.freedesktop.Platform.Locale//22.08    # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
@@ -252,8 +255,9 @@ FullInstall() {
   sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # Required for net.sourceforge.gMKVExtractGUI
 
   install_optional_flatpaks com.raggesilver.BlackBox com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
-    org.gnome.gitlab.YaLTeR.Identity com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader sh.ppy.osu \
-    net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.github.Anuken.Mindustry com.heroicgameslauncher.hgl
+    org.gnome.gitlab.YaLTeR.Identity com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader \
+    com.parsecgaming.parsec sh.ppy.osu net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart \
+    com.github.Anuken.Mindustry com.heroicgameslauncher.hgl
 
   install_ensembles() {
     sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
@@ -266,8 +270,8 @@ FullInstall() {
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install distrobox gnome-shell-extension-caffeine steam-devices syncthing
-    sudo flatpak -y install flathub org.gnome.Cheese com.valvesoftware.Steam
+    rpm-ostree install distrobox fastfetch gnome-shell-extension-caffeine steam-devices syncthing
+    sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Cheese
   else
     if type dnf >/dev/null 2>&1; then
       sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
@@ -432,37 +436,59 @@ Tools() {
     select s in "Setup distrobox" "Install docker" "Install gotop" "Install ESO symlink" "Install MBTL symlink" "Install osu symlinks" "Exit"; do
       case $s in
       "Setup distrobox")
-        distrobox create -Y -n my-distrobox --init-hooks "echo TODO"
-        distrobox create -Y -n arch -i archlinux --init-hooks "echo TODO"
+        echo "Creating distroboxes..."
+        ask_yn "Continue" "" "exit"
+        distrobox create -Y -n my-distrobox -i fedora-toolbox:37 --init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-fedora.sh | bash"
+        distrobox create -Y -n arch -i archlinux --init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-arch.sh | bash"
+        read -t 3 -p "Done!"
         break
         ;;
       "Install docker")
+        echo "Installing docker..."
+        ask_yn "Continue" "" "exit"
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_docker.sh) -c
         $DOT/linux/scripts/install_docker.sh
         ask_yn "Enable Docker service" "sudo systemctl enable docker --now"
+        read -t 3 -p "Done!"
         break
         ;;
       "Install gotop")
+        echo "Installing gotop..."
+        ask_yn "Continue" "" "exit"
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_gotop.sh) -c
+        read -t 3 -p "Done!"
         break
         ;;
       "Install ESO symlink")
+        echo "Installing ESO symlink..."
+        echo "Make sure you opened steam at least once."
+        ask_yn "Continue" "" "exit"
         STEAMSHARE=$HOME/.local/share/Steam
         if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then STEAMSHARE=$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam; fi
         mkdir -p "$STEAMSHARE/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online"
         force_symlink "$STEAMSHARE/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online" "$HOME/Documents/Elder Scrolls Online"
+        read -t 3 -p "Done!"
         break
         ;;
       "Install MBTL symlink")
+        echo "Installing MBTL symlink..."
+        echo "Make sure you opened steam at least once."
+        ask_yn "Continue" "" "exit"
         STEAMSHARE=$HOME/.local/share/Steam
         if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then STEAMSHARE=$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam; fi
         force_symlink "$HOME/Sync/Files/Documents/Melty Blood Type Lumina Save" "$STEAMSHARE/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925"
+        read -t 3 -p "Done!"
         break
         ;;
       "Install osu symlinks")
+        echo "Installing osu symlinks..."
+        ask_yn "Continue" "" "exit"
+        echo "Giving osu access to $HOME/Sync/Files/osu..."
         sudo flatpak override sh.ppy.osu --filesystem="$HOME/Sync/Files/osu"
+        echo "Installing symlinks..."
         force_symlink $HOME/Sync/Files/osu/files $HOME/.var/app/sh.ppy.osu/data/osu/files
         force_symlink $HOME/Sync/Files/osu/client.realm $HOME/.var/app/sh.ppy.osu/data/osu/client.realm
+        read -t 3 -p "Done!"
         break
         ;;
       "Exit")

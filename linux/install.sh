@@ -268,7 +268,7 @@ FullInstall() {
   sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher-gtk
 
   install_optional_flatpaks com.prusa3d.PrusaSlicer com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
-    com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader \
+    com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader com.makemkv.MakeMKV \
     com.parsecgaming.parsec sh.ppy.osu net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart \
     com.github.Anuken.Mindustry com.heroicgameslauncher.hgl
 

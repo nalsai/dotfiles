@@ -4,45 +4,116 @@ clear
 echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
 echo
 
+force_symlink() {
+  mkdir -p "$(dirname "$2")"
+  rm -rf "$2" >/dev/null 2>&1
+  ln -sf "$1" "$2"
+}
+
+ask_yn() {
+  echo -n "$1? [y/n/q]: "
+  old_stty_cfg=$(stty -g)
+  stty raw -echo
+  answer=$(while ! head -c 1 | grep -i "[nyq]"; do true; done)
+  stty $old_stty_cfg
+  if echo "$answer" | grep -iq "^y"; then
+    echo y
+    $2
+  elif echo "$answer" | grep -iq "^n"; then
+    echo n
+    $3
+  else
+    echo q
+    exit
+  fi
+}
+
+install_pkgs() {
+  if type "$1" >/dev/null 2>&1; then
+    if type apt-get >/dev/null 2>&1; then
+      sudo apt-get install "$@" -y
+    elif type dnf >/dev/null 2>&1; then
+      sudo dnf -y install "$@"
+    elif type pacman >/dev/null 2>&1; then
+      sudo pacman -S "$@"
+    fi
+  fi
+}
+
+uninstall_pkgs() {
+  if type "$1" >/dev/null 2>&1; then
+    if type apt-get >/dev/null 2>&1; then
+      sudo apt-get remove "$@" -y
+    elif type dnf >/dev/null 2>&1; then
+      sudo dnf -y remove "$@"
+    elif type pacman >/dev/null 2>&1; then
+      sudo pacman -R "$@"
+    fi
+  fi
+}
+
+install_optional_flatpaks() {
+  optional_flatpaks=""
+  for var in "$@"; do
+    echo -n "Install $var? [y/n]: "
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    answer=$(while ! head -c 1 | grep -i "[ny]"; do true; done)
+    stty $old_stty_cfg
+    if echo "$answer" | grep -iq "^y"; then
+      echo y
+      optional_flatpaks="$optional_flatpaks $var"
+    else
+      echo n
+    fi
+  done
+  [ -z "$optional_flatpaks" ] || sudo flatpak -y install flathub$optional_flatpaks
+}
+
+configure_gpgsign() {
+  enabled() {
+    ask_yn "Change git signing key" "change_key"
+  }
+  change_key() {
+    echo "Listing keys:"
+    echo "gpg --list-secret-keys --keyid-format=long"
+    gpg --list-secret-keys --keyid-format=long
+    echo -n "GPG key ID: "
+    read keyID
+    git config --global user.signingkey "$keyID"
+  }
+  ask_yn "Disable git gpgsign" "git config --global commit.gpgsign false" "enabled"
+}
+
 prepare() {
   DOT="$HOME/.dotfiles"
   TMP="/tmp/ZG90ZmlsZXM"
   mkdir -p $TMP
+  [[ -f /etc/os-release ]] && . /etc/os-release
 }
 
 download() {
   echo "Downloading Dotfiles..."
-  echo -n "Download with git? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y"; then
-    echo y
-    echo "Making sure git is installed"
-    if type apt-get >/dev/null 2>&1; then
-      sudo apt-get install git -y
-    elif type dnf >/dev/null 2>&1; then
-      sudo dnf -y install git
-    elif type pacman >/dev/null 2>&1; then
-      sudo pacman -S git
-    fi
+
+  download_git() {
+    install_pkgs git
     if [ -d "$DOT/.git" ]; then
       echo "Found existing git repository: running git pull"
       echo "To prevent data loss this script won't change the git repo."
-      echo "You need to resolve any issues yourself," 
+      echo "You need to resolve any issues yourself,"
       echo "or delete the folder $HOME/.dotfiles and rerun this script."
-      # git pull from main origin
+      cd $DOT
+      git pull origin main
     else
-      rm -rf $DOT > /dev/null 2>&1
+      rm -rf $DOT >/dev/null 2>&1
       echo -n "Clone using ssh or https? [s/h]: "
       old_stty_cfg=$(stty -g)
       stty raw -echo
-      answer=$( while ! head -c 1 | grep -i "[sh]"; do true; done )
+      answer=$(while ! head -c 1 | grep -i "[sh]"; do true; done)
       stty $old_stty_cfg
-      if echo "$answer" | grep -iq "^s" ;then
+      if echo "$answer" | grep -iq "^s"; then
         echo s
-        rm -rf $DOT > /dev/null 2>&1
+        rm -rf $DOT >/dev/null 2>&1
         if ! git clone git@github.com:Nalsai/dotfiles.git $DOT; then
           echo "An error occured while cloning!"
           echo "Did you setup your git ssh key?"
@@ -50,64 +121,41 @@ download() {
         fi
       else
         echo h
-        rm -rf $DOT > /dev/null 2>&1
+        rm -rf $DOT >/dev/null 2>&1
         if ! git clone https://github.com/Nalsai/dotfiles.git $DOT; then
           echo "An error occured while cloning!"
           exit 1
         fi
       fi
     fi
-  else
-    echo n
-    echo "Making sure curl and unzip are installed"
-    if type apt-get >/dev/null 2>&1; then
-      sudo apt-get install curl unzip -y
-    elif type dnf >/dev/null 2>&1; then
-      sudo dnf -y install curl unzip
-    elif type pacman >/dev/null 2>&1; then
-      sudo pacman -S curl unzip
-    fi
-    if ! curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip; then
-        echo "An error occured while downloading!"
-        exit 1
-      fi
-    if ! unzip -u -d $TMP $TMP/dotfiles.zip; then
-        echo "An error occured while unzipping!"
-        exit 1
-      fi
-    rm -rf $DOT > /dev/null 2>&1
-    if ! mv $TMP/dotfiles-main $DOT; then
-        echo "An error occured while moving the dotfiles into place!"
-        exit 1
-      fi
-  fi
+  }
 
-  echo -n "Install symlink to Documents? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    echo "Making sure xdg-user-dirs is installed"
-    if type apt-get >/dev/null 2>&1; then
-      sudo apt-get install xdg-user-dirs -y
-    elif type dnf >/dev/null 2>&1; then
-      sudo dnf -y install xdg-user-dirs
-    elif type pacman >/dev/null 2>&1; then
-      sudo pacman -S xdg-user-dirs
+  download_zip() {
+    install_pkgs curl unzip
+
+    if ! curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip; then
+      echo "An error occured while downloading!"
+      exit 1
     fi
-    ln -sf $DOT "$(xdg-user-dir DOCUMENTS)/dotfiles"
-  else
-    echo n
-  fi
+    if ! unzip -u -d $TMP $TMP/dotfiles.zip; then
+      echo "An error occured while unzipping!"
+      exit 1
+    fi
+    rm -rf $DOT >/dev/null 2>&1
+    if ! mv $TMP/dotfiles-main $DOT; then
+      echo "An error occured while moving the dotfiles into place!"
+      exit 1
+    fi
+  }
+
+  ask_yn "Download with git" "download_git" "download_zip"
+  ask_yn "Install symlink to Documents" "install_pkgs xdg-user-dirs && force_symlink $DOT "$(xdg-user-dir DOCUMENTS)/dotfiles""
 
   chmod +x $DOT/linux/connect-ssh.sh
   chmod +x $DOT/linux/install.sh
   chmod +x $DOT/linux/update-system.sh
   chmod +x $DOT/linux/scripts/install_docker.sh
   chmod +x $DOT/linux/scripts/install_gotop.sh
-  chmod +x $DOT/linux/shortcuts/install-shortcuts.sh
 }
 
 update() {
@@ -116,258 +164,142 @@ update() {
 }
 
 end() {
-  rm -rf $TMP > /dev/null 2>&1
+  rm -rf $TMP >/dev/null 2>&1
   echo Done!
 }
 
-FullInstall()
-{
-  echo "This script is work in progress and supports Fedora."
-  echo "It partially supports Arch, Debian and Derivatives."
-  echo -n "Continue? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-  else
-    echo n
-    exit 130
-  fi
-
+FullInstall() {
   prepare
   download
   update
 
-  echo "Making Symlinks..."
-  mkdir -p $HOME/.config
+  echo "Making symlinks and copying config files..."
+  force_symlink $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv
+  force_symlink $DOT/linux/code-flags.conf $HOME/.config/code-flags.conf # Only works on arch
+  force_symlink $DOT/linux/chromium-flags.conf $HOME/.var/app/com.github.Eloston.UngoogledChromium/config/chromium-flags.conf
+  force_symlink $DOT/git/.gitconfig $HOME/.gitconfig
+  force_symlink $DOT/linux/fish/ $HOME/.config/fish
+  force_symlink $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
+  force_symlink $DOT/linux/nvim/ $HOME/.config/nvim
+  force_symlink $DOT/windows/PowerShell/Microsoft.PowerShell_profile.ps1 $HOME/.config/powershell/Microsoft.PowerShell_profile.ps1
 
-  # mpv
-  mkdir -p $HOME/.var/app/io.mpv.Mpv/config                     # make parent folder if not exists
-  rm -rf $HOME/.var/app/io.mpv.Mpv/config/mpv > /dev/null 2>&1  # remove folder to be symlinked if exists
-  ln -sf $DOT/mpv/mpv $HOME/.var/app/io.mpv.Mpv/config/mpv      # make symlink
-  #$HOME/.config/plex-mpv-shim
-  #$HOME/.var/app/com.github.iwalton3.jellyfin-mpv-shim/config/jellyfin-mpv-shim
-  #$HOME/.var/app/io.github.celluloid_player.Celluloid/config/celluloid
-  #$HOME/.config/mpv
+  # Make sure bash loads bash_aliases
+  grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >>$HOME/.bashrc
 
-  # Visual Studio Code
-  ln -sf $DOT/vscode/code-flags.conf $HOME/.config/code-flags.conf # sadly this only works on arch
-  #mkdir -p $HOME/.config/Code/User
-  #ln -sf $DOT/vscode/settings.json $HOME/.config/Code/User/settings.json
-  #ln -sf $DOT/vscode/keybindings.json $HOME/.config/Code/User/keybindings.json
-  #mkdir -p $HOME/.config/code-oss/User
-  #ln -sf $DOT/vscode/settings.json $HOME/.config/code-oss/User/settings.json
-  #ln -sf $DOT/vscode/keybindings.json $HOME/.config/code-oss/User/keybindings.json
-  #mkdir -p "$HOME/.config/Code - OSS/User"
-  #ln -sf $DOT/vscode/settings.json "$HOME/.config/Code - OSS/User/settings.json"
-  #ln -sf $DOT/vscode/keybindings.json "$HOME/.config/Code - OSS/User/keybindings.json"
-
-  # Chrom(e|ium) dark mode and Wayland
-  mkdir -p $HOME/.var/app/com.google.Chrome/config/chrome-flags.conf
-  ln -sf $DOT/linux/chromium-flags.conf $HOME/.var/app/com.google.Chrome/config/chrome-flags.conf
-  mkdir -p $HOME/.var/app/org.chromium.Chromium/config/chromium-flags.conf
-  ln -sf $DOT/linux/chromium-flags.conf $HOME/.var/app/org.chromium.Chromium/config/chromium-flags.conf
-  mkdir -p $HOME/.var/app/com.github.Eloston.UngoogledChromium/config/chromium-flags.conf
-  ln -sf $DOT/linux/chromium-flags.conf $HOME/.var/app/com.github.Eloston.UngoogledChromium/config/chromium-flags.conf
-
-  # .gitconfig
-  ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
-
-  # fish
-  rm -rf $HOME/.config/fish > /dev/null 2>&1
-  ln -sf $DOT/linux/fish/ $HOME/.config/fish
-
-  # bash
-  rm -rf $HOME/.bash_aliases > /dev/null 2>&1
-  ln -sf $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
-  grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >> $HOME/.bashrc
-
-  # neovim
-  rm -rf $HOME/.config/nvim > /dev/null 2>&1
-  ln -sf $DOT/linux/nvim/ $HOME/.config/nvim
-
-  # Templates
+  # New File templates
   \cp -r $DOT/linux/templates/** $(xdg-user-dir TEMPLATES)
 
-  echo "Installing Flatpaks..."
-  if type apt-get >/dev/null 2>&1; then
-    echo "Flatpak needs to be installed first..."
-    sudo apt-get install flatpak gnome-software-plugin-flatpak -y
+  # Flatpak app configs
+  mkdir -p $HOME/.var/app/com.raggesilver.BlackBox/config/glib-2.0/settings/
+  \cp -f $DOT/linux/com.raggesilver.BlackBox/keyfile $HOME/.var/app/com.raggesilver.BlackBox/config/glib-2.0/settings/keyfile
+  mkdir -p $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/
+  \cp -f $DOT/linux/io.github.Foldex.AdwSteamGtk/keyfile $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/keyfile
+  mkdir -p $HOME/.var/app/org.gnome.TextEditor/config/glib-2.0/settings/
+  \cp -f $DOT/linux/org.gnome.TextEditor/keyfile $HOME/.var/app/org.gnome.TextEditor/config/glib-2.0/settings/keyfile
+  mkdir -p $HOME/.var/app/org.nomacs.ImageLounge/config/nomacs/
+  \cp -f "$DOT/nomacs/Image Lounge.conf" "$HOME/.var/app/org.nomacs.ImageLounge/config/nomacs/Image Lounge.conf"
+
+  # Fix cantarell steam variable font issue
+  mkdir -p /var/home/nalsai/.var/app/com.valvesoftware.Steam/data/fonts
+  cp /usr/share/fonts/abattis-cantarell-fonts/* /var/home/nalsai/.var/app/com.valvesoftware.Steam/data/fonts
+
+  # TTC shortcut
+  rm -f $HOME/.local/share/applications/tamrieltradecentre.desktop >/dev/null 2>&1
+  ln -s $DOT/linux/shortcuts/tamrieltradecentre.desktop $HOME/.local/share/applications/tamrieltradecentre.desktop
+
+  if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
+    echo "Uninstalling preinstalled Flatpaks..."
+    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.baobab org.gnome.Connections org.gnome.Contacts org.gnome.Extensions org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.gnome.font-viewer org.mozilla.firefox
+
+    echo "Removing firefox rpm..."
+    rpm-ostree override remove firefox firefox-langpacks
   fi
 
+  echo "Installing Flatpaks..."
+  install_pkgs flatpak
+  [ type apt-get ] >/dev/null 2>&1 && apt-get install gnome-software-plugin-flatpak -y
+
   sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-	sudo flatpak remote-modify --enable flathub         # enable flathub on fedora
-  sudo flatpak remote-modify --no-filter flathub      # and remove filter
+  sudo flatpak remote-modify --enable flathub    # Enable flathub on fedora
+  sudo flatpak remote-modify --no-filter flathub # And remove filter
   sudo flatpak remote-modify --title=Flathub flathub
   sudo flatpak remote-modify --comment="Central repository of Flatpak applications" flathub
   sudo flatpak remote-modify --description="Central repository of Flatpak applications" flathub
-  sudo flatpak -y install flathub app.drey.Dialect com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
-    com.github.huluti.Curtail com.github.iwalton3.jellyfin-media-player com.github.johnfactotum.Foliate com.github.kmwallio.thiefmd \
-    com.github.liferooter.textpieces com.github.nihui.waifu2x-ncnn-vulkan com.github.qarmin.czkawka com.github.qarmin.szyszka com.github.tchx84.Flatseal com.leinardi.gst \
-    com.mattjakeman.ExtensionManager com.rafaelmardojai.WebfontKitGenerator com.rawtherapee.RawTherapee com.skype.Client com.usebottles.bottles \
-    fr.romainvigier.MetadataCleaner io.github.celluloid_player.Celluloid  io.github.f3d_app.f3d io.github.seadve.Kooha io.gitlab.theevilskeleton.Upscaler io.mpv.Mpv
-  sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 org.blender.Blender \
-    org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gimp.GIMP org.gnome.Builder org.gnome.Connections org.gnome.Evolution \
-    org.gnome.Firmware org.gnome.TextEditor org.gnome.World.PikaBackup org.gnome.eog org.gnome.font-viewer org.gnome.gitg \
-    org.gnome.gitlab.YaLTeR.Identity org.gnome.gitlab.somas.Apostrophe org.gnome.meld org.gnome.seahorse.Application org.gustavoperedo.FontDownloader \
-    org.inkscape.Inkscape org.libreoffice.LibreOffice org.mozilla.firefox org.nomacs.ImageLounge re.sonny.Commit
-    #com.calibre_ebook.calibre com.katawa_shoujo.KatawaShoujo io.github.ciromattia.kcc io.github.hakuneko.HakuNeko org.kde.krita org.pitivi.Pitivi
+
+  sudo flatpak -y install flathub com.github.tchx84.Flatseal io.mpv.Mpv org.gimp.GIMP org.gnome.TextEditor org.gnome.eog \
+    org.libreoffice.LibreOffice org.mozilla.firefox com.raggesilver.BlackBox
+
+  sudo flatpak -y install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
+    com.github.iwalton3.jellyfin-media-player com.github.jeromerobert.pdfarranger com.github.liferooter.textpieces com.github.qarmin.czkawka \
+    com.github.qarmin.szyszka com.heroicgameslauncher.hgl com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
+    com.skype.Client com.usebottles.bottles fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk \
+    io.github.seadve.Kooha
+
+  sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
+    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.freedesktop.Piper org.gnome.baobab org.gnome.Firmware \
+    org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.meld org.gnome.seahorse.Application org.gnome.SimpleScan \
+    org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit sh.ppy.osu
+
+  sudo flatpak -y install --reinstall flathub org.freedesktop.Platform.Locale//22.08    # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
+  sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"        # Allow Bottles to access $HOME/Apps/Bottles
+  sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox # Firefox Wayland
+  sudo flatpak override --device=all org.mozilla.firefox                                # Firefox U2F access
 
   sudo flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
   sudo flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
-  sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//21.08 # required for net.sourceforge.gMKVExtractGUI
+  sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # Required for net.sourceforge.gMKVExtractGUI
 
-  # allow Bottles to access $HOME/Apps/Bottles
-  sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"
+  sudo flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
+  sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher-gtk
 
-  # Firefox Wayland
-  sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox
+  install_optional_flatpaks com.prusa3d.PrusaSlicer com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
+    com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader com.makemkv.MakeMKV \
+    com.parsecgaming.parsec net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.github.Anuken.Mindustry
 
-  # Firefox U2F access
-  sudo flatpak override --device=all org.mozilla.firefox
-
-  flatpak info org.libreoffice.LibreOffice
-  echo
-  echo "Reinstalling installs all Locales, instead of just the main one."
-  echo "This is needed for Spell Checking in different languages."
-  echo -n "Reinstall org.freedesktop.Platform.Locale//21.08? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    sudo flatpak -y install --reinstall flathub org.freedesktop.Platform.Locale//21.08
-  else
-    echo n
-  fi
-
-  echo -n "Add Elementary AppCenter flatpak remote and install Ensembles? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
+  install_ensembles() {
     sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
     sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles
+  }
+  #ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "install_ensembles"
+  ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
+
+  echo "Installing other packages..."
+  if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
+    sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
+    rpm-ostree install bat distrobox exa gnome-shell-extension-caffeine libratbag-ratbagd ripgrep steam-devices syncthing
+    sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Boxes org.gnome.Cheese
   else
-    echo n
-  fi
+    if type dnf >/dev/null 2>&1; then
+      sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+      sudo dnf -y groupupdate core
 
-  echo -n "Install osu? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    sudo flatpak -y install flathub sh.ppy.osu
-  else
-    echo n
-  fi
+      sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+      sudo sh -c "echo -e '[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc' > /etc/yum.repos.d/vscode.repo"
+      sudo dnf -y install code
 
-  echo -n "Install Mothership Defender 2 and Tactical Math Returns? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2
-  else
-    echo n
-  fi
+      sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect --setopt=install_weak_deps=false
+      sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl libratbag-ratbagd librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
+      sudo dnf -y group install "Virtualization"
+    fi
+    install_pkgs bat curl dconf exa fastfetch ffmpeg fish git ripgrep htop neovim unzip
+    if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
 
-  if type apt-get >/dev/null 2>&1; then
-    echo "Uninstalling packages not needed anymore..."
-    sudo apt-get remove firefox -y
+    echo "Uninstalling replaced packages..."
+    uninstall_pkgs firefox eog gnome-font-viewer libreoffice libreoffice-*
 
-    echo "Installing other packages..."
-    sudo apt-get install curl ffmpeg git htop neofetch neovim unzip -y
-
-    if sudo apt-get install fish -y; then
-      sudo usermod --shell /bin/fish $USER
+    if type dnf >/dev/null 2>&1; then
+      sudo dnf -y group remove LibreOffice
     fi
 
-    # Docker
-    $DOT/linux/scripts/install_docker.sh
-    echo -n "Enable Docker service? [y/n]: "
-    old_stty_cfg=$(stty -g)
-    stty raw -echo
-    answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-    stty $old_stty_cfg
-    if echo "$answer" | grep -iq "^y" ;then
-      echo y
-      sudo systemctl enable docker --now
-    else
-      echo n
-    fi
-
-
-  elif type dnf >/dev/null 2>&1; then
-    echo "Uninstalling packages not needed anymore..."
-    sudo dnf -y remove eog gnome-font-viewer libreoffice-* firefox
-    sudo dnf -y group remove LibreOffice
-
-    echo "Installing RPM Fusion"
-    sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-    sudo dnf -y groupupdate core
-
-    echo "Installing other packages..."
-    sudo dnf -y install cargo curl dconf ffmpeg flatpak-builder git gnome-tweaks htop hugo mangohud neofetch neovim ocrmypdf openssl librsvg2-tools lutris pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive unzip wireguard-tools youtube-dl yt-dlp
-    sudo dnf -y group install "Virtualization"
-
-    if sudo dnf -y install fish; then
-      sudo usermod --shell /bin/fish $USER
-    fi
-
-    echo "Installing gnome shell extensions..."
-    sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect gnome-shell-extension-sound-output-device-chooser --setopt=install_weak_deps=false
-
-    # VSCode
-    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    sudo sh -c "echo -e '[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc' > /etc/yum.repos.d/vscode.repo"
-    sudo dnf -y install code
-
-    # Docker
-    $DOT/linux/scripts/install_docker.sh
-    echo -n "Enable Docker service? [y/n]: "
-    old_stty_cfg=$(stty -g)
-    stty raw -echo
-    answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-    stty $old_stty_cfg
-    if echo "$answer" | grep -iq "^y" ;then
-      echo y
-      sudo systemctl enable docker --now
-    else
-      echo n
-    fi
-
-
-  elif type pacman >/dev/null 2>&1; then
-    echo "Uninstalling packages not needed anymore..."
-    sudo pacman -R firefox
-
-    echo "Installing other packages..."
-    sudo pacman -S curl ffmpeg fish git htop neofetch neovim unzip
-
-    if sudo pacman -S fish; then
-      sudo usermod --shell /bin/fish $USER
-    fi
+    $DOT/linux/scripts/install_gotop.sh
   fi
 
   if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/null 2>&1; then
     systemctl --user enable syncthing.service
   fi
 
-  $DOT/linux/scripts/install_gotop.sh
-
-  echo "Configuring Apps..."
-
-  echo "Configuring Gnome (dconf)..."
+  echo "Configuring Gnome..."
   dconf write /org/gnome/desktop/interface/gtk-theme "'Adwaita-dark'"
   dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
   dconf write /org/gnome/desktop/interface/enable-hot-corners "false"
@@ -379,286 +311,220 @@ FullInstall()
   dconf write /org/gnome/desktop/input-sources/xkb-options "['lv3:ralt_switch', 'compose:caps', 'caps:escape_shifted_capslock']"
   dconf write /org/gnome/desktop/peripherals/mouse/accel-profile "'flat'"
   dconf write /org/gnome/desktop/wm/keybindings/show-desktop "['<Super>d']"
-  dconf write /org/gnome/shell/keybindings/show-screenshot-ui  "['<Shift><Super>s']"
-  dconf write /org/gnome/shell/keybindings/screenshot  "['Print']"
+  dconf write /org/gnome/shell/keybindings/show-screenshot-ui "['<Shift><Super>s']"
+  dconf write /org/gnome/shell/keybindings/screenshot "['Print']"
   dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
   dconf write /org/gnome/mutter/center-new-windows "true"
   dconf write /org/gnome/mutter/experimental-features "['scale-monitor-framebuffer']"
+  dconf write /org/gnome/nautilus/preferences/default-folder-viewer "['list-view']"
   dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop']"
   dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
   dconf write /org/gnome/desktop/input-sources/mru-sources "[('xkb', 'us'), ('ibus', 'anthy'), ('xkb', 'de'), ('xkb', 'jp')]"
-  dconf write /org/gnome/desktop/session/idle-delay "uint32 900" # blank screen after 15 minutes inactivity
-  dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'suspend'" # suspend after 2 hours idle
+  dconf write /org/gnome/desktop/session/idle-delay "uint32 900"                          # Blank screen after 15 minutes inactivity
+  dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'suspend'" # Suspend after 2 hours idle
   dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout "7200"
   dconf write /org/gnome/settings-daemon/plugins/color/night-light-temperature "uint32 4700"
   dconf write /org/gnome/settings-daemon/plugins/color/night-light-schedule-automatic "true"
-  # extensions:
+
+  # Extensions
   dconf write /org/gnome/shell/disabled-extensions "['background-logo@fedorahosted.org']"
-  dconf write /org/gnome/shell/enabled-extensions "['gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info', 'sound-output-device-chooser@kgshank.net']"
-  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/hide-on-single-device "true"
-  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/show-profiles "false"
-  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/expand-volume-menu "false"
-  dconf write /org/gnome/shell/extensions/sound-output-device-chooser/cannot-activate-hidden-device "false"
+  dconf write /org/gnome/shell/enabled-extensions "['gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info']"
   dconf write /org/gnome/shell/extensions/caffeine/show-notifications "false"
   dconf write /org/gnome/shell/extensions/caffeine/enable-fullscreen "false"
 
+  # Defaults
+  xdg-settings set default-web-browser org.mozilla.firefox.desktop
+
   echo "Making discord rpc work..."
   mkdir -p ~/.config/user-tmpfiles.d
-  echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" > ~/.config/user-tmpfiles.d/discord-rpc.conf
+  echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" >$HOME/.config/user-tmpfiles.d/discord-rpc.conf
   systemctl --user enable --now systemd-tmpfiles-setup.service
 
-  echo -n "Disable git gpgsign? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    git config --global commit.gpgsign false
-  else
-    echo n
-      echo -n "Change git signingkey? [y/n]: "
-      old_stty_cfg=$(stty -g)
-      stty raw -echo
-      answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-      stty $old_stty_cfg
-      if echo "$answer" | grep -iq "^y" ;then
-        echo y
-        echo "Listing keys:"
-        echo "gpg --list-secret-keys --keyid-format=long"
-        gpg --list-secret-keys --keyid-format=long
-        echo -n "GPG key ID: "
-        read keyID
-        git config --global user.signingkey "$keyID"
-      else
-        echo n
-      fi
-  fi
+  fcc_unlock() {
+    sudo mkdir -p /etc/ModemManager/fcc-unlock.d
+    sudo ln -sft /etc/ModemManager/fcc-unlock.d /usr/share/ModemManager/fcc-unlock.available.d/*
+  }
+  ask_yn "Activate fcc-unlock (needed for WWAN)" "fcc_unlock"
+
+  configure_gpgsign
 
   echo "Installing Fonts..."
   mkdir -p $TMP/fonts
 
   curl -SL "https://www.fontsquirrel.com/fonts/download/gandhi-sans" -o $TMP/fonts/gandhi-sans.zip
   unzip -u -d $TMP/fonts $TMP/fonts/gandhi-sans.zip
-  sudo mkdir /usr/share/fonts/gandhi-sans
-  sudo cp $TMP/fonts/GandhiSans-*.otf /usr/share/fonts/gandhi-sans
+  sudo mkdir -p $HOME/.local/share/fonts/gandhi-sans
+  sudo cp $TMP/fonts/GandhiSans-*.otf $HOME/.local/share/fonts/gandhi-sans
 
-  # TODO
-  
-  sudo fc-cache -v
-
-
-  end
-}
-
-MinimalInstall() {
-  echo "This script is work in progress and supports Arch, Debian, Fedora and Derivatives."
-  echo "(including Chrome OS, WSL etc.)"
-  echo -n "Continue? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-  else
-    echo n
-    exit 130
+  if [[ "$ID" == "fedora" ]]; then
+    if [[ $VARIANT_ID == "silverblue" ]]; then
+      sudo wget -P /etc/yum.repos.d/ https://copr.fedorainfracloud.org/coprs/hyperreal/better_fonts/repo/fedora-$(rpm -E %fedora)/dawid-better_fonts-fedora-$(rpm -E %fedora).repo
+      rpm-ostree install fontconfig-font-replacements
+    else
+      sudo dnf -y copr enable hyperreal/better_fonts
+      sudo dnf -y install fontconfig-font-replacements
+    fi
   fi
 
-  prepare
-
-  # TODO
+  sudo fc-cache -v
 
   end
 }
 
 ServerInstall() {
-  echo "This script is work in progress and will support Raspbian, Armbian, Debian, Fedora and RockyLinux."
-  echo -n "Continue? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-  else
-    echo n
-    exit 130
-  fi
-
   prepare
   download
   update
 
   echo "Making Symlinks..."
-  mkdir $HOME/.config
+  force_symlink $DOT/git/.gitconfig $HOME/.gitconfig
+  force_symlink $DOT/linux/fish/ $HOME/.config/fish
+  force_symlink $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
+  force_symlink $DOT/linux/nvim/ $HOME/.config/nvim
 
-  # .gitconfig
-  ln -sf $DOT/git/.gitconfig $HOME/.gitconfig
+  # Make sure bash loads bash_aliases
+  grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >>$HOME/.bashrc
 
-  # fish
-  rm -rf $HOME/.config/fish > /dev/null 2>&1
-  ln -sf $DOT/linux/fish/ $HOME/.config/fish
-
-  # bash
-  rm -rf $HOME/.bash_aliases > /dev/null 2>&1
-  ln -sf $DOT/linux/bash/bash_aliases $HOME/.bash_aliases
-  grep -q ". ~/.bash_aliases" $HOME/.bashrc || echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi\n" >> $HOME/.bashrc
-
-  # neovim
-  rm -rf $HOME/.config/nvim > /dev/null 2>&1
-  ln -sf $DOT/linux/nvim/ $HOME/.config/nvim
-
-  [[ -f /etc/os-release ]] && . /etc/os-release
   if [[ "$ID" == "rocky" ]]; then
     echo "Configuring ip_tables and iptable_mangle kernel modules to load at boot"
-    echo ip_tables > /etc/modules-load.d/ip_tables.conf
-    echo iptable_mangle > /etc/modules-load.d/iptable_mangle.conf
+    echo ip_tables >/etc/modules-load.d/ip_tables.conf
+    echo iptable_mangle >/etc/modules-load.d/iptable_mangle.conf
   fi
 
   echo "Installing packages..."
 
+  install_pkgs ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl fastfetch fish git gnupg htop pcp unzip
+  if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
+
   if type apt-get >/dev/null 2>&1; then
-    sudo apt-get install ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl git gnupg htop libblockdev-crypto2 lsb-release neofetch neovim packagekit pcp xfsprogs -y
-    if sudo apt-get install fish -y; then
-      sudo usermod --shell /bin/fish $USER
-    fi
+    sudo apt-get install libblockdev-crypto2 lsb-release neovim packagekit xfsprogs -y
 
   elif type dnf >/dev/null 2>&1; then
-    ID=
-    [[ -f /etc/os-release ]] && . /etc/os-release
-    if [[ "$ID" == "rocky" ]]; then
+    if [[ $ID == "rocky" ]]; then
       echo "Installing EPEL, ELRepo and RPM Fusion"
       sudo dnf -y install epel-release
       sudo dnf -y install elrepo-release
       sudo dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rocky).noarch.rpmhttps://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rocky).noarch.rpm
 
-    elif [[ "$ID" == "ol" ]]; then
+    elif [[ $ID == "ol" ]]; then
       echo "Installing EPEL and RPM Fusion"
       sudo dnf -y install epel-release
-      sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 
-      #sudo dnf -y install https://www.elrepo.org/elrepo-release-$(rpm -E %rhel).el$(rpm -E %rhel).elrepo.noarch.rpm
+      sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+      #sudo dnf -y install https://www.elrepo.org/elrepo-release-$(rpm -E %rhel).el$(rpm -E %rhel).elrepo.noarch.rpm # Broken on Oracle Linux
       sudo dnf -y install --nogpgcheck https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm
       sudo dnf -y install --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-$(rpm -E %rhel).noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-$(rpm -E %rhel).noarch.rpm
 
-    elif [[ "$ID" == "fedora" ]]; then
+    elif [[ $ID == "fedora" ]]; then
       echo "Installing RPM Fusion"
       sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-      sudo dnf -y groupupdate core
     fi
 
-    sudo dnf -y install cockpit cockpit-pcp dnf-automatic dnf-plugins-core dnf-utils git pcp PackageKit wireguard-tools
-    sudo dnf -y install htop neofetch neovim
-    sudo dnf -y install kmod-wireguard
+    sudo dnf -y groupupdate core
+    sudo dnf -y install dnf-automatic dnf-plugins-core dnf-utils PackageKit wireguard-tools
+    sudo dnf -y install neovim
 
     if sudo dnf -y install fish; then
       sudo usermod --shell /bin/fish $USER
     fi
   fi
 
-  echo -n "Disable git gpgsign? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y" ;then
-    echo y
-    git config --global commit.gpgsign false
-  else
-    echo n
-      echo -n "Change git signingkey? [y/n]: "
-      old_stty_cfg=$(stty -g)
-      stty raw -echo
-      answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-      stty $old_stty_cfg
-      if echo "$answer" | grep -iq "^y" ;then
-        echo y
-        echo "Listing keys:"
-        echo "gpg --list-secret-keys --keyid-format=long"
-        gpg --list-secret-keys --keyid-format=long
-        echo -n "GPG key ID: "
-        read keyID
-        git config --global user.signingkey "$keyID"
-      else
-        echo n
-      fi
-  fi
-
-  $DOT/linux/scripts/install_docker.sh
-  sudo systemctl enable docker --now
+  configure_gpgsign
 
   end
 }
 
 Tools() {
   while true; do
+    clear
+    echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
     echo
-    echo "Please select what to do:"
-    select s in "install shortcuts" "connect to ssh server" "update system" "clean package caches" "install docker" "install gotop" "exit"; do
+    select s in "Setup distrobox" "Install docker" "Install gotop" "Install ESO symlink" "Install MBTL symlink" "Install osu symlinks" "Exit"; do
       case $s in
-      "install shortcuts")
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/shortcuts/install-shortcuts.sh)
+      "Setup distrobox")
+        echo "Creating distroboxes..."
+        ask_yn "Continue" "" "exit"
+        distrobox create -Y -n my-distrobox -i fedora-toolbox:37 --init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-fedora.sh | bash"
+        distrobox create -Y -n arch -i archlinux --init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-arch.sh | bash"
+        read -t 3 -p "Done!"
         break
         ;;
-      "connect to ssh server")
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/connect-ssh.sh)
-        break
-        ;;
-      "update system")
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/update-system.sh)
-        break
-        ;;
-      "clean package caches")
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/update-system.sh) -c
-        break
-        ;;
-      "install docker")
+      "Install docker")
+        echo "Installing docker..."
+        ask_yn "Continue" "" "exit"
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_docker.sh) -c
         $DOT/linux/scripts/install_docker.sh
-        echo -n "Enable Docker service? [y/n]: "
-        old_stty_cfg=$(stty -g)
-        stty raw -echo
-        answer=$( while ! head -c 1 | grep -i "[ny]"; do true; done )
-        stty $old_stty_cfg
-        if echo "$answer" | grep -iq "^y" ;then
-          echo y
-          sudo systemctl enable docker --now
-        else
-          echo n
-        fi
+        ask_yn "Enable Docker service" "sudo systemctl enable docker --now"
+        read -t 3 -p "Done!"
         break
         ;;
-      "install gotop")
+      "Install gotop")
+        echo "Installing gotop..."
+        ask_yn "Continue" "" "exit"
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_gotop.sh) -c
+        read -t 3 -p "Done!"
         break
         ;;
-      "exit")
-        exit
+      "Install ESO symlink")
+        echo "Installing ESO symlink..."
+        echo "Make sure you opened steam at least once."
+        ask_yn "Continue" "" "exit"
+        STEAMSHARE=$HOME/.local/share/Steam
+        if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then STEAMSHARE=$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam; fi
+        mkdir -p "$STEAMSHARE/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online"
+        force_symlink "$STEAMSHARE/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online" "$HOME/Documents/Elder Scrolls Online"
+        read -t 3 -p "Done!"
         break
+        ;;
+      "Install MBTL symlink")
+        echo "Installing MBTL symlink..."
+        echo "Make sure you opened steam at least once."
+        ask_yn "Continue" "" "exit"
+        STEAMSHARE=$HOME/.local/share/Steam
+        if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then STEAMSHARE=$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam; fi
+        force_symlink "$HOME/Sync/Files/Documents/Melty Blood Type Lumina Save" "$STEAMSHARE/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925"
+        read -t 3 -p "Done!"
+        break
+        ;;
+      "Install osu symlinks")
+        echo "Installing osu symlinks..."
+        ask_yn "Continue" "" "exit"
+        echo "Giving osu access to $HOME/Sync/Files/osu..."
+        sudo flatpak override sh.ppy.osu --filesystem="$HOME/Sync/Files/osu"
+        echo "Installing symlinks..."
+        force_symlink $HOME/Sync/Files/osu/files $HOME/.var/app/sh.ppy.osu/data/osu/files
+        force_symlink $HOME/Sync/Files/osu/client.realm $HOME/.var/app/sh.ppy.osu/data/osu/client.realm
+        read -t 3 -p "Done!"
+        break
+        ;;
+      "Exit")
+        break 2
         ;;
       esac
     done
   done
 }
 
-select s in "full installation" "minimal installation" "server installation" "tools"; do
-  case $s in
-  "full installation")
-    FullInstall
-    break
-    ;;
-  "minimal installation")
-    MinimalInstall
-    break
-    ;;
-  "server installation")
-    ServerInstall
-    break
-    ;;
-  "tools")
-    Tools
-    break
-    ;;
-  esac
+while true; do
+  clear
+  echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
+  echo
+  select s in "Desktop" "Server" "Tools" "Exit"; do
+    case $s in
+    "Desktop")
+      FullInstall
+      exit
+      ;;
+    "Server")
+      ServerInstall
+      exit
+      ;;
+    "Tools")
+      Tools
+      break
+      ;;
+    "Exit")
+      exit
+      ;;
+    esac
+  done
 done

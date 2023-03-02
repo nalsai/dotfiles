@@ -1,0 +1,15 @@
+[org/gnome/TextEditor]
+wrap-text=false
+show-line-numbers=true
+show-right-margin=false
+tab-width=2
+indent-style='space'
+last-save-directory='file:///home/nalsai/Downloads'
+style-scheme='builder-dark'
+use-system-font=false
+custom-font='Monospace 10'
+show-grid=true
+highlight-current-line=false
+show-map=false
+restore-session=false
+spellcheck=true

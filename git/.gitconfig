@@ -13,6 +13,6 @@
 [user]
 	name = Nils Fürniß
 	email = contact@nalsai.de
-	signingKey = 79CB1318699409FF
+	signingkey = 79CB1318699409FF
 [credential]
 	helper = manager

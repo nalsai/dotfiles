@@ -2,6 +2,6 @@
 Type=Application
 Name=TTC
 Comment=Tamriel Trade Centre
-Exec="/home/nalsai/Documents/Elder Scrolls Online/live/TTC.sh"
-Icon=/home/nalsai/Documents/Elder Scrolls Online/live/TTC_Logo.png
-Terminal=false
+Exec=/home/nalsai/Documents/dotfiles/linux/scripts/ttc.sh
+Icon=/home/nalsai/Sync/Files/Pictures/Icons/png/TTC.png
+Terminal=true

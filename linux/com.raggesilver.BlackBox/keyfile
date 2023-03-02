@@ -1,0 +1,17 @@
+[com/raggesilver/BlackBox]
+was-maximized=false
+theme-dark='Japanesque'
+font='Monospace 10'
+pretty=true
+headerbar-draw-line-single-tab=false
+window-height=580
+window-width=850
+use-custom-command=true
+custom-shell-command='distrobox enter my-distrobox'
+remember-window-size=true
+show-headerbar=true
+show-menu-button=true
+floating-controls=true
+stealth-single-tab=true
+hide-single-tab=true
+fill-tabs=true

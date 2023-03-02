@@ -1,7 +1,6 @@
 #!/bin/bash
 
-Help()
-{
+Help() {
   echo "Updates or cleans system and its packages."
   echo
   echo "Syntax: update-system.sh [OPTION]"
@@ -12,8 +11,7 @@ Help()
   echo
 }
 
-Clean()
-{
+Clean() {
   echo Cleaning...
 
   if type apt-get >/dev/null 2>&1; then
@@ -26,33 +24,40 @@ Clean()
   fi
 
   if type yay >/dev/null 2>&1; then
-    yay -c           # Remove unneeded dependencies
-    yay -Sc          # Clean unused files from cache
+    yay -c
+    yay -Sc
   elif type pacman >/dev/null 2>&1; then
-    sudo pacman -Sc  # Clean unused files from cache
+    sudo pacman -Sc
   fi
 
   if type flatpak >/dev/null 2>&1; then
     flatpak uninstall --unused
   fi
 
-  if pgrep -f docker > /dev/null; then
-    sudo docker system prune
+  if type rpm-ostree >/dev/null 2>&1; then
+    rpm-ostree cleanup
+  fi
+
+  if pgrep -f docker >/dev/null; then
+    sudo docker system prune -a
   fi
 }
 
 while getopts ":chr" option; do
- case $option in
+  case $option in
   c)
     Clean
-    exit;;
+    exit
+    ;;
   h)
     Help
-    exit;;
- \?)
+    exit
+    ;;
+  \?)
     echo "Error: Invalid option"
-    exit;;
- esac
+    exit
+    ;;
+  esac
 done
 
 echo Updating...
@@ -71,7 +76,10 @@ elif type pacman >/dev/null 2>&1; then
   sudo pacman -Syu
 fi
 
+if type rpm-ostree >/dev/null 2>&1; then
+  rpm-ostree upgrade
+fi
+
 if type flatpak >/dev/null 2>&1; then
   flatpak -y update
 fi
-

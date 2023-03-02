@@ -71,33 +71,18 @@ install_optional_flatpaks() {
 }
 
 configure_gpgsign() {
-  echo -n "Disable git gpgsign? [y/n]: "
-  old_stty_cfg=$(stty -g)
-  stty raw -echo
-  answer=$(while ! head -c 1 | grep -i "[ny]"; do true; done)
-  stty $old_stty_cfg
-  if echo "$answer" | grep -iq "^y"; then
-    echo y
-    git config --global commit.gpgsign false
-  else
-    echo n
-    echo -n "Change git signingkey? [y/n]: "
-    old_stty_cfg=$(stty -g)
-    stty raw -echo
-    answer=$(while ! head -c 1 | grep -i "[ny]"; do true; done)
-    stty $old_stty_cfg
-    if echo "$answer" | grep -iq "^y"; then
-      echo y
-      echo "Listing keys:"
-      echo "gpg --list-secret-keys --keyid-format=long"
-      gpg --list-secret-keys --keyid-format=long
-      echo -n "GPG key ID: "
-      read keyID
-      git config --global user.signingkey "$keyID"
-    else
-      echo n
-    fi
-  fi
+  enabled() {
+    ask_yn "Change git signing key" "change_key"
+  }
+  change_key() {
+    echo "Listing keys:"
+    echo "gpg --list-secret-keys --keyid-format=long"
+    gpg --list-secret-keys --keyid-format=long
+    echo -n "GPG key ID: "
+    read keyID
+    git config --global user.signingkey "$keyID"
+  }
+  ask_yn "Disable git gpgsign" "git config --global commit.gpgsign false" "enabled"
 }
 
 prepare() {
@@ -246,14 +231,14 @@ FullInstall() {
 
   sudo flatpak -y install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
     com.github.iwalton3.jellyfin-media-player com.github.jeromerobert.pdfarranger com.github.liferooter.textpieces com.github.qarmin.czkawka \
-    com.github.qarmin.szyszka com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
+    com.github.qarmin.szyszka com.heroicgameslauncher.hgl com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
     com.skype.Client com.usebottles.bottles fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk \
     io.github.seadve.Kooha
 
   sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
     org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.freedesktop.Piper org.gnome.baobab org.gnome.Firmware \
     org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.meld org.gnome.seahorse.Application org.gnome.SimpleScan \
-    org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit
+    org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit sh.ppy.osu
 
   sudo flatpak -y install --reinstall flathub org.freedesktop.Platform.Locale//22.08    # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"        # Allow Bottles to access $HOME/Apps/Bottles
@@ -269,14 +254,13 @@ FullInstall() {
 
   install_optional_flatpaks com.prusa3d.PrusaSlicer com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
     com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader com.makemkv.MakeMKV \
-    com.parsecgaming.parsec sh.ppy.osu net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart \
-    com.github.Anuken.Mindustry com.heroicgameslauncher.hgl
+    com.parsecgaming.parsec net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.github.Anuken.Mindustry
 
   install_ensembles() {
     sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
     sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles
   }
-  ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "install_ensembles"
+  #ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "install_ensembles"
   ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
 
   echo "Installing other packages..."

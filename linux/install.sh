@@ -264,6 +264,9 @@ FullInstall() {
   sudo flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
   sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # Required for net.sourceforge.gMKVExtractGUI
 
+  sudo flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
+  sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher-gtk
+
   install_optional_flatpaks com.prusa3d.PrusaSlicer com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
     com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader \
     com.parsecgaming.parsec sh.ppy.osu net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart \

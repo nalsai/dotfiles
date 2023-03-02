@@ -267,7 +267,7 @@ FullInstall() {
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install bat distrobox exa gnome-shell-extension-caffeine libratbag-ratbagd ripgrep steam-devices syncthing
+    rpm-ostree install bat distrobox exa gnome-shell-extension-caffeine libratbag-ratbagd ripgrep syncthing
     sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Boxes org.gnome.Cheese
   else
     if type dnf >/dev/null 2>&1; then

@@ -6,6 +6,8 @@ Arch Linux- and Debian-based distributions are partially supported.
 
 ## Installation
 
+Make sure to update and restart your system first.
+
 `Linux:` Run this command in bash:
 
 ```bash
@@ -65,6 +67,7 @@ You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Mi
 - Setup bookmarks in files
 - On Silverblue: reboot
 - On Silverblue: `systemctl --user enable syncthing.service`
+- On Silverblue: `rpm-ostree install steam-devices`
 - Setup Syncthing
 - Run "Setup distrobox" tool
 

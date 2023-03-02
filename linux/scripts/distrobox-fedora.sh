@@ -5,7 +5,7 @@ sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-rel
 sudo dnf -y groupupdate core
 
 echo "Installing packages..."
-sudo dnf -y install bat cargo curl exa fastfetch ffmpeg flatpak-builder git htop hugo neovim ocrmypdf librsvg2-tools pandoc perl-Image-ExifTool ripgrep rust tesseract-langpack-deu tesseract-langpack-eng unzip yt-dlp
+sudo dnf -y install bat cargo curl exa fastfetch ffmpeg flatpak-builder git gnome-tweaks htop hugo neovim ocrmypdf librsvg2-tools pandoc perl-Image-ExifTool ripgrep rust tesseract-langpack-deu tesseract-langpack-eng unzip yt-dlp
 #openssl radeontop rustfmt texlive wireguard-tools
 
 echo "Installing VSCode..."
@@ -23,3 +23,4 @@ sudo dnf -y install powershell
 
 echo "Exporting apps..."
 distrobox-export --app code
+distrobox-export --app gnome-tweaks

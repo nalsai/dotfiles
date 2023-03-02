@@ -214,6 +214,10 @@ FullInstall() {
   mkdir -p $HOME/.var/app/org.nomacs.ImageLounge/config/nomacs/
   \cp -f "$DOT/nomacs/Image Lounge.conf" "$HOME/.var/app/org.nomacs.ImageLounge/config/nomacs/Image Lounge.conf"
 
+  # Fix cantarell steam variable font issue
+  mkdir -p /var/home/nalsai/.var/app/com.valvesoftware.Steam/data/fonts
+  cp /usr/share/fonts/abattis-cantarell-fonts/* /var/home/nalsai/.var/app/com.valvesoftware.Steam/data/fonts
+
   # TTC shortcut
   rm -f $HOME/.local/share/applications/tamrieltradecentre.desktop >/dev/null 2>&1
   ln -s $DOT/linux/shortcuts/tamrieltradecentre.desktop $HOME/.local/share/applications/tamrieltradecentre.desktop

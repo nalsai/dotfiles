@@ -44,7 +44,11 @@ Buy a license from [Microsoft](https://www.microsoft.com/) and enter your produc
 
 You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Microsoft-Activation-Scripts/releases) (run `iwr -useb https://massgrave.dev/get | iex` in PowerShell), [KMS_VL_ALL_AIO](https://pastebin.com/cpdmr6HZ) or <https://kms.nils.moe>.
 
-### Manual Steps
+### Manual Steps - Windows
+
+TODO
+
+### Manual Steps - Linux
 
 - Setup GPG keys
 - Setup SSH keys
@@ -61,6 +65,7 @@ You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Mi
   - Customize toolbar and shortcuts
   - `curl -s -o- https://raw.githubusercontent.com/rafaelmardojai/firefox-gnome-theme/master/scripts/install-by-curl.sh | bash`
 - Setup Steam
+  - Install Adwaita-for-Steam (using AdwSteamGtk)
   - Enable Steam Play (Proton)
   - Disable "Notify me about ..."
   - Change default window to "Library"
@@ -68,6 +73,8 @@ You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Mi
   - Install games
 - Sign in to VSCode (with GitHub) to enable settings sync
 - Setup Deluge headless mode
+- On Silverblue: reboot
+- On Silverblue: `systemctl --user enable syncthing.service`
 
 ## Thanks to
 

@@ -2,33 +2,121 @@
 $TMP = "$env:TEMP\ZG90ZmlsZXM"
 New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
 
+function ask_yn() {
+	$host.UI.RawUI.FlushInputBuffer()
+	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+	while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.Character -eq "Q" -Or $key.VirtualKeyCode -eq 13)) {
+		$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+	}
+	Write-Host $key.Character
+	if ($key.Character -eq "Q") {
+		exit
+	}
+	return $key.Character
+}
+
+
 Write-Host "Installing Apps..." -ForegroundColor Green
 
-# Install chocolatey if not already installed
-if (!(which choco)) {
-	Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-	choco feature enable -n=allowGlobalConfirmation
-	choco feature enable -n=useRememberedArgumentsForUpgrades
+winget install --id=Microsoft.WindowsTerminal -e -h --scope "machine"
+winget install --id=Git.Git -e -h --override "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --scope "machine"
+
+# TODO: mpv notepad2-mod paint.net wget
+winget install --id=AltSnap.AltSnap -e -h --scope "machine"
+winget install --id=Audacity.Audacity -e -h --scope "machine"
+winget install --id=Canneverbe.CDBurnerXP -e -h --scope "machine"
+winget install --id=cURL.cURL -e -h --scope "machine"
+winget install --id=voidtools.Everything -e -h --scope "machine"
+winget install --id=stnkl.EverythingToolbar -e -h --scope "machine"
+winget install --id=Gyan.FFmpeg -e -h --scope "machine"
+winget install --id=Mozilla.Firefox -e -h --scope "machine"
+winget install --id=GIMP.GIMP -e -h --scope "machine"
+winget install --id=REALiX.HWiNFO -e -h --scope "machine"
+winget install --id=Xanashi.Icaros -e -h --scope "machine"
+winget install --id=TheDocumentFoundation.LibreOffice -e -h --scope "machine"
+winget install --id=nomacs.nomacs -e -h --scope "machine"
+winget install --id=BurntSushi.ripgrep.MSVC -e -h --scope "machine"
+winget install --id=WinDirStat.WinDirStat -e -h --scope "machine"
+winget install --id=SomePythonThings.WingetUIStore -e -h --scope "machine"
+winget install --id=yt-dlp.yt-dlp -e -h --scope "machine"
+
+
+# minimal only:
+#winget install --id=EclipseAdoptium.Temurin.19.JDK -e -h --scope "machine"
+#winget install --id=CrystalDewWorld.CrystalDiskInfo -e -h --scope "machine"
+#winget install --id=Google.Chrome -e -h --scope "machine"
+#winget install --id=VideoLAN.VLC -e -h --scope "machine"
+
+
+# Full only:
+
+# TODO
+#choco install vscode --params "/NoDesktopIcon /NoQuicklaunchIcon /NoContextMenuFiles" --limit-output
+#winget install Microsoft.VisualStudioCode -e --override "/verysilent /suppressmsgboxes /tasks=!runCode,desktopicon,quicklaunchicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath"
+
+winget install --id=EclipseAdoptium.Temurin.19.JDK -e -h --scope "machine"
+winget install --id=AutoHotkey.AutoHotkey -e -h --scope "machine"
+winget install --id=DelugeTeam.DelugeBeta -e -h --scope "machine"
+winget install --id=Discord.Discord -e -h --scope "machine"
+winget install --id=AndreWiethoff.ExactAudioCopy -e -h --scope "machine"
+winget install --id=Balena.Etcher -e -h --scope "machine"
+winget install --id=OliverBetz.ExifTool -e -h --scope "machine"
+winget install --id=TimKosse.FileZilla.Client -e -h --scope "machine"
+winget install --id=HeroicGamesLauncher.HeroicGamesLauncher -e -h --scope "machine"
+winget install --id=eloston.ungoogled-chromium -e -h --scope "machine"
+winget install --id=Hugin.Hugin -e -h --scope "machine"
+winget install --id=Hugo.Hugo -e -h --scope "machine"
+winget install --id=HermannSchinagl.LinkShellExtension -e -h --scope "machine"
+winget install --id=GuinpinSoft.MakeMKV -e -h --scope "machine"
+winget install --id=Meld.Meld -e -h --scope "machine"
+winget install --id=MoritzBunkus.MKVToolNix -e -h --scope "machine"
+winget install --id=M2Team.NanaZip -e -h --scope "machine"
+winget install --id=OBSProject.OBSStudio -e -h --scope "machine"
+winget install --id=ShiningLight.OpenSSL -e -h --scope "machine"
+winget install --id=Python.Python.3.12 -v "3.12.0a1" -e -h --scope "machine"
+winget install --id=Rufus.Rufus -e -h --scope "machine"
+winget install --id=Valve.Steam -e -h --scope "machine"
+winget install --id=SyncTrayzor.SyncTrayzor -e -h --scope "machine"
+winget install --id=Unity.UnityHub -e -h --scope "machine"
+winget install --id=CrystalDewWorld.CrystalDiskMark.ShizukuEdition -e -h --scope "machine"
+winget install --id=CrystalDewWorld.CrystalDiskInfo.ShizukuEdition -e -h --scope "machine"
+winget install --id=MediaArea.MediaInfo.GUI -e -h --scope "machine"
+winget install --id=MediaArea.MediaInfo -e -h --scope "machine"
+
+
+
+Write-Host "Install assaultcube? [y/N/q]: " -ForegroundColor Yellow -NoNewline
+Switch (ask_yn) {
+	Y {
+		winget install --id=RabidViperProductions.AssaultCube -e -h --scope "machine"
+	}
+	Default {}
 }
 
-choco install git --params "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --limit-output
-choco install vscode --params "/NoDesktopIcon /NoQuicklaunchIcon /NoContextMenuFiles" --limit-output
 
-# Windows Terminal is included in Windows 11 and only needs to be installed on Windows 10
-if ([Environment]::OSVersion.Version.Major -eq "10" -and -not ((Get-WmiObject Win32_OperatingSystem).Caption -contains " 11 ")) {
-	choco install microsoft-windows-terminal --limit-output
+
+#------------------------------- TODO
+
+
+Write-Host "Install Cinebench, Furmark and Prime95? [y/N]: " -ForegroundColor Yellow -NoNewline
+Switch (ask_yn) {
+	Y {
+		choco install cinebench furmark prime95 --limit-output
+	}
+	Default {}
 }
 
-choco install 7zip temurin altdrag audacity audacity-ffmpeg audacity-lame authy-desktop autohotkey cdburnerxp curl discord eac eartrumpet etcher everything exiftool ffmpeg-full filezilla firefox flacsquisher gimp goggalaxy golang googlechrome hugin hugo hwinfo icaros laragon.portable libreoffice-fresh linkshellextension makemkv meld mkvtoolnix mpv nomacs notepad2-mod obs-studio openssl paint.net partitionwizard powershell-core python rclone renamer rufus steam-client synctrayzor unity-hub vlc wget winbtrfs windirstat wireshark youtube-dl --limit-output
-choco install figma --ignore-checksums --limit-output
 
-if ((Get-WmiObject Win32_OperatingSystem).Caption -contains " 11 ") {
-	choco install taskbarx --limit-output
-
-	# Run TaskbarX and add to Startup
-	Start-Process "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\TaskbarX\TaskbarX.lnk"
-	Copy-Item "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\TaskbarX\TaskbarX.lnk" "$HOME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\TaskbarX.lnk"  -ErrorAction SilentlyContinue
+Write-Host "Install iTunes? [y/N]: " -ForegroundColor Yellow -NoNewline
+Switch (ask_yn) {
+	Y {
+		choco install itunes --limit-output
+	}
+	Default {}
 }
+
+
+
 
 # Run AltDrag
 Start-Process "$HOME\AppData\Roaming\AltDrag\AltDrag.exe" -ArgumentList "-h"
@@ -43,102 +131,20 @@ RegSvr32.exe "C:\Program Files\Icaros\64-bit\IcarosThumbnailProvider.dll" /s
 RegSvr32.exe "C:\Program Files\Icaros\64-bit\IcarosPropertyHandler.dll" /s
 
 
-# https://stackoverflow.com/a/46760714
-$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
-Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-refreshenv
-. $profile
-
 #if (!((Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name 'Version' -ErrorAction SilentlyContinue | ForEach-Object { $_.Version -as [System.Version] } | Where-Object { $_.Major -eq 3 -and $_.Minor -eq 5 }).Count -ge 1)) {
 #	Write-Host "Installing .NET 3.5"
 #	Enable-WindowsOptionalFeature -Online -FeatureName "NetFx3" -NoRestart
 #}
 
-if (!(Test-Path "C:\Program Files\CrystalDiskInfo*")) {
-	wget.exe -O $TMP\CrystalDiskInfo-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskInfoInstallerShizuku --no-check-certificate
-	Start-Process $TMP\CrystalDiskInfo-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
-}
-if (!(Test-Path "C:\Program Files\CrystalDiskMark*")) {
-	wget.exe -O $TMP\CrystalDiskMark-Setup.exe https://crystalmark.info/redirect.php?product=CrystalDiskMarkInstallerShizuku --no-check-certificate
-	Start-Process $TMP\CrystalDiskMark-Setup.exe -ArgumentList "/SP- /VERYSILENT /NORESTART"
-}
-if (!(Test-Path "$env:LOCALAPPDATA\MediaInfo.NET")) {
-	wget.exe -O $TMP\MediaInfoNET.zip ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/stax76/MediaInfo.NET/releases/latest").assets | Where-Object name -like MediaInfo.NET-*.zip).browser_download_url
-	7z x $TMP\MediaInfoNET.zip -o"$env:LOCALAPPDATA\MediaInfo.NET" -y
-	Start-Process $env:LOCALAPPDATA\MediaInfo.NET\MediaInfoNET.exe --install
-}
 
-# stop choco upgrading packages that upgrade themselves
-$pin_block = {
-	$apps =
-#	'authy-desktop',
-#	'discord',
-#	'figma',
-#	'firefox',
-#	'goggalaxy'
-#	'googlechrome',
-	'steam-client'
-#	'unity-hub'
-	for ($i = 0; $i -lt $apps.Count; $i++) {
-		choco pin add --name $apps[$i]
-	}
-}
-Start-Process powershell -ArgumentList "-command $pin_block" -WindowStyle Minimized
 
 . $PSScriptRoot\declutter-contextmenu.ps1 script
 
-Write-Host "Install Cinebench, Furmark, Prime95? [y/N]: " -ForegroundColor Yellow -NoNewline
-$host.UI.RawUI.FlushInputBuffer()
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
-	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-Write-Host $key.Character
-Switch ($key.Character) {
-	Y {
-		choco install cinebench furmark prime95 --limit-output
-	}
-	Default {}
-}
-
-Write-Host "Install itunes? [y/N]: " -ForegroundColor Yellow -NoNewline
-$host.UI.RawUI.FlushInputBuffer()
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
-	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-Write-Host $key.Character
-Switch ($key.Character) {
-	Y {
-		choco install itunes --limit-output
-	}
-	Default {}
-}
-
-Write-Host "Install assaultcube? [y/N]: " -ForegroundColor Yellow -NoNewline
-$host.UI.RawUI.FlushInputBuffer()
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
-	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-Write-Host $key.Character
-Switch ($key.Character) {
-	Y {
-		choco install assaultcube --limit-output
-	}
-	Default {}
-}
-
-git config --global core.editor "code --wait"
+# TODO
+#git config --global core.editor "code --wait"
 
 Write-Host "Disable git gpgsign? [y/N]: " -ForegroundColor Yellow -NoNewline
-$host.UI.RawUI.FlushInputBuffer()
-$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-while(-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
-	$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
-Write-Host $key.Character
-Switch ($key.Character) {
+Switch (ask_yn) {
 	Y {
 		git config --global commit.gpgsign false
 	}

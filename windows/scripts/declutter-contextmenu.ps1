@@ -24,23 +24,6 @@ ForEach ($Key in $Keys) {
 	Remove-Item $Key -Recurse -ErrorAction Ignore
 }
 
-Write-Host "Removing WinMerge from Context Menu"
-$Keys = @(
-	"HKCR:\*\shellex\ContextMenuHandlers\WinMerge"
-	"HKCR:\Directory\shellex\ContextMenuHandlers\WinMerge"
-	"HKCR:\Directory\shellex\DragDropHandlers\WinMerge"
-	"HKCR:\Directory\Background\shellex\ContextMenuHandlers\WinMerge"
-	"HKCR:\Directory\Background\shellex\DragDropHandlers\WinMerge"
-	"HKCR:\Drive\shellex\ContextMenuHandlers\WinMerge"
-	"HKCR:\Drive\shellex\DragDropHandlers\WinMerge"
-)
-ForEach ($Key in $Keys) {
-	Remove-Item -LiteralPath $Key -Recurse -ErrorAction Ignore
-}
-
-Write-Host "Removing 7zip from Drag & Drop Context Menu"
-Remove-Item -LiteralPath "HKCR:\Directory\shellex\DragDropHandlers\7-Zip" -Recurse -ErrorAction Ignore
-
 Write-Host "Done!" -ForegroundColor Green
 if (-Not ($args[0] -eq "script")){
 	$Host.UI.ReadLine()

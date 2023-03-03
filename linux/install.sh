@@ -448,8 +448,8 @@ Tools() {
       "Setup distrobox")
         echo "Creating distroboxes..."
         ask_yn "Continue" "" "exit"
-        distrobox create -Y -n my-distrobox -i fedora-toolbox:37 --init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-fedora.sh | bash"
-        distrobox create -Y -n arch -i archlinux --init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-arch.sh | bash"
+        distrobox create -Y -n my-distrobox -i fedora-toolbox:37 --pre-init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-fedora.sh | bash"
+        distrobox create -Y -n arch -i archlinux --pre-init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-arch.sh | bash"
         read -t 3 -p "Done!"
         break
         ;;

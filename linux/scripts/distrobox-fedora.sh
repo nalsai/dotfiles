@@ -21,6 +21,6 @@ echo "Installing PowerShell..."
 curl https://packages.microsoft.com/config/rhel/8/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
 sudo dnf -y install powershell
 
-echo "Exporting apps..."
-distrobox-export --app code
-distrobox-export --app gnome-tweaks
+#echo "Exporting apps..."
+#distrobox-export --app code
+#distrobox-export --app gnome-tweaks

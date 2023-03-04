@@ -272,7 +272,7 @@ FullInstall() {
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install bat distrobox exa gnome-shell-extension-caffeine libratbag-ratbagd ripgrep syncthing
+    rpm-ostree install bat distrobox exa gnome-shell-extension-caffeine libratbag-ratbagd ripgrep syncthing wireguard-tools
     sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Boxes org.gnome.Cheese
   else
     if type dnf >/dev/null 2>&1; then
@@ -447,9 +447,10 @@ Tools() {
       case $s in
       "Setup distrobox")
         echo "Creating distroboxes..."
+        echo "dotfiles need to be installed to enter them"
         ask_yn "Continue" "" "exit"
-        distrobox create -Y -n my-distrobox -i fedora-toolbox:37 --pre-init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-fedora.sh | bash"
-        distrobox create -Y -n arch -i archlinux --pre-init-hooks "curl -s -o- https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/distrobox-arch.sh | bash"
+        distrobox create -Y -n my-distrobox -i registry.fedoraproject.org/fedora-toolbox:37 --init-hooks "bash $DOT/linux/scripts/distrobox-fedora.sh"
+        distrobox create -Y -n arch -i archlinux --init-hooks "bash $DOT/linux/scripts/distrobox-arch.sh"
         read -t 3 -p "Done!"
         break
         ;;
@@ -466,7 +467,7 @@ Tools() {
         echo "Installing gotop..."
         ask_yn "Continue" "" "exit"
         bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_gotop.sh) -c
-        read -t 3 -p "Done!"
+        read -t 1 -p "Done!"
         break
         ;;
       "Install ESO symlink")
@@ -477,7 +478,7 @@ Tools() {
         if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then STEAMSHARE=$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam; fi
         mkdir -p "$STEAMSHARE/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online"
         force_symlink "$STEAMSHARE/steamapps/compatdata/306130/pfx/drive_c/users/steamuser/Documents/Elder Scrolls Online" "$HOME/Documents/Elder Scrolls Online"
-        read -t 3 -p "Done!"
+        read -t 1 -p "Done!"
         break
         ;;
       "Install MBTL symlink")
@@ -487,7 +488,7 @@ Tools() {
         STEAMSHARE=$HOME/.local/share/Steam
         if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then STEAMSHARE=$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam; fi
         force_symlink "$HOME/Sync/Files/Documents/Melty Blood Type Lumina Save" "$STEAMSHARE/steamapps/common/MELTY BLOOD TYPE LUMINA/winsave/228783925"
-        read -t 3 -p "Done!"
+        read -t 1 -p "Done!"
         break
         ;;
       "Install osu symlinks")
@@ -498,7 +499,7 @@ Tools() {
         echo "Installing symlinks..."
         force_symlink $HOME/Sync/Files/osu/files $HOME/.var/app/sh.ppy.osu/data/osu/files
         force_symlink $HOME/Sync/Files/osu/client.realm $HOME/.var/app/sh.ppy.osu/data/osu/client.realm
-        read -t 3 -p "Done!"
+        read -t 1 -p "Done!"
         break
         ;;
       "Exit")

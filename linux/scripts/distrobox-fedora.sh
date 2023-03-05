@@ -17,8 +17,18 @@ dnf -y groupupdate core
 
 echo "Installing packages..."
 dnf -y install bat exa fish git which
-dnf -y install cargo curl fastfetch ffmpeg flatpak-builder gnome-tweaks htop hugo neovim ocrmypdf librsvg2-tools pandoc perl-Image-ExifTool ripgrep rust tesseract-langpack-deu tesseract-langpack-eng unzip yt-dlp
+dnf -y install cargo curl fastfetch ffmpeg flatpak-builder gnome-tweaks htop hugo neovim ocrmypdf librsvg2-tools pandoc perl-Image-ExifTool poppler-utils ripgrep rust tesseract-langpack-deu tesseract-langpack-eng tesseract-osd unzip yt-dlp
 #openssl radeontop rustfmt texlive
+
+echo "Installing jbig2enc..."
+dnf -y install automake libtool leptonica-devel zlib-devel gcc-c++
+git clone https://github.com/agl/jbig2enc /tmp/jbig2enc
+cd /tmp/jbig2enc
+./autogen.sh
+./configure && make
+make install
+cd ~
+rm -rf /tmp/jbig2enc
 
 echo "Installing VSCode..."
 rpm --import https://packages.microsoft.com/keys/microsoft.asc

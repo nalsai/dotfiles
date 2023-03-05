@@ -234,7 +234,7 @@ FullInstall() {
   sudo flatpak -y install flathub com.github.tchx84.Flatseal io.mpv.Mpv org.gimp.GIMP org.gnome.TextEditor org.gnome.eog \
     org.libreoffice.LibreOffice org.mozilla.firefox com.raggesilver.BlackBox
 
-  sudo flatpak -y install flathub com.belmoussaoui.Decoder com.discordapp.Discord com.github.Eloston.UngoogledChromium \
+  sudo flatpak -y install flathub com.belmoussaoui.Decoder com.calibre_ebook.calibre com.discordapp.Discord com.github.Eloston.UngoogledChromium \
     com.github.iwalton3.jellyfin-media-player com.github.jeromerobert.pdfarranger com.github.liferooter.textpieces com.github.qarmin.czkawka \
     com.github.qarmin.szyszka com.heroicgameslauncher.hgl com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
     com.skype.Client com.usebottles.bottles fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk \
@@ -255,11 +255,11 @@ FullInstall() {
   sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # Required for net.sourceforge.gMKVExtractGUI
 
   sudo flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
-  sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher-gtk
+  sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher
 
   install_optional_flatpaks com.prusa3d.PrusaSlicer com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
-    com.wps.Office com.unity.UnityHub com.calibre_ebook.calibre rocks.koreader.KOReader com.makemkv.MakeMKV \
-    com.parsecgaming.parsec net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.github.Anuken.Mindustry
+    com.wps.Office com.unity.UnityHub rocks.koreader.KOReader com.makemkv.MakeMKV com.parsecgaming.parsec \
+    net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.github.Anuken.Mindustry
 
   install_ensembles() {
     sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo

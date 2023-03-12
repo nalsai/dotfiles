@@ -4,6 +4,11 @@ clear
 echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
 echo
 
+DOT="$HOME/.dotfiles"
+TMP="/tmp/ZG90ZmlsZXM"
+mkdir -p $TMP
+[[ -f /etc/os-release ]] && . /etc/os-release
+
 force_symlink() {
   mkdir -p "$(dirname "$2")"
   rm -rf "$2" >/dev/null 2>&1
@@ -85,13 +90,6 @@ configure_gpgsign() {
   ask_yn "Disable git gpgsign" "git config --global commit.gpgsign false" "enabled"
 }
 
-prepare() {
-  DOT="$HOME/.dotfiles"
-  TMP="/tmp/ZG90ZmlsZXM"
-  mkdir -p $TMP
-  [[ -f /etc/os-release ]] && . /etc/os-release
-}
-
 download() {
   echo "Downloading Dotfiles..."
 
@@ -168,13 +166,7 @@ update() {
   $DOT/linux/update-system.sh
 }
 
-end() {
-  rm -rf $TMP >/dev/null 2>&1
-  echo Done!
-}
-
 FullInstall() {
-  prepare
   download
   update
 
@@ -372,12 +364,9 @@ FullInstall() {
   fi
 
   sudo fc-cache -v
-
-  end
 }
 
 ServerInstall() {
-  prepare
   download
   update
 
@@ -434,8 +423,6 @@ ServerInstall() {
   fi
 
   configure_gpgsign
-
-  end
 }
 
 Tools() {
@@ -534,3 +521,6 @@ while true; do
     esac
   done
 done
+
+rm -rf $TMP >/dev/null 2>&1
+echo Done!

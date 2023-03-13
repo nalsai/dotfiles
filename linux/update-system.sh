@@ -80,6 +80,6 @@ if type rpm-ostree >/dev/null 2>&1; then
   rpm-ostree upgrade
 fi
 
-if type flatpak >/dev/null 2>&1; then
+if type flatpak >/dev/null 2>&1 && [[ $(systemd-detect-virt) != "podman" ]]; then
   flatpak -y update
 fi

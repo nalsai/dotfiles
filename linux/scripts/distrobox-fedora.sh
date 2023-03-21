@@ -43,6 +43,17 @@ echo "Installing PowerShell..."
 curl https://packages.microsoft.com/config/rhel/8/prod.repo | tee /etc/yum.repos.d/microsoft.repo
 dnf -y install powershell
 
+echo "Installing imgname..."
+mkdir -p /tmp/imgname
+CARGO_TARGET_DIR=/tmp/imgname cargo install --git https://github.com/Nalsai/imgname
+mkdir -p /usr/share/bash-completion/completions
+mkdir -p /usr/share/fish/completions
+mkdir -p /usr/share/zsh/site-functions
+sudo install -m644 /tmp/imgname/release/build/imgname-*/out/imgname.bash /usr/share/bash-completion/completions/imgname
+sudo install -m644 /tmp/imgname/release/build/imgname-*/out/imgname.fish /usr/share/fish/completions/imgname.fish
+sudo install -m644 /tmp/imgname/release/build/imgname-*/out/_imgname /usr/share/zsh/site-functions/_imgname
+rm -rf /tmp/imgname
+
 echo "Exporting apps..."
 su - nalsai -c 'CONTAINER_ID=my-distrobox distrobox-export --app code'
 su - nalsai -c 'CONTAINER_ID=my-distrobox distrobox-export --app gnome-tweaks'

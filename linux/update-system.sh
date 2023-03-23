@@ -60,7 +60,25 @@ while getopts ":chr" option; do
   esac
 done
 
-echo Updating...
+echo Updating dotfiles...
+DOT="$HOME/.dotfiles"
+if [ -d "$DOT/.git" ]; then
+  git -C $DOT pull origin main
+elif [ -d "$DOT" ]; then
+  TMP="/tmp/ZG90ZmlsZXM"
+  mkdir -p $TMP
+  curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip &&
+    unzip -u -d $TMP $TMP/dotfiles.zip &&
+    rm -rf $DOT >/dev/null 2>&1 &&
+    mv $TMP/dotfiles-main $DOT
+fi
+
+echo Updating distroboxes...
+if type distrobox >/dev/null 2>&1; then
+  distrobox upgrade --all
+fi
+
+echo Updating packages...
 if type apt-get >/dev/null 2>&1; then
   sudo apt-get update
   sudo apt-get full-upgrade -y

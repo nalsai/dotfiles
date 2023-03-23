@@ -100,8 +100,7 @@ download() {
       echo "To prevent data loss this script won't change the git repo."
       echo "You need to resolve any issues yourself,"
       echo "or delete the folder $HOME/.dotfiles and rerun this script."
-      cd $DOT
-      git pull origin main
+      git -C $DOT pull origin main
     else
       rm -rf $DOT >/dev/null 2>&1
       echo -n "Clone using ssh or https? [s/h]: "
@@ -223,6 +222,10 @@ FullInstall() {
   sudo flatpak remote-modify --comment="Central repository of Flatpak applications" flathub
   sudo flatpak remote-modify --description="Central repository of Flatpak applications" flathub
 
+  sudo flatpak remote-add --if-not-exists gnome-nightly https://nightly.gnome.org/gnome-nightly.flatpakrepo
+  sudo flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
+  sudo flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
+
   sudo flatpak -y install flathub com.github.tchx84.Flatseal io.mpv.Mpv org.gimp.GIMP org.gnome.TextEditor org.gnome.eog \
     org.libreoffice.LibreOffice org.mozilla.firefox com.raggesilver.BlackBox
 
@@ -232,26 +235,23 @@ FullInstall() {
     com.skype.Client com.usebottles.bottles fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk \
     io.github.seadve.Kooha
 
-  sudo flatpak -y install flathub net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
-    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.freedesktop.Piper org.gnome.baobab org.gnome.Firmware \
+  sudo flatpak -y install flathub md.obsidian.Obsidian net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
+    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.baobab org.gnome.Firmware \
     org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.meld org.gnome.seahorse.Application org.gnome.SimpleScan \
     org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit sh.ppy.osu
 
-  sudo flatpak -y install --reinstall flathub org.freedesktop.Platform.Locale//22.08    # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
+  sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08         # Required for net.sourceforge.gMKVExtractGUI
+  sudo flatpak -y install flathub org.freedesktop.Platform.Locale//22.08 --reinstall # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
+  sudo flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
+  sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher
+
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"        # Allow Bottles to access $HOME/Apps/Bottles
   sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox # Firefox Wayland
   sudo flatpak override --device=all org.mozilla.firefox                                # Firefox U2F access
 
-  sudo flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
-  sudo flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
-  sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08 # Required for net.sourceforge.gMKVExtractGUI
-
-  sudo flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
-  sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher
-
-  install_optional_flatpaks com.prusa3d.PrusaSlicer com.rafaelmardojai.WebfontKitGenerator org.gnome.Evolution org.gnome.Builder \
-    com.wps.Office com.unity.UnityHub rocks.koreader.KOReader com.makemkv.MakeMKV com.parsecgaming.parsec \
-    net.cubers.assault.AssaultCube net.supertuxkart.SuperTuxKart com.github.Anuken.Mindustry
+  install_optional_flatpaks com.prusa3d.PrusaSlicer org.gnome.Builder org.gnome.SoundJuicer org.musicbrainz.Picard \
+    com.wps.Office com.unity.UnityHub com.github.johnfactotum.Foliate rocks.koreader.KOReader \
+    com.makemkv.MakeMKV com.anydesk.Anydesk com.parsecgaming.parsec
 
   install_ensembles() {
     sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
@@ -264,22 +264,18 @@ FullInstall() {
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install bat distrobox exa gnome-shell-extension-caffeine libratbag-ratbagd ripgrep syncthing wireguard-tools
+    rpm-ostree install bat distrobox exa gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect ripgrep syncthing
     sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Boxes org.gnome.Cheese
   else
     if type dnf >/dev/null 2>&1; then
       sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
       sudo dnf -y groupupdate core
 
-      sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-      sudo sh -c "echo -e '[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc' > /etc/yum.repos.d/vscode.repo"
-      sudo dnf -y install code
-
-      sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect --setopt=install_weak_deps=false
-      sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl libratbag-ratbagd librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
+      sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect
+      sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
       sudo dnf -y group install "Virtualization"
     fi
-    install_pkgs bat curl dconf exa fastfetch ffmpeg fish git ripgrep htop neovim unzip
+    install_pkgs bat curl dconf distrobox exa fastfetch ffmpeg fish git htop neovim ripgrep unzip
     if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
 
     echo "Uninstalling replaced packages..."
@@ -291,6 +287,11 @@ FullInstall() {
 
     $DOT/linux/scripts/install_gotop.sh
   fi
+
+  distrobox create -Y -n my-distrobox -i ghcr.io/nalsai/toolbox-fedora:latest --init-hooks "bash $DOT/linux/scripts/distrobox-fedora.sh"
+  distrobox create -Y -n arch -i archlinux --init-hooks "bash $DOT/linux/scripts/distrobox-arch.sh"
+  distrobox enter my-distrobox -- sh -c exit
+  distrobox enter arch -- sh -c exit
 
   if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/null 2>&1; then
     systemctl --user enable syncthing.service
@@ -387,7 +388,7 @@ ServerInstall() {
 
   echo "Installing packages..."
 
-  install_pkgs ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl fastfetch fish git gnupg htop pcp unzip
+  install_pkgs bat ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl exa fastfetch ffmpeg fish git gnupg htop pcp ripgrep unzip
   if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
 
   if type apt-get >/dev/null 2>&1; then
@@ -430,17 +431,8 @@ Tools() {
     clear
     echo -e " _   _ _ _     ____        _    __ _ _\n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___\n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|\n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \\n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
     echo
-    select s in "Setup distrobox" "Install docker" "Install gotop" "Install ESO symlink" "Install MBTL symlink" "Install osu symlinks" "Exit"; do
+    select s in "Install docker" "Install ESO symlink" "Install MBTL symlink" "Install osu symlinks" "Exit"; do
       case $s in
-      "Setup distrobox")
-        echo "Creating distroboxes..."
-        echo "dotfiles need to be installed to enter them"
-        ask_yn "Continue" "" "exit"
-        distrobox create -Y -n my-distrobox -i registry.fedoraproject.org/fedora-toolbox:37 --init-hooks "bash $DOT/linux/scripts/distrobox-fedora.sh"
-        distrobox create -Y -n arch -i archlinux --init-hooks "bash $DOT/linux/scripts/distrobox-arch.sh"
-        read -t 3 -p "Done!"
-        break
-        ;;
       "Install docker")
         echo "Installing docker..."
         ask_yn "Continue" "" "exit"
@@ -448,13 +440,6 @@ Tools() {
         $DOT/linux/scripts/install_docker.sh
         ask_yn "Enable Docker service" "sudo systemctl enable docker --now"
         read -t 3 -p "Done!"
-        break
-        ;;
-      "Install gotop")
-        echo "Installing gotop..."
-        ask_yn "Continue" "" "exit"
-        bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/scripts/install_gotop.sh) -c
-        read -t 1 -p "Done!"
         break
         ;;
       "Install ESO symlink")

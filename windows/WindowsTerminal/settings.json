@@ -55,22 +55,22 @@
             },
             {
                 "name": "hachiman.nils.moe",
-                "commandline": "ssh root@hachiman.nils.moe -p 2022",
+                "commandline": "ssh root@ssh.hachiman.nils.moe -p 2022",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/fedora.ico"
             },
             {
                 "name": "shiina.nils.moe",
-                "commandline": "ssh root@shiina.nils.moe -p 2022",
+                "commandline": "ssh root@ssh.shiina.nils.moe -p 2022",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
             },
             {
                 "name": "shion.nils.moe",
-                "commandline": "ssh opc@shion.nils.moe",
+                "commandline": "ssh opc@ssh.shion.nils.moe",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
             },
             {
                 "name": "odroidxu4.nils.moe",
-                "commandline": "ssh root@odroidxu4.nils.moe -p 2223",
+                "commandline": "ssh root@ssh.odroidxu4.nils.moe -p 2223",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
             }
         ]

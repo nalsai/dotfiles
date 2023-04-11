@@ -50,7 +50,7 @@ Make-Symlink -Path $documents\PowerShell -Target $DOT\windows\PowerShell
 Make-Symlink -Path $documents\WindowsPowerShell -Target $DOT\windows\PowerShell
 
 # mpv
-Make-Symlink -Path $HOME\AppData\Roaming\mpv -Target $DOT\mpv\mpv-windows
+Make-Symlink -Path $HOME\AppData\Roaming\mpv -Target $DOT\mpv\mpv
 
 # Notepad2
 Make-Symlink -Path $HOME\AppData\Roaming\Notepad2 -Target $DOT\windows\Notepad2

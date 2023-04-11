@@ -99,3 +99,4 @@ You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Mi
 ## Thanks to
 
 - ![LightArrowsEXE Profile Picture](https://avatars.githubusercontent.com/LightArrowsEXE?s=12) LightArrowsEXE's [dotfiles](https://github.com/LightArrowsEXE/dotfiles) (mpv config)
+- I am Scum's [mpv.conf guide](https://iamscum.wordpress.com/guides/videoplayback-guide/mpv-conf/)

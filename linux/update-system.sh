@@ -35,7 +35,7 @@ Clean() {
   fi
 
   if type rpm-ostree >/dev/null 2>&1; then
-    rpm-ostree cleanup
+    rpm-ostree cleanup --base --repomd
   fi
 
   if pgrep -f docker >/dev/null; then

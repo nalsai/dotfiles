@@ -73,8 +73,8 @@ elif [ -d "$DOT" ]; then
     mv $TMP/dotfiles-main $DOT
 fi
 
-echo Updating distroboxes...
 if type distrobox >/dev/null 2>&1; then
+  echo Updating distroboxes...
   distrobox upgrade --all
 fi
 

@@ -20,6 +20,7 @@ Clean() {
   fi
 
   if type dnf >/dev/null 2>&1; then
+    sudo dnf -y autoremove
     sudo dnf clean all
   fi
 

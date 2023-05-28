@@ -1,6 +1,4 @@
-
 ${function:~} = { Set-Location ~ }
-
 ${function:Set-ParentLocation} = { Set-Location .. };
 Set-Alias ".."			Set-ParentLocation
 Set-Alias "../"			Set-ParentLocation
@@ -11,12 +9,23 @@ Set-Alias "../../../" 	Set-ParentLocation ; Set-ParentLocation ; Set-ParentLocat
 
 Set-Alias time Measure-Command
 
-if (Get-Command wget.exe -ErrorAction SilentlyContinue | Test-Path) {
-	Remove-Alias wget -ErrorAction SilentlyContinue
+if (Get-Command bat -ErrorAction SilentlyContinue | Test-Path) {
+	${function:cat} = { bat @args }
 }
-
+if (Get-Command curl.exe -ErrorAction SilentlyContinue | Test-Path) {
+	Remove-Item alias:curl -ErrorAction SilentlyContinue
+	${function:curl} = { curl.exe @args }
+}
+if (Get-Command wget.exe -ErrorAction SilentlyContinue | Test-Path) {
+	Remove-Item Alias:wget -ErrorAction SilentlyContinue
+	${function:wget} = { wget.exe @args }
+}
+elseif (Get-Command wget2.exe -ErrorAction SilentlyContinue | Test-Path) {
+	Remove-Item Alias:wget -ErrorAction SilentlyContinue
+	${function:wget} = { wget2.exe @args }
+}
 if (Get-Command exa -ErrorAction SilentlyContinue | Test-Path) {
-	Remove-Alias ls -ErrorAction SilentlyContinue
+	Remove-Item alias:ls -ErrorAction SilentlyContinue
 	${function:ls} = { exa @args }
 	${function:ll} = { exa -l @args }
 	${function:la} = { exa -la @args }
@@ -31,28 +40,14 @@ else {
 	${function:la} = { ls -Force @args }
 }
 
-if (Get-Command curl.exe -ErrorAction SilentlyContinue | Test-Path) {
-	Remove-Alias curl -ErrorAction SilentlyContinue
-	${function:curl} = { curl.exe @args }
-}
-
-if (Get-Command bat -ErrorAction SilentlyContinue | Test-Path) {
-	${function:cat} = { bat @args }
-}
-
 function which($name) {
 	Get-Command $name -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Definition
 }
 
-# Chocolatey profile
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
 	Import-Module "$ChocolateyProfile"
 }
-
-function e { exit }
-Set-Alias ^D e		# exit with Ctrl+D
-Set-Alias c Clear-Host
 
 if (Get-Command git -ErrorAction SilentlyContinue | Test-Path) {
 	${function:gst} = { git status @args }
@@ -62,3 +57,7 @@ if (Get-Command git -ErrorAction SilentlyContinue | Test-Path) {
 	#${function:gl} = { git pull @args } # Already permanently aliased to Get-Location
 	#${function:gp} = { git push @args } # Already permanently aliased to Get-ItemProperty
 }
+
+Set-Alias c Clear-Host
+Set-Alias ^D exit	# exit with Ctrl+D
+function e { exit }

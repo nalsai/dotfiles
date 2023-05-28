@@ -5,15 +5,14 @@
     "copyFormatting": false,
     "profiles": {
         "defaults": {
-            "font":
-            {
+            "font": {
                 "face": "Cascadia Code",
                 "size": 12
             },
             "colorScheme": "Monokai Remastered",
             "cursorShape": "vintage",
             "useAcrylic": false,
-            "acrylicOpacity": 0.8,
+            "opacity": 0.8
         },
         "list": [
             {
@@ -36,7 +35,7 @@
             {
                 "name": "Git Bash",
                 "commandline": "C:/Program Files/Git/bin/bash.exe -li",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/git-for-windows.ico",
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Icons/ico/git-for-windows.ico",
                 "startingDirectory": "%USERPROFILE%",
                 "hidden": false
             },
@@ -51,27 +50,27 @@
                 "name": "WSL Debian",
                 "source": "Windows.Terminal.Wsl",
                 "startingDirectory": "//wsl$/Debian/home/nalsai",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Icons/ico/debian.ico"
             },
             {
                 "name": "hachiman.nils.moe",
                 "commandline": "ssh root@ssh.hachiman.nils.moe -p 2022",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/fedora.ico"
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Icons/ico/fedora.ico"
             },
             {
                 "name": "shiina.nils.moe",
                 "commandline": "ssh root@ssh.shiina.nils.moe -p 2022",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Icons/ico/rocky-linux.ico"
             },
             {
                 "name": "shion.nils.moe",
                 "commandline": "ssh opc@ssh.shion.nils.moe",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/rocky-linux.ico"
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Icons/ico/rocky-linux.ico"
             },
             {
                 "name": "odroidxu4.nils.moe",
                 "commandline": "ssh root@ssh.odroidxu4.nils.moe -p 2223",
-                "icon": "%USERPROFILE%/Sync/Files/Pictures/Saved Pictures/Icons/ico/debian.ico"
+                "icon": "%USERPROFILE%/Sync/Files/Pictures/Icons/ico/debian.ico"
             }
         ]
     },
@@ -162,10 +161,25 @@
         }
     ],
     "actions": [
-        { "command": "closePane", "keys": "ctrl+shift+w" },
-        { "command": "newTab", "keys": "ctrl+shift+t" },
-        { "command": "copy", "keys": "ctrl+shift+c" },
-        { "command": "paste", "keys": "ctrl+shift+v" },
-        { "command": "find", "keys": "ctrl+shift+f" },
+        {
+            "command": "closePane",
+            "keys": "ctrl+shift+w"
+        },
+        {
+            "command": "newTab",
+            "keys": "ctrl+shift+t"
+        },
+        {
+            "command": "copy",
+            "keys": "ctrl+shift+c"
+        },
+        {
+            "command": "paste",
+            "keys": "ctrl+shift+v"
+        },
+        {
+            "command": "find",
+            "keys": "ctrl+shift+f"
+        }
     ]
 }

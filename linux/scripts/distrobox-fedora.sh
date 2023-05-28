@@ -1,7 +1,6 @@
 #!/bin/bash
 
 if [ -f /setup_done ]; then
-  echo "init-hooks don't need to be run."
   exit 0
 fi
 

@@ -290,6 +290,7 @@ FullInstall() {
 
   distrobox create -Y -n my-distrobox -i ghcr.io/nalsai/toolbox-fedora:latest --init-hooks "bash $DOT/linux/scripts/distrobox-fedora.sh"
   distrobox create -Y -n arch -i archlinux --init-hooks "bash $DOT/linux/scripts/distrobox-arch.sh"
+  distrobox create -Y -n resolve -i registry.fedoraproject.org/fedora-toolbox:37 --init-hooks "bash $DOT/linux/scripts/distrobox-fedora-resolve.sh"
   distrobox enter my-distrobox -- sh -c exit
   distrobox enter arch -- sh -c exit
 

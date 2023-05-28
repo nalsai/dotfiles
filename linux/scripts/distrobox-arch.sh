@@ -1,8 +1,6 @@
 #!/bin/bash
 
-if which vspipe >/dev/null 2>&1; then
-  echo "VapourSynth is already installed."
-  echo "init-hooks don't need to be run again!"
+if [ -f /setup_done ]; then
   exit 0
 fi
 
@@ -33,3 +31,5 @@ cd ~
 rm -rf /tmp/LibP2P-Vapoursynth
 
 pip install vspreview
+
+touch /setup_done

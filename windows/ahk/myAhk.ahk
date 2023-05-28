@@ -26,4 +26,3 @@
 	Clipboard := ClipboardOld		;restore the original clipboard contents
 	ClipboardOld =					;clear temporary variable (potentially contains large data)
 	Return
-

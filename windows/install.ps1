@@ -1,14 +1,14 @@
 # Self-elevate the script if required
 if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
-	Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy RemoteSigned -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/scripts/minimal-install.ps1'))`""
+	Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy RemoteSigned -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/install.ps1'))`""
 	Exit
 }
 
 Clear-Host
 Write-Host " _   _ _ _     ____        _    __ _ _`n| \ | (_| |___|  _ \  ___ | |_ / _(_| | ___ ___`n|  \| | | / __| | | |/ _ \| __| |_| | |/ _ / __|`n| |\  | | \__ | |_| | (_) | |_|  _| | |  __\__ \`n|_| \_|_|_|___|____/ \___/ \__|_| |_|_|\___|___/"
 Write-Host "`n"
-Write-Host "[1] full install - sets up more stuff, downloads dotfiles and installs them"
-Write-Host "[2] minimal install - only sets up windows, some apps and fonts"
+Write-Host "[1] full:    download dotfiles, set up symlinks, windows, apps and fonts"
+Write-Host "[2] minimal: set up windows, some apps and fonts"
 Write-Host "Select Installation [1/2/q]): " -ForegroundColor Yellow -NoNewline
 
 $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
@@ -24,12 +24,6 @@ Switch ($key) {
 		New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
 		$OriginalPref = $ProgressPreference
 		$ProgressPreference = "SilentlyContinue"
-	}
-	2 {
-		$TMP = "$env:TEMP\ZG90ZmlsZXM"
-		New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
-		$OriginalPref = $ProgressPreference
-		$ProgressPreference = "SilentlyContinue"
 
 		Write-Host "Downloading dotfiles"
 		Invoke-WebRequest "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -O $TMP\dotfiles.zip
@@ -38,6 +32,12 @@ Switch ($key) {
 		Expand-Archive $TMP\dotfiles.zip $TMP
 		Remove-Item $DOT -Recurse -Force -ErrorAction SilentlyContinue # delete old dotfiles
 		Move-Item $TMP\dotfiles-main $DOT
+	}
+	2 {
+		$TMP = "$env:TEMP\ZG90ZmlsZXM"
+		New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
+		$OriginalPref = $ProgressPreference
+		$ProgressPreference = "SilentlyContinue"
 	}
 	Q { [Environment]::Exit(0) }
 }
@@ -90,7 +90,7 @@ if ($DOT) {
 	Set-Symlink -Path $documents\WindowsPowerShell -Target $DOT\windows\PowerShell
 	
 	# mpv
-	Set-Symlink -Path $HOME\AppData\Roaming\mpv -Target $DOT\mpv\mpv-windows
+	Set-Symlink -Path $HOME\AppData\Roaming\mpv -Target $DOT\mpv\mpv
 	
 	# Notepad2
 	Set-Symlink -Path $HOME\AppData\Roaming\Notepad2 -Target $DOT\windows\Notepad2
@@ -102,7 +102,7 @@ if ($DOT) {
 	Set-Symlink -Path $HOME\.gitconfig -Target $DOT\git\.gitconfig
 	
 	# AutoHotkey
-	Set-Symlink -Path "$env:appdata\Microsoft\Windows\Start Menu\Programs\Startup\myAhk.ahk" -Target $DOT\windows\ahk\myAhk.ahk
+	#Set-Symlink -Path "$env:appdata\Microsoft\Windows\Start Menu\Programs\Startup\myAhk.ahk" -Target $DOT\windows\ahk\myAhk.ahk
 	
 	# AltSnap
 	Set-Symlink -Path $HOME\AppData\Roaming\AltSnap\AltSnap.ini -Target $DOT\windows\AltSnap\AltSnap.ini
@@ -304,67 +304,74 @@ Write-Host "Done Configuring System" -ForegroundColor Green
 
 
 Write-Host "Installing Apps..." -ForegroundColor Green
-winget install --id=AltSnap.AltSnap -e -h
-winget install --id=Audacity.Audacity -e -h --scope "machine"
-winget install --id=BurntSushi.ripgrep.MSVC -e -h --scope "machine"
-winget install --id=Canneverbe.CDBurnerXP -e -h --scope "machine"
-winget install --id=cURL.cURL -e -h --scope "machine"
-winget install --id=dotPDNLLC.paintdotnet -e -h --scope "machine"
-winget install --id=GIMP.GIMP -e -h --scope "machine"
-winget install --id=Git.Git -e -h --override "/GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --scope "machine"
-winget install --id=GNU.Wget2 -e -h --scope "machine"
-winget install --id=Gyan.FFmpeg -e -h --scope "machine"
-winget install --id=Microsoft.WindowsTerminal -e -h --scope "machine"
-winget install --id=Mozilla.Firefox -e -h --scope "machine"
-winget install --id=nomacs.nomacs -e -h --scope "machine"
-winget install --id=REALiX.HWiNFO -e -h --scope "machine"
-winget install --id=SomePythonThings.WingetUIStore -e -h --scope "machine"
-winget install --id=stnkl.EverythingToolbar -e -h --scope "machine"
-winget install --id=TheDocumentFoundation.LibreOffice -e -h --scope "machine"
-winget install --id=tsl0922.ImPlay -e -h --scope "machine"
-winget install --id=voidtools.Everything -e -h --scope "machine"
-winget install --id=WinDirStat.WinDirStat -e -h --scope "machine"
-winget install --id=Xanashi.Icaros -e -h --scope "machine"
-winget install --id=yt-dlp.yt-dlp -e -h --scope "machine"
+if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
+	Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+	choco feature enable -n=allowGlobalConfirmation
+	choco feature enable -n=useRememberedArgumentsForUpgrades
+}
+choco install mpvio cdburnerxp --limit-output
+winget install --id=AltSnap.AltSnap -e -h --source "winget" --accept-package-agreements # can't be installed globally
+winget install --id=Audacity.Audacity -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=BurntSushi.ripgrep.MSVC -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=cURL.cURL -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=dotPDNLLC.paintdotnet -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=GIMP.GIMP -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=Git.Git -e -h --override "/verysilent /suppressmsgboxes /norestart /GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=GNU.Wget2 -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=Gyan.FFmpeg -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=Microsoft.WindowsTerminal -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=Mozilla.Firefox -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=nomacs.nomacs -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=REALiX.HWiNFO -e -h --scope "machine" --source "winget" --accept-package-agreements
+Get-Process | Where-Object -Property Name -Match 'HWiNFO\d{2}' | Stop-Process # Kill the HWiNFO process after it starts, there is no way to prevent autostart after install
+winget install --id=SomePythonThings.WingetUIStore -e -h --source "winget" --accept-package-agreements # can't be installed globally
+winget install --id=stnkl.EverythingToolbar -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=TheDocumentFoundation.LibreOffice -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=voidtools.Everything -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=WinDirStat.WinDirStat -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=Xanashi.Icaros -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=yt-dlp.yt-dlp -e -h --scope "machine" --source "winget" --accept-package-agreements
 
 if ($DOT) {
-	winget install --id=AndreWiethoff.ExactAudioCopy -e -h --scope "machine"
-	winget install --id=AutoHotkey.AutoHotkey -e -h --scope "machine"
-	winget install --id=Balena.Etcher -e -h --scope "machine"
-	winget install --id=CrystalDewWorld.CrystalDiskInfo.ShizukuEdition -e -h --scope "machine"
-	winget install --id=CrystalDewWorld.CrystalDiskMark.ShizukuEdition -e -h --scope "machine"
-	winget install --id=DelugeTeam.DelugeBeta -e -h --scope "machine"
-	winget install --id=Discord.Discord -e -h --scope "machine"
-	winget install --id=EclipseAdoptium.Temurin.19.JDK -e -h --scope "machine"
-	winget install --id=eloston.ungoogled-chromium -e -h --scope "machine"
-	winget install --id=GuinpinSoft.MakeMKV -e -h --scope "machine"
-	winget install --id=HermannSchinagl.LinkShellExtension -e -h --scope "machine"
-	winget install --id=HeroicGamesLauncher.HeroicGamesLauncher -e -h --scope "machine"
-	winget install --id=Hugin.Hugin -e -h --scope "machine"
-	winget install --id=Hugo.Hugo -e -h --scope "machine"
-	winget install --id=M2Team.NanaZip -e -h --scope "machine"
-	winget install --id=MediaArea.MediaInfo -e -h --scope "machine"
-	winget install --id=MediaArea.MediaInfo.GUI -e -h --scope "machine"
-	winget install --id=Meld.Meld -e -h --scope "machine"
-	winget install --id=Microsoft.VisualStudioCode -e --override "/verysilent /suppressmsgboxes /tasks=!runCode,desktopicon,quicklaunchicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath" -h --scope "machine"
-	winget install --id=MoritzBunkus.MKVToolNix -e -h --scope "machine"
-	winget install --id=OBSProject.OBSStudio -e -h --scope "machine"
-	winget install --id=OliverBetz.ExifTool -e -h --scope "machine"
-	winget install --id=Peppy.Osu! -e -h --scope "machine"
-	winget install --id=Python.Python.3.12 -v "3.12.0a1" -e -h --scope "machine"
-	winget install --id=RabidViperProductions.AssaultCube -e -h --scope "machine"
-	winget install --id=Rufus.Rufus -e -h --scope "machine"
-	winget install --id=ShiningLight.OpenSSL -e -h --scope "machine"
-	winget install --id=SyncTrayzor.SyncTrayzor -e -h --scope "machine"
-	winget install --id=TimKosse.FileZilla.Client -e -h --scope "machine"
-	winget install --id=Unity.UnityHub -e -h --scope "machine"
-	winget install --id=Valve.Steam -e -h --scope "machine"
+	choco install less --params "/DefaultPager" --limit-output
+	choco install bat
+	winget install --id=AndreWiethoff.ExactAudioCopy -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=AutoHotkey.AutoHotkey -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Balena.Etcher -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=CrystalDewWorld.CrystalDiskInfo.ShizukuEdition -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=CrystalDewWorld.CrystalDiskMark.ShizukuEdition -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=DelugeTeam.DelugeBeta -e -h --source "winget" --accept-package-agreements # can't be installed globally
+	winget install --id=Discord.Discord -e -h --source "winget" --accept-package-agreements # can't be installed globally
+	winget install --id=EclipseAdoptium.Temurin.17.JDK -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=eloston.ungoogled-chromium -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=GuinpinSoft.MakeMKV -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=HermannSchinagl.LinkShellExtension -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=HeroicGamesLauncher.HeroicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Hugin.Hugin -e -h --source "winget" --accept-package-agreements # can't be installed globally
+	winget install --id=Hugo.Hugo -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=M2Team.NanaZip -e -h --source "winget" --accept-package-agreements # can't be installed globally
+	winget install --id=MediaArea.MediaInfo -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=MediaArea.MediaInfo.GUI -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Meld.Meld -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Microsoft.VisualStudioCode -e --override "/verysilent /suppressmsgboxes /norestart /tasks=!runCode,desktopicon,quicklaunchicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath" -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=MoritzBunkus.MKVToolNix -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=OBSProject.OBSStudio -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=OliverBetz.ExifTool -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Peppy.Osu! -e -h --source "winget" --accept-package-agreements # can't be installed globally
+	winget install --id=Python.Python.3.12 -v "3.12.0a1" -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=RabidViperProductions.AssaultCube -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Rufus.Rufus -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=ShiningLight.OpenSSL -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=SyncTrayzor.SyncTrayzor -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=TimKosse.FileZilla.Client -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Unity.UnityHub -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Valve.Steam -e -h --scope "machine" --source "winget" --accept-package-agreements
 }
 else {
-	winget install --id=CrystalDewWorld.CrystalDiskInfo -e -h --scope "machine"
-	winget install --id=EclipseAdoptium.Temurin.19.JDK -e -h --scope "machine"
-	winget install --id=Google.Chrome -e -h --scope "machine"
-	winget install --id=VideoLAN.VLC -e -h --scope "machine"
+	winget install --id=CrystalDewWorld.CrystalDiskInfo -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=EclipseAdoptium.Temurin.17.JDK -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Google.Chrome -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=VideoLAN.VLC -e -h --scope "machine" --source "winget" --accept-package-agreements
 }
 Write-Host "Done Installing Apps" -ForegroundColor Green
 
@@ -376,15 +383,15 @@ if (!$DOT) {
 	$documents = [Environment]::GetFolderPath("MyDocuments")
 	New-Item -ItemType directory -Force -Path "$documents\PowerShell" -ErrorAction SilentlyContinue > $null
 	New-Item -ItemType SymbolicLink -Force -Path "$documents\WindowsPowerShell" -Target "$documents\PowerShell"  > $null
-	wget.exe -O "$documents\PowerShell\Microsoft.PowerShell_profile.ps1" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/PowerShell/Microsoft.PowerShell_profile.ps1"
+	wget -O "$documents\PowerShell\Microsoft.PowerShell_profile.ps1" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/PowerShell/Microsoft.PowerShell_profile.ps1"
 
 	# mpv
-	#New-Item -ItemType directory -Force -Path "$HOME\AppData\Roaming\mpv" -ErrorAction SilentlyContinue > $null
-	#wget.exe -O "$HOME\AppData\Roaming\mpv\mpv.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/mpv/mpv-minimal/mpv.conf"
-	#wget.exe -O "$HOME\AppData\Roaming\mpv\input.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/mpv/mpv-minimal/input.conf"
+	New-Item -ItemType directory -Force -Path "$HOME\AppData\Roaming\mpv" -ErrorAction SilentlyContinue > $null
+	wget -O "$HOME\AppData\Roaming\mpv\mpv.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/mpv/mpv-minimal/mpv.conf"
+	wget -O "$HOME\AppData\Roaming\mpv\input.conf" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/mpv/mpv-minimal/input.conf"
 
 	# AltSnap
-	wget.exe -O "$HOME\AppData\Roaming\AltSnap\AltSnap.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/AltSnap/AltSnap.ini"
+	wget -O "$HOME\AppData\Roaming\AltSnap\AltSnap.ini" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/AltSnap/AltSnap.ini"
 }
 
 # AltSnap
@@ -417,7 +424,7 @@ $fonts =
 'Noto Serif',
 'Source Code Pro'
 foreach ($font in $fonts) {
-	wget.exe -O $TMP\Fonts\$font.zip "https://fonts.google.com/download?family=$font"
+	wget -O $TMP\Fonts\$font.zip "https://fonts.google.com/download?family=$font"
 	Expand-Archive -Path $TMP\Fonts\$font.zip -DestinationPath $TMP\Fonts -Force
 }
 
@@ -428,22 +435,22 @@ if ($DOT) {
 	'Noto Sans JP',
 	'Noto Serif JP'
 	foreach ($font in $fonts) {
-		wget.exe -O $TMP\Fonts\$font.zip "https://fonts.google.com/download?family=$font"
+		wget -O $TMP\Fonts\$font.zip "https://fonts.google.com/download?family=$font"
 		Expand-Archive -Path $TMP\Fonts\$font.zip -DestinationPath $TMP\Fonts -Force
 	}
 	
 }
 Remove-Item "$TMP\Fonts\static\" -Recurse -Force
 
-wget.exe -O "$TMP\Fonts\Gandhi Sans.zip" https://www.fontsquirrel.com/fonts/download/gandhi-sans
+wget -O "$TMP\Fonts\Gandhi Sans.zip" https://www.fontsquirrel.com/fonts/download/gandhi-sans
 Expand-Archive -Path "$TMP\Fonts\Gandhi Sans.zip" -DestinationPath $TMP\Fonts -Force
 
-wget.exe -O "$TMP\Fonts\Fira Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/tonsky/FiraCode/releases/latest").assets | Where-Object name -like Fira*.zip ).browser_download_url
+wget -O "$TMP\Fonts\Fira Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/tonsky/FiraCode/releases/latest").assets | Where-Object name -like Fira*.zip ).browser_download_url
 Expand-Archive -Path "$TMP\Fonts\Fira Code.zip" -DestinationPath "$TMP\Fonts\Fira Code" -Force
 Copy-Item -r "$TMP\Fonts\Fira Code\variable_ttf\*" $TMP\Fonts -ErrorAction SilentlyContinue
 Remove-Item "$TMP\Fonts\Fira Code" -Recurse -Force
 
-wget.exe -O "$TMP\Fonts\Cascadia Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/microsoft/cascadia-code/releases/latest").assets | Where-Object name -like Cascadia*.zip ).browser_download_url
+wget -O "$TMP\Fonts\Cascadia Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/microsoft/cascadia-code/releases/latest").assets | Where-Object name -like Cascadia*.zip ).browser_download_url
 Expand-Archive -Path "$TMP\Fonts\Cascadia Code.zip" -DestinationPath "$TMP\Fonts\Cascadia Code" -Force
 Remove-Item "$TMP\Fonts\Cascadia Code\ttf\static" -Recurse -Force
 Copy-Item -r  "$TMP\Fonts\Cascadia Code\ttf\*" $TMP\Fonts -ErrorAction SilentlyContinue
@@ -461,7 +468,7 @@ Write-Host "Done Installing Fonts" -ForegroundColor Green
 
 $ProgressPreference = $OriginalPref
 Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue
-Write-Host "Done! Note that some changes may require a restart to take effect." -ForegroundColor Green
+Write-Host "Done! Please restart your computer." -ForegroundColor Green
 $host.UI.RawUI.FlushInputBuffer()
 $Host.UI.ReadLine()
 [Environment]::Exit(0)

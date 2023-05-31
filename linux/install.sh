@@ -223,7 +223,7 @@ FullInstall() {
   sudo flatpak remote-modify --description="Central repository of Flatpak applications" flathub
 
   sudo flatpak remote-add --if-not-exists gnome-nightly https://nightly.gnome.org/gnome-nightly.flatpakrepo
-  sudo flatpak remote-add --if-not-exists NilsFlatpakRepo https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
+  sudo flatpak remote-add --if-not-exists nalsai https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
   sudo flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
 
   sudo flatpak -y install flathub com.github.tchx84.Flatseal io.mpv.Mpv org.gimp.GIMP org.gnome.TextEditor org.gnome.eog \
@@ -242,7 +242,7 @@ FullInstall() {
 
   sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08         # Required for net.sourceforge.gMKVExtractGUI
   sudo flatpak -y install flathub org.freedesktop.Platform.Locale//22.08 --reinstall # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
-  sudo flatpak -y install NilsFlatpakRepo org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
+  sudo flatpak -y install nalsai org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
   sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher
 
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"        # Allow Bottles to access $HOME/Apps/Bottles
@@ -258,7 +258,7 @@ FullInstall() {
     sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles
   }
   #ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "install_ensembles"
-  ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install NilsFlatpakRepo com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
+  ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install nalsai com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
 
   echo "Installing other packages..."
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then

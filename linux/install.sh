@@ -423,6 +423,9 @@ ServerInstall() {
       sudo usermod --shell /bin/fish $USER
     fi
   fi
+  sudo systemctl enable --now cockpit.socket
+  #docker network create -d bridge traefik
+  #sudo hostnamectl set-hostname shiina.nils.moe
 
   configure_gpgsign
 }

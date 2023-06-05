@@ -309,7 +309,7 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
 	choco feature enable -n=allowGlobalConfirmation
 	choco feature enable -n=useRememberedArgumentsForUpgrades
 }
-choco install mpvio cdburnerxp --limit-output
+choco install mpvio cdburnerxp czkawka --limit-output
 winget install --id=AltSnap.AltSnap -e -h --source "winget" --accept-package-agreements # can't be installed globally
 winget install --id=Audacity.Audacity -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=BurntSushi.ripgrep.MSVC -e -h --scope "machine" --source "winget" --accept-package-agreements

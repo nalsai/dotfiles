@@ -10,9 +10,7 @@
                 "size": 12
             },
             "colorScheme": "Monokai Remastered",
-            "cursorShape": "vintage",
-            "useAcrylic": false,
-            "opacity": 80
+            "cursorShape": "vintage"
         },
         "list": [
             {
@@ -21,23 +19,20 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
-                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-                "name": "cmd",
-                "commandline": "cmd.exe",
-                "hidden": false
-            },
-            {
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "name": "Windows PowerShell",
-                "commandline": "powershell.exe",
-                "hidden": true
+                "commandline": "powershell.exe"
+            },
+            {
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "name": "cmd",
+                "commandline": "cmd.exe"
             },
             {
                 "name": "Git Bash",
                 "commandline": "C:/Program Files/Git/bin/bash.exe -li",
                 "icon": "%USERPROFILE%/Sync/Files/Pictures/Icons/ico/git-for-windows.ico",
-                "startingDirectory": "%USERPROFILE%",
-                "hidden": false
+                "startingDirectory": "%USERPROFILE%"
             },
             {
                 "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
@@ -95,69 +90,6 @@
             "brightWhite": "#f6f6ef",
             "background": "#0c0c0c",
             "foreground": "#d9d9d9"
-        },
-        {
-            "name": "Sakura",
-            "black": "#000000",
-            "red": "#d52370",
-            "green": "#41af1a",
-            "yellow": "#bc7053",
-            "blue": "#6964ab",
-            "purple": "#c71fbf",
-            "cyan": "#939393",
-            "white": "#998eac",
-            "brightBlack": "#786d69",
-            "brightRed": "#f41d99",
-            "brightGreen": "#22e529",
-            "brightYellow": "#f59574",
-            "brightBlue": "#9892f1",
-            "brightPurple": "#e90cdd",
-            "brightCyan": "#eeeeee",
-            "brightWhite": "#cbb6ff",
-            "background": "#18131e",
-            "foreground": "#dd7bdc"
-        },
-        {
-            "name": "synthwave",
-            "black": "#000000",
-            "red": "#f6188f",
-            "green": "#1ebb2b",
-            "yellow": "#fdf834",
-            "blue": "#2186ec",
-            "purple": "#f85a21",
-            "cyan": "#12c3e2",
-            "white": "#ffffff",
-            "brightBlack": "#000000",
-            "brightRed": "#f841a0",
-            "brightGreen": "#25c141",
-            "brightYellow": "#fdf454",
-            "brightBlue": "#2f9ded",
-            "brightPurple": "#f97137",
-            "brightCyan": "#19cde6",
-            "brightWhite": "#ffffff",
-            "background": "#000000",
-            "foreground": "#dad9c7"
-        },
-        {
-            "name": "WildCherry",
-            "black": "#000507",
-            "red": "#d94085",
-            "green": "#2ab250",
-            "yellow": "#ffd16f",
-            "blue": "#883cdc",
-            "purple": "#ececec",
-            "cyan": "#c1b8b7",
-            "white": "#fff8de",
-            "brightBlack": "#009cc9",
-            "brightRed": "#da6bac",
-            "brightGreen": "#f4dca5",
-            "brightYellow": "#eac066",
-            "brightBlue": "#308cba",
-            "brightPurple": "#ae636b",
-            "brightCyan": "#ff919d",
-            "brightWhite": "#e4838d",
-            "background": "#1f1726",
-            "foreground": "#dafaff"
         }
     ],
     "actions": [

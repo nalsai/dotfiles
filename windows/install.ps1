@@ -307,51 +307,41 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
 	choco feature enable -n=allowGlobalConfirmation
 	choco feature enable -n=useRememberedArgumentsForUpgrades
 }
-choco install mpvio cdburnerxp czkawka --limit-output
+choco install cdburnerxp curl czkawka everything ffmpeg libreoffice-fresh mpvio ripgrep ripgrep-all wget yt-dlp --limit-output
 winget install --id=AltSnap.AltSnap -e -h --source "winget" --accept-package-agreements # can't be installed globally
 winget install --id=Audacity.Audacity -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=BurntSushi.ripgrep.MSVC -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=cURL.cURL -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=dotPDNLLC.paintdotnet -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=GIMP.GIMP -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Git.Git -e -h --override "/verysilent /suppressmsgboxes /norestart /GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=GNU.Wget2 -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=Gyan.FFmpeg -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Microsoft.PowerShell -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=Microsoft.WindowsTerminal -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=Microsoft.WindowsTerminal -e -h --accept-package-agreements
 winget install --id=Mozilla.Firefox -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=nomacs.nomacs -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=REALiX.HWiNFO -e -h --scope "machine" --source "winget" --accept-package-agreements
 Get-Process | Where-Object -Property Name -Match 'HWiNFO\d{2}' | Stop-Process # Kill the HWiNFO process after it starts, there is no way to prevent autostart after install
 winget install --id=SomePythonThings.WingetUIStore -e -h --source "winget" --accept-package-agreements # can't be installed globally
-winget install --id=stnkl.EverythingToolbar -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=TheDocumentFoundation.LibreOffice -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=voidtools.Everything -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=WinDirStat.WinDirStat -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Xanashi.Icaros -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=yt-dlp.yt-dlp -e -h --scope "machine" --source "winget" --accept-package-agreements
 
 if ($DOT) {
 	choco install less --params "/DefaultPager" --limit-output
-	choco install bat
+	choco install bat rufus temurin --limit-output
 	#winget install --id=AutoHotkey.AutoHotkey -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=Balena.Etcher -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=HeroicGamesLauncher.HeroicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=Hugin.Hugin -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	#winget install --id=Hugo.Hugo -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=OliverBetz.ExifTool -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=ShiningLight.OpenSSL -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=AndreWiethoff.ExactAudioCopy -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=CrystalDewWorld.CrystalDiskInfo.ShizukuEdition -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=CrystalDewWorld.CrystalDiskMark.ShizukuEdition -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=DelugeTeam.DelugeBeta -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=Discord.Discord -e -h --source "winget" --accept-package-agreements # can't be installed globally
-	winget install --id=EclipseAdoptium.Temurin.17.JDK -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=eloston.ungoogled-chromium -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=EpicGames.EpicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=GuinpinSoft.MakeMKV -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=HermannSchinagl.LinkShellExtension -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=M2Team.NanaZip -e -h --source "winget" --accept-package-agreements # can't be installed globally
-	winget install --id=MediaArea.MediaInfo -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=MediaArea.MediaInfo.GUI -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Meld.Meld -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Microsoft.VisualStudioCode -e --override "/verysilent /suppressmsgboxes /norestart /tasks=!runCode,desktopicon,quicklaunchicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath" -h --scope "machine" --source "winget" --accept-package-agreements
@@ -360,16 +350,14 @@ if ($DOT) {
 	winget install --id=Peppy.Osu! -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=Python.Python.3.12 -v "3.12.0a1" -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=RabidViperProductions.AssaultCube -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=Rufus.Rufus -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=ShiningLight.OpenSSL -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=SyncTrayzor.SyncTrayzor -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=TimKosse.FileZilla.Client -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Unity.UnityHub -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Valve.Steam -e -h --scope "machine" --source "winget" --accept-package-agreements
 }
 else {
+	choco install temurinjre --limit-output
 	winget install --id=CrystalDewWorld.CrystalDiskInfo -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=EclipseAdoptium.Temurin.17.JDK -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Google.Chrome -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=VideoLAN.VLC -e -h --scope "machine" --source "winget" --accept-package-agreements
 }

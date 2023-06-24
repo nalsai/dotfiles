@@ -188,8 +188,6 @@ FullInstall() {
   # Flatpak app configs
   mkdir -p $HOME/.var/app/com.raggesilver.BlackBox/config/glib-2.0/settings/
   \cp -f $DOT/linux/com.raggesilver.BlackBox/keyfile $HOME/.var/app/com.raggesilver.BlackBox/config/glib-2.0/settings/keyfile
-  mkdir -p $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/
-  \cp -f $DOT/linux/io.github.Foldex.AdwSteamGtk/keyfile $HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/glib-2.0/settings/keyfile
   mkdir -p $HOME/.var/app/org.gnome.TextEditor/config/glib-2.0/settings/
   \cp -f $DOT/linux/org.gnome.TextEditor/keyfile $HOME/.var/app/org.gnome.TextEditor/config/glib-2.0/settings/keyfile
   mkdir -p $HOME/.var/app/org.nomacs.ImageLounge/config/nomacs/

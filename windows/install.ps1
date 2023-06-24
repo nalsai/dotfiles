@@ -81,9 +81,6 @@ if ($DOT) {
 		}
 	}
 	
-	# Windows Terminal
-	Set-Symlink -Path "$HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState" -Target "$DOT\windows\WindowsTerminal"
-	
 	# PowerShell
 	$documents = [Environment]::GetFolderPath("MyDocuments")
 	Set-Symlink -Path $documents\PowerShell -Target $DOT\windows\PowerShell
@@ -319,6 +316,7 @@ winget install --id=GIMP.GIMP -e -h --scope "machine" --source "winget" --accept
 winget install --id=Git.Git -e -h --override "/verysilent /suppressmsgboxes /norestart /GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=GNU.Wget2 -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Gyan.FFmpeg -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=Microsoft.PowerShell -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Microsoft.WindowsTerminal -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Mozilla.Firefox -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=nomacs.nomacs -e -h --scope "machine" --source "winget" --accept-package-agreements
@@ -348,7 +346,7 @@ if ($DOT) {
 	winget install --id=Discord.Discord -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=EclipseAdoptium.Temurin.17.JDK -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=eloston.ungoogled-chromium -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=EpicGames.EpicGamesLauncher  -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=EpicGames.EpicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=GuinpinSoft.MakeMKV -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=HermannSchinagl.LinkShellExtension -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=M2Team.NanaZip -e -h --source "winget" --accept-package-agreements # can't be installed globally
@@ -463,6 +461,7 @@ foreach ($File in $(Get-ChildItem -Path $TMP\Fonts -Include ('*.otf', '*.ttf') -
 
 Write-Host "Done Installing Fonts" -ForegroundColor Green
 
+Set-Symlink -Path "$HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState" -Target "$DOT\windows\WindowsTerminal"
 
 $ProgressPreference = $OriginalPref
 Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue

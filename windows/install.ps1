@@ -335,20 +335,22 @@ winget install --id=yt-dlp.yt-dlp -e -h --scope "machine" --source "winget" --ac
 if ($DOT) {
 	choco install less --params "/DefaultPager" --limit-output
 	choco install bat
-	winget install --id=AndreWiethoff.ExactAudioCopy -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=AutoHotkey.AutoHotkey -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=Balena.Etcher -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=Balena.Etcher -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=HeroicGamesLauncher.HeroicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=Hugin.Hugin -e -h --source "winget" --accept-package-agreements # can't be installed globally
+	#winget install --id=Hugo.Hugo -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=OliverBetz.ExifTool -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=AndreWiethoff.ExactAudioCopy -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=CrystalDewWorld.CrystalDiskInfo.ShizukuEdition -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=CrystalDewWorld.CrystalDiskMark.ShizukuEdition -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=DelugeTeam.DelugeBeta -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=Discord.Discord -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=EclipseAdoptium.Temurin.17.JDK -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=eloston.ungoogled-chromium -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=EpicGames.EpicGamesLauncher  -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=GuinpinSoft.MakeMKV -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=HermannSchinagl.LinkShellExtension -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=HeroicGamesLauncher.HeroicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=Hugin.Hugin -e -h --source "winget" --accept-package-agreements # can't be installed globally
-	winget install --id=Hugo.Hugo -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=M2Team.NanaZip -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=MediaArea.MediaInfo -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=MediaArea.MediaInfo.GUI -e -h --scope "machine" --source "winget" --accept-package-agreements
@@ -356,7 +358,6 @@ if ($DOT) {
 	winget install --id=Microsoft.VisualStudioCode -e --override "/verysilent /suppressmsgboxes /norestart /tasks=!runCode,desktopicon,quicklaunchicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath" -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=MoritzBunkus.MKVToolNix -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=OBSProject.OBSStudio -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=OliverBetz.ExifTool -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Peppy.Osu! -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=Python.Python.3.12 -v "3.12.0a1" -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=RabidViperProductions.AssaultCube -e -h --scope "machine" --source "winget" --accept-package-agreements
@@ -414,6 +415,8 @@ Write-Host "Installing Fonts..." -ForegroundColor Green
 New-Item -ItemType directory -Force -Path "$TMP\Fonts" -ErrorAction SilentlyContinue > $null
 $fonts =
 'Alice',
+'Cantarell',
+'Fira Code',
 'Lato',
 'Montserrat',
 'Quicksand',
@@ -444,11 +447,6 @@ Remove-Item "$TMP\Fonts\static\" -Recurse -Force
 
 wget -O "$TMP\Fonts\Gandhi Sans.zip" https://www.fontsquirrel.com/fonts/download/gandhi-sans
 Expand-Archive -Path "$TMP\Fonts\Gandhi Sans.zip" -DestinationPath $TMP\Fonts -Force
-
-wget -O "$TMP\Fonts\Fira Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/tonsky/FiraCode/releases/latest").assets | Where-Object name -like Fira*.zip ).browser_download_url
-Expand-Archive -Path "$TMP\Fonts\Fira Code.zip" -DestinationPath "$TMP\Fonts\Fira Code" -Force
-Copy-Item -r "$TMP\Fonts\Fira Code\variable_ttf\*" $TMP\Fonts -ErrorAction SilentlyContinue
-Remove-Item "$TMP\Fonts\Fira Code" -Recurse -Force
 
 wget -O "$TMP\Fonts\Cascadia Code.zip" ((Invoke-RestMethod -Method GET -Uri "https://api.github.com/repos/microsoft/cascadia-code/releases/latest").assets | Where-Object name -like Cascadia*.zip ).browser_download_url
 Expand-Archive -Path "$TMP\Fonts\Cascadia Code.zip" -DestinationPath "$TMP\Fonts\Cascadia Code" -Force

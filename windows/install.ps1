@@ -1,6 +1,6 @@
 # Self-elevate the script if required
 if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
-	Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy RemoteSigned -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/install.ps1'))`""
+	Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList "-NoExit `"Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/install.ps1'))`""
 	Exit
 }
 
@@ -20,6 +20,7 @@ Write-Host "$key";
 
 Switch ($key) {
 	1 {
+		Set-ExecutionPolicy RemoteSigned -Scope LocalMachine -Force
 		$TMP = "$env:TEMP\ZG90ZmlsZXM"
 		New-Item -ItemType directory -Force -Path $TMP -ErrorAction SilentlyContinue > $null
 		$OriginalPref = $ProgressPreference

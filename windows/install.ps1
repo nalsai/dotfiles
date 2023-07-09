@@ -324,7 +324,7 @@ winget install --id=Xanashi.Icaros -e -h --scope "machine" --source "winget" --a
 
 if ($DOT) {
 	choco install less --params "/DefaultPager" --limit-output
-	choco install bat rufus temurin --limit-output
+	choco install bat filezilla rufus temurin --limit-output
 	#winget install --id=AutoHotkey.AutoHotkey -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=Balena.Etcher -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=HeroicGamesLauncher.HeroicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
@@ -351,7 +351,6 @@ if ($DOT) {
 	winget install --id=Python.Python.3.12 -v "3.12.0a1" -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=RabidViperProductions.AssaultCube -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=SyncTrayzor.SyncTrayzor -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=TimKosse.FileZilla.Client -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Unity.UnityHub -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Valve.Steam -e -h --scope "machine" --source "winget" --accept-package-agreements
 }

@@ -34,26 +34,22 @@ ask_yn() {
 }
 
 install_pkgs() {
-  if type "$1" >/dev/null 2>&1; then
-    if type apt-get >/dev/null 2>&1; then
-      sudo apt-get install "$@" -y
-    elif type dnf >/dev/null 2>&1; then
-      sudo dnf -y install "$@"
-    elif type pacman >/dev/null 2>&1; then
-      sudo pacman -S "$@"
-    fi
+  if type apt-get >/dev/null 2>&1; then
+    sudo apt-get install "$@" -y
+  elif type dnf >/dev/null 2>&1; then
+    sudo dnf -y install "$@"
+  elif type pacman >/dev/null 2>&1; then
+    sudo pacman -S "$@"
   fi
 }
 
 uninstall_pkgs() {
-  if type "$1" >/dev/null 2>&1; then
-    if type apt-get >/dev/null 2>&1; then
-      sudo apt-get remove "$@" -y
-    elif type dnf >/dev/null 2>&1; then
-      sudo dnf -y remove "$@"
-    elif type pacman >/dev/null 2>&1; then
-      sudo pacman -R "$@"
-    fi
+  if type apt-get >/dev/null 2>&1; then
+    sudo apt-get remove "$@" -y
+  elif type dnf >/dev/null 2>&1; then
+    sudo dnf -y remove "$@"
+  elif type pacman >/dev/null 2>&1; then
+    sudo pacman -R "$@"
   fi
 }
 

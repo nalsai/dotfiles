@@ -39,7 +39,7 @@ Clean() {
     rpm-ostree cleanup --base --repomd
   fi
 
-  if pgrep -f docker >/dev/null; then
+  if pgrep -f docker >/dev/null && type docker >/dev/null 2>&1; then
     sudo docker system prune -a
   fi
 }

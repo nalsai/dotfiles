@@ -69,7 +69,7 @@ elif [ -d "$DOT" ]; then
   TMP="/tmp/ZG90ZmlsZXM"
   mkdir -p $TMP
   curl -SL "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -o $TMP/dotfiles.zip &&
-    unzip -u -d $TMP $TMP/dotfiles.zip &&
+    unzip -q -u -d $TMP $TMP/dotfiles.zip &&
     rm -rf $DOT >/dev/null 2>&1 &&
     mv $TMP/dotfiles-main $DOT
 fi

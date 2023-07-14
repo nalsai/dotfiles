@@ -130,7 +130,7 @@ download() {
       echo "An error occured while downloading!"
       exit 1
     fi
-    if ! unzip -u -d $TMP $TMP/dotfiles.zip; then
+    if ! unzip -q -u -d $TMP $TMP/dotfiles.zip; then
       echo "An error occured while unzipping!"
       exit 1
     fi
@@ -345,7 +345,7 @@ FullInstall() {
   mkdir -p $TMP/fonts
 
   curl -SL "https://www.fontsquirrel.com/fonts/download/gandhi-sans" -o $TMP/fonts/gandhi-sans.zip
-  unzip -u -d $TMP/fonts $TMP/fonts/gandhi-sans.zip
+  unzip -q -u -d $TMP/fonts $TMP/fonts/gandhi-sans.zip
   sudo mkdir -p $HOME/.local/share/fonts/gandhi-sans
   sudo cp $TMP/fonts/GandhiSans-*.otf $HOME/.local/share/fonts/gandhi-sans
 

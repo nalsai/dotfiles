@@ -307,19 +307,21 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
 	choco feature enable -n=allowGlobalConfirmation
 	choco feature enable -n=useRememberedArgumentsForUpgrades
 }
-choco install cdburnerxp curl czkawka everything ffmpeg libreoffice-fresh mpvio ripgrep ripgrep-all wget yt-dlp --limit-output
+choco install cdburnerxp curl czkawka everything ffmpeg libreoffice-fresh mpvio msedgeredirect ripgrep ripgrep-all wget wiztree yt-dlp --limit-output
 winget install --id=AltSnap.AltSnap -e -h --source "winget" --accept-package-agreements # can't be installed globally
 winget install --id=Audacity.Audacity -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=Cyanfish.NAPS2 -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=GIMP.GIMP -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Git.Git -e -h --override "/verysilent /suppressmsgboxes /norestart /GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Microsoft.PowerShell -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Microsoft.WindowsTerminal -e -h --accept-package-agreements
 winget install --id=Mozilla.Firefox -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=nomacs.nomacs -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=PDFArranger.PDFArranger -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=REALiX.HWiNFO -e -h --scope "machine" --source "winget" --accept-package-agreements
 Get-Process | Where-Object -Property Name -Match 'HWiNFO\d{2}' | Stop-Process # Kill the HWiNFO process after it starts, there is no way to prevent autostart after install
 winget install --id=SomePythonThings.WingetUIStore -e -h --source "winget" --accept-package-agreements # can't be installed globally
-winget install --id=WinDirStat.WinDirStat -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=SumatraPDF.SumatraPDF -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Xanashi.Icaros -e -h --scope "machine" --source "winget" --accept-package-agreements
 
 if ($DOT) {

@@ -23,7 +23,7 @@ function Set (t)
 end
 
 EXTENSIONS = Set {
-    'mkv', 'avi', 'mp4', 'ogv', 'webm', 'rmvb', 'flv', 'wmv', 'mpeg', 'mpg', 'm4v', '3gp', 'mov',
+    'mkv', 'avi', 'mp4', 'ogv', 'webm', 'rmvb', 'flv', 'wmv', 'mpeg', 'mpg', 'm4v', '3gp', 'mov', 'mts', 'm2ts',
     'mp3', 'wav', 'ogm', 'flac', 'm4a', 'wma', 'ogg', 'opus'
 }
 

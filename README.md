@@ -26,9 +26,8 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 2. When presented the "Sign in with Microsoft" screen, select "Domain join instead" to avoid logging in.  
     If you have Windows 11 Home, do the following:
     - Press Shift+F10 to open the command prompt.
-    - Enter `ncpa.cpl` to open the network connections control panel.
-    - Right-click your Wi-Fi or Ethernet adapter and click "Disable". This will disconnect you from the Internet.
-    - Close the settings and the command prompt and click the back arrow.
+    - Enter `OOBE\BYPASSNRO`
+    - Now you can select "I don't have internet" to setup a local account.
 3. Set your username. Set your password later if you want to avoid having to give recovery questions.
 4. Disable everything on the privacy screen and click "Accept".
 

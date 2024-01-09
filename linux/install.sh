@@ -199,7 +199,7 @@ FullInstall() {
 
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     echo "Uninstalling preinstalled Flatpaks..."
-    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.baobab org.gnome.Connections org.gnome.Contacts org.gnome.Extensions org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.gnome.font-viewer org.mozilla.firefox
+    sudo flatpak -y uninstall org.fedoraproject.MediaWriter org.gnome.baobab org.gnome.Cheese org.gnome.Connections org.gnome.Contacts org.gnome.Extensions org.gnome.TextEditor org.gnome.Weather org.gnome.eog org.gnome.font-viewer org.mozilla.firefox
 
     echo "Removing firefox rpm..."
     rpm-ostree override remove firefox firefox-langpacks
@@ -223,19 +223,17 @@ FullInstall() {
   sudo flatpak -y install flathub com.github.tchx84.Flatseal io.mpv.Mpv org.gimp.GIMP org.gnome.TextEditor org.gnome.eog \
     org.libreoffice.LibreOffice org.mozilla.firefox com.raggesilver.BlackBox
 
-  sudo flatpak -y install flathub com.belmoussaoui.Decoder com.calibre_ebook.calibre com.discordapp.Discord com.github.Eloston.UngoogledChromium \
+  sudo flatpak -y install flathub com.anydesk.Anydesk com.calibre_ebook.calibre com.github.Eloston.UngoogledChromium \
     com.github.iwalton3.jellyfin-media-player com.github.jeromerobert.pdfarranger com.github.liferooter.textpieces com.github.qarmin.czkawka \
-    com.github.qarmin.szyszka com.heroicgameslauncher.hgl com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
-    com.skype.Client com.usebottles.bottles fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk \
-    io.github.seadve.Kooha
+    com.github.qarmin.szyszka com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
+    com.skype.Client com.usebottles.bottles dev.vencord.Vesktop fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk
 
   sudo flatpak -y install flathub md.obsidian.Obsidian net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
     org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.baobab org.gnome.Firmware \
-    org.gnome.World.PikaBackup org.gnome.font-viewer org.gnome.meld org.gnome.seahorse.Application org.gnome.SimpleScan \
-    org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit sh.ppy.osu
+    org.gnome.font-viewer org.gnome.meld org.gnome.SimpleScan org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit sh.ppy.osu
 
   sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08         # Required for net.sourceforge.gMKVExtractGUI
-  sudo flatpak -y install flathub org.freedesktop.Platform.Locale//22.08 --reinstall # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
+  sudo flatpak -y install flathub org.freedesktop.Platform.Locale//23.08 --reinstall # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
   sudo flatpak -y install nalsai org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
   sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher
 
@@ -243,22 +241,23 @@ FullInstall() {
   sudo flatpak override --socket=wayland --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.firefox # Firefox Wayland
   sudo flatpak override --device=all org.mozilla.firefox                                # Firefox U2F access
 
-  install_optional_flatpaks com.prusa3d.PrusaSlicer org.gnome.Builder org.gnome.SoundJuicer org.musicbrainz.Picard \
-    com.wps.Office com.unity.UnityHub com.github.johnfactotum.Foliate rocks.koreader.KOReader \
-    com.makemkv.MakeMKV com.anydesk.Anydesk com.parsecgaming.parsec
+  install_optional_flatpaks com.prusa3d.PrusaSlicer org.gnome.SoundJuicer org.musicbrainz.Picard \
+    com.unity.UnityHub com.github.johnfactotum.Foliate rocks.koreader.KOReader \
+    com.makemkv.MakeMKV  com.belmoussaoui.Decoder com.heroicgameslauncher.hgl \
+    org.gnome.seahorse.Application org.gnome.World.PikaBackup
 
   install_ensembles() {
     sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
     sudo flatpak -y install ElementaryAppCenter com.github.subhadeepjasu.ensembles
   }
   #ask_yn "Add Elementary AppCenter flatpak remote and install Ensembles" "install_ensembles"
-  ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install nalsai com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
+  #ask_yn "Install Mothership Defender 2 and Tactical Math Returns" "sudo flatpak -y install nalsai com.DaRealRoyal.TacticalMathReturns de.Nalsai.MothershipDefender2"
 
   echo "Installing other packages..."
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install bat distrobox exa gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect ripgrep syncthing
+    rpm-ostree install bat distrobox eza gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect ripgrep steam-devices syncthing
     sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Boxes org.gnome.Cheese
   else
     if type dnf >/dev/null 2>&1; then
@@ -266,10 +265,10 @@ FullInstall() {
       sudo dnf -y groupupdate core
 
       sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect
-      sudo dnf -y install cargo flatpak-builder gnome-tweaks hugo mangohud ocrmypdf openssl librsvg2-tools pandoc perl-Image-ExifTool radeontop rust rustfmt steam syncthing tesseract-langpack-deu texlive wireguard-tools yt-dlp
+      sudo dnf -y install cargo flatpak-builder gnome-tweaks mangohud steam syncthing yt-dlp
       sudo dnf -y group install "Virtualization"
     fi
-    install_pkgs bat curl dconf distrobox exa fastfetch ffmpeg fish git htop neovim ripgrep unzip
+    install_pkgs bat curl dconf distrobox eza fastfetch ffmpeg fish git htop neovim ripgrep unzip
     if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
 
     echo "Uninstalling replaced packages..."
@@ -282,12 +281,14 @@ FullInstall() {
     $DOT/linux/scripts/install_gotop.sh
   fi
 
+  # TODO: Needs to run after reboot on silverblue
   distrobox create -Y -n my-distrobox -i ghcr.io/nalsai/toolbox-fedora:latest --init-hooks "bash $DOT/linux/scripts/distrobox-fedora.sh"
   distrobox create -Y -n arch -i archlinux --init-hooks "bash $DOT/linux/scripts/distrobox-arch.sh"
   distrobox create -Y -n resolve -i registry.fedoraproject.org/fedora-toolbox:37 --init-hooks "bash $DOT/linux/scripts/distrobox-fedora-resolve.sh"
   distrobox enter my-distrobox -- sh -c exit
   distrobox enter arch -- sh -c exit
 
+  # TODO: Needs to run after reboot on silverblue
   if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/null 2>&1; then
     systemctl --user enable syncthing.service
   fi
@@ -328,11 +329,6 @@ FullInstall() {
   # Defaults
   xdg-settings set default-web-browser org.mozilla.firefox.desktop
 
-  echo "Making discord rpc work..."
-  mkdir -p ~/.config/user-tmpfiles.d
-  echo "L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0" >$HOME/.config/user-tmpfiles.d/discord-rpc.conf
-  systemctl --user enable --now systemd-tmpfiles-setup.service
-
   fcc_unlock() {
     sudo mkdir -p /etc/ModemManager/fcc-unlock.d
     sudo ln -sft /etc/ModemManager/fcc-unlock.d /usr/share/ModemManager/fcc-unlock.available.d/*
@@ -346,8 +342,8 @@ FullInstall() {
 
   curl -SL "https://www.fontsquirrel.com/fonts/download/gandhi-sans" -o $TMP/fonts/gandhi-sans.zip
   unzip -q -u -d $TMP/fonts $TMP/fonts/gandhi-sans.zip
-  sudo mkdir -p $HOME/.local/share/fonts/gandhi-sans
-  sudo cp $TMP/fonts/GandhiSans-*.otf $HOME/.local/share/fonts/gandhi-sans
+  mkdir -p $HOME/.local/share/fonts/gandhi-sans
+  cp $TMP/fonts/GandhiSans-*.otf $HOME/.local/share/fonts/gandhi-sans
 
   if [[ "$ID" == "fedora" ]]; then
     if [[ $VARIANT_ID == "silverblue" ]]; then
@@ -359,7 +355,7 @@ FullInstall() {
     fi
   fi
 
-  sudo fc-cache -v
+  sudo fc-cache -f -v
 }
 
 ServerInstall() {
@@ -383,7 +379,7 @@ ServerInstall() {
 
   echo "Installing packages..."
 
-  install_pkgs bat ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl exa fastfetch ffmpeg fish git gnupg htop pcp ripgrep unzip
+  install_pkgs bat ca-certificates cockpit cockpit-networkmanager cockpit-packagekit cockpit-pcp cockpit-storaged curl eza fastfetch ffmpeg fish git gnupg htop pcp ripgrep unzip
   if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
 
   if type apt-get >/dev/null 2>&1; then
@@ -410,7 +406,7 @@ ServerInstall() {
     fi
 
     sudo dnf -y groupupdate core
-    sudo dnf -y install dnf-automatic dnf-plugins-core dnf-utils PackageKit wireguard-tools
+    sudo dnf -y install dnf-automatic dnf-plugins-core dnf-utils PackageKit
     sudo dnf -y install neovim
 
     if sudo dnf -y install fish; then

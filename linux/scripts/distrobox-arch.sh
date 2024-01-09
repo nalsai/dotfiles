@@ -9,7 +9,7 @@ curl -L "https://github.com/1player/host-spawn/releases/download/${host_spawn_ve
 sudo chmod +x /usr/bin/host-spawn
 
 echo "Installing packages..."
-pacman -S --noconfirm bat exa fish git which
+pacman -S --noconfirm bat eza fish git which
 pacman -S --noconfirm base-devel fakeroot ffmpeg ffms2 meson pipewire-jack pkgconf tesseract-data-eng python-pip gcc libxkbcommon vapoursynth
 
 echo "Installing Paru..."

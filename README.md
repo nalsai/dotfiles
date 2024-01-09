@@ -42,7 +42,6 @@ You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Mi
 - Setup GPG keys
 - Setup SSH keys
 - Disable system sounds
-- Install proprietary fonts if needed
 - Setup Firefox
   - Sign in
   - Setup Extensions
@@ -57,18 +56,16 @@ You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Mi
 - Setup Steam
   - Install Adwaita-for-Steam (using AdwSteamGtk)
   - Enable Steam Play (Proton)
-  - Change skin to "Adwaita"
   - Disable "Notify me about ..."
   - Change default window to "Library"
-  - Install games
 - Sign in to VSCode (with GitHub) to enable settings sync
 - Setup Deluge headless mode
 - Setup bookmarks in files
-- On Silverblue: reboot
-- On Silverblue: `systemctl --user enable syncthing.service`
-- On Silverblue: `rpm-ostree install steam-devices`
+- On Silverblue:
+  - reboot
+  - `systemctl --user enable syncthing.service`
+  - setup distrobox
 - Setup Syncthing
-- Run "Setup distrobox" tool
 
 ### Manual Steps - Windows
 
@@ -88,12 +85,11 @@ You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Mi
 - Setup Steam
   - Disable "Notify me about ..."
   - Change default window to "Library"
-  - Install games
 - Sign in to VSCode (with GitHub) to enable settings sync
 - Setup Deluge headless mode
+- Setup favorites in explorer
 - Setup FileZilla
 - Setup Syncthing
-- Setup favorites in explorer
 
 ## Thanks to
 

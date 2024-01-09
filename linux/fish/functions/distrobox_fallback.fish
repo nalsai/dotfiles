@@ -1,4 +1,4 @@
-function run_or_fallback
+function distrobox_fallback
     if command -v $argv[1] >/dev/null
         command $argv[1] $argv[2..-1]
     else

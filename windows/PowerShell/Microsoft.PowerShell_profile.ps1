@@ -24,11 +24,11 @@ elseif (Get-Command wget2.exe -ErrorAction SilentlyContinue | Test-Path) {
 	Remove-Item Alias:wget -ErrorAction SilentlyContinue
 	${function:wget} = { wget2.exe @args }
 }
-if (Get-Command exa -ErrorAction SilentlyContinue | Test-Path) {
+if (Get-Command eza -ErrorAction SilentlyContinue | Test-Path) {
 	Remove-Item alias:ls -ErrorAction SilentlyContinue
-	${function:ls} = { exa @args }
-	${function:ll} = { exa -l @args }
-	${function:la} = { exa -la @args }
+	${function:ls} = { eza @args }
+	${function:ll} = { eza -l @args }
+	${function:la} = { eza -la @args }
 }
 elseif (Get-Command ls.exe -ErrorAction SilentlyContinue | Test-Path) {
 	Remove-Alias ls -ErrorAction SilentlyContinue

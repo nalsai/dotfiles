@@ -1,6 +1,6 @@
-function ls --wraps=exa --description 'alias ls exa'
-    if command -v exa >/dev/null
-        exa $argv
+function ls --wraps=eza --description 'alias ls eza'
+    if command -v eza >/dev/null
+        eza $argv
     else
       command ls $argv --color=auto
     end

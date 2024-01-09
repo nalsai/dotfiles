@@ -103,6 +103,6 @@ if type flatpak >/dev/null 2>&1 && [[ $(systemd-detect-virt) != "podman" ]]; the
   flatpak -y update
 fi
 
-if type podamn >/dev/null 2>&1; then
+if type podman >/dev/null 2>&1; then
   podman auto-update
 fi

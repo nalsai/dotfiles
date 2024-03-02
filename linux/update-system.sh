@@ -42,6 +42,10 @@ Clean() {
   if pgrep -f docker >/dev/null && type docker >/dev/null 2>&1; then
     sudo docker system prune -a
   fi
+
+  if type podman >/dev/null 2>&1; then
+    podman system prune -a
+  fi
 }
 
 while getopts ":chr" option; do

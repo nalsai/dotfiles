@@ -30,10 +30,12 @@ alias gcm='git commit -m'
 alias gl='git pull'
 alias gp='git push'
 
-# docker
+# docker (compose)
 alias d='docker'
-alias dcd='docker down'
-alias dcp='docker pull'
+alias dcd='docker compose down'
+alias dcl='docker compose pull'
+alias dclog='docker compose logs'
+alias dclogf='docker compose logs --follow'
 alias dcu='docker compose up'
 alias dcud='docker compose up -d --force-recreate'
 alias dcuf='docker compose up --force-recreate'

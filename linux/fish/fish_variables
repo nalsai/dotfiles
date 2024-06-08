@@ -7,8 +7,11 @@ SETUVAR --export UID:1000
 SETUVAR __fish_initialized:3400
 SETUVAR _fish_abbr_c:clear
 SETUVAR _fish_abbr_ce:code\x20\x2e\x20\x26\x26\x20exit
+SETUVAR _fish_abbr_d:docker
 SETUVAR _fish_abbr_dcd:docker\x20compose\x20down
 SETUVAR _fish_abbr_dcl:docker\x20compose\x20pull
+SETUVAR _fish_abbr_dclog:docker\x20compose\x20logs
+SETUVAR _fish_abbr_dclogf:docker\x20compose\x20logs\x20\x2d\x2dfollow
 SETUVAR _fish_abbr_dcu:docker\x20compose\x20up
 SETUVAR _fish_abbr_dcud:docker\x20compose\x20up\x20\x2dd\x20\x2d\x2dforce\x2drecreate
 SETUVAR _fish_abbr_dcuf:docker\x20compose\x20up\x20\x2d\x2dforce\x2drecreate

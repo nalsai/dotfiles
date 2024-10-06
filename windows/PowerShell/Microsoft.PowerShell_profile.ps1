@@ -17,11 +17,11 @@ if (Get-Command curl.exe -ErrorAction SilentlyContinue | Test-Path) {
 	${function:curl} = { curl.exe @args }
 }
 if (Get-Command wget.exe -ErrorAction SilentlyContinue | Test-Path) {
-	Remove-Item Alias:wget -ErrorAction SilentlyContinue
+	Remove-Item alias:wget -ErrorAction SilentlyContinue
 	${function:wget} = { wget.exe @args }
 }
 elseif (Get-Command wget2.exe -ErrorAction SilentlyContinue | Test-Path) {
-	Remove-Item Alias:wget -ErrorAction SilentlyContinue
+	Remove-Item alias:wget -ErrorAction SilentlyContinue
 	${function:wget} = { wget2.exe @args }
 }
 if (Get-Command eza -ErrorAction SilentlyContinue | Test-Path) {
@@ -31,7 +31,7 @@ if (Get-Command eza -ErrorAction SilentlyContinue | Test-Path) {
 	${function:la} = { eza -la @args }
 }
 elseif (Get-Command ls.exe -ErrorAction SilentlyContinue | Test-Path) {
-	Remove-Alias ls -ErrorAction SilentlyContinue
+	Remove-Item alias:ls -ErrorAction SilentlyContinue
 	${function:ls} = { ls.exe --color @args }
 	${function:ll} = { ls -lF @args }
 	${function:la} = { ls -laF @args }

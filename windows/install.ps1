@@ -43,45 +43,44 @@ Switch ($key) {
 	Q { [Environment]::Exit(0) }
 }
 
+function Set-Symlink {
+	[CmdletBinding()]
+	param(
+		[Parameter(Mandatory)]
+		[string] $Path,
+
+		[Parameter(Mandatory)]
+		[string] $Target
+	)
+	if (Test-Path $Path) {
+		Write-Host "$Path already exists overwrite? [Y/n]: " -ForegroundColor Yellow -NoNewline
+		$host.UI.RawUI.FlushInputBuffer()
+		$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+		while (-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
+			$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+		}
+		Write-Host $key.Character
+		Switch ($key.Character) {
+			Default {
+				try {
+					Remove-Item -Force -Recurse -Path $Path
+				}
+				catch {
+					(Get-Item $Path).Delete() # workaround bug in PowerShell
+				}
+				New-Item -Force -ItemType SymbolicLink -Path $Path -Target $Target > $null
+			}
+			N {}
+		}
+	}
+	else {
+		New-Item -Force -ItemType SymbolicLink -Path $Path -Target $Target > $null
+	}
+}
 
 if ($DOT) {
 	Write-Host "Making Symlinks..." -ForegroundColor Green
-	
-	function Set-Symlink {
-		[CmdletBinding()]
-		param(
-			[Parameter(Mandatory)]
-			[string] $Path,
-	
-			[Parameter(Mandatory)]
-			[string] $Target
-		)
-		if (Test-Path $Path) {
-			Write-Host "$Path already exists overwrite? [Y/n]: " -ForegroundColor Yellow -NoNewline
-			$host.UI.RawUI.FlushInputBuffer()
-			$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-			while (-Not($key.Character -eq "Y" -Or $key.Character -eq "N" -Or $key.VirtualKeyCode -eq 13)) {
-				$key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-			}
-			Write-Host $key.Character
-			Switch ($key.Character) {
-				Default {
-					try {
-						Remove-Item -Force -Recurse -Path $Path
-					}
-					catch {
-						(Get-Item $Path).Delete() # workaround bug in PowerShell
-					}
-					New-Item -Force -ItemType SymbolicLink -Path $Path -Target $Target > $null
-				}
-				N {}
-			}
-		}
-		else {
-			New-Item -Force -ItemType SymbolicLink -Path $Path -Target $Target > $null
-		}
-	}
-	
+
 	# PowerShell
 	$documents = [Environment]::GetFolderPath("MyDocuments")
 	Set-Symlink -Path $documents\PowerShell -Target $DOT\windows\PowerShell
@@ -307,54 +306,61 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
 	choco feature enable -n=allowGlobalConfirmation
 	choco feature enable -n=useRememberedArgumentsForUpgrades
 }
-choco install cdburnerxp curl czkawka everything ffmpeg libreoffice-fresh mpvio msedgeredirect ripgrep ripgrep-all wget wiztree yt-dlp --limit-output
+choco install curl czkawka ffmpeg mpvio msedgeredirect wget --limit-output
 winget install --id=AltSnap.AltSnap -e -h --source "winget" --accept-package-agreements # can't be installed globally
-winget install --id=Audacity.Audacity -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=AntibodySoftware.WizTree -e -h --source "winget" --accept-package-agreements # can't be installed globally
 winget install --id=Cyanfish.NAPS2 -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=GIMP.GIMP -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Git.Git -e -h --override "/verysilent /suppressmsgboxes /norestart /GitAndUnixToolsOnPath /NoShellIntegration /WindowsTerminal" --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=M2Team.NanaZip -e -h --source "winget" --accept-package-agreements # can't be installed globally
+winget install --id=MartiCliment.UniGetUI -e -h --source "winget" --accept-package-agreements # can't be installed globally
 winget install --id=Microsoft.PowerShell -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=Microsoft.WindowsTerminal -e -h --accept-package-agreements
 winget install --id=Mozilla.Firefox -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=nomacs.nomacs -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=PDFArranger.PDFArranger -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=REALiX.HWiNFO -e -h --scope "machine" --source "winget" --accept-package-agreements
-Get-Process | Where-Object -Property Name -Match 'HWiNFO\d{2}' | Stop-Process # Kill the HWiNFO process after it starts, there is no way to prevent autostart after install
-winget install --id=SomePythonThings.WingetUIStore -e -h --source "winget" --accept-package-agreements # can't be installed globally
+winget install --id=rcmaehl.MSEdgeRedirect  -e
+winget install --id=rcmaehl.MSEdgeRedirect -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=REALiX.HWiNFO -e -h --scope "machine" --source "winget" --accept-package-agreements; Get-Process | Where-Object -Property Name -Match 'HWiNFO\d{2}' | Stop-Process # Kill the HWiNFO process after it starts, there is no way to prevent autostart after install
 winget install --id=SumatraPDF.SumatraPDF -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=TenacityTeam.Tenacity -e -h --scope "machine" --source "winget" --accept-package-agreements
+winget install --id=TheDocumentFoundation.LibreOffice -e -h --source "winget" --accept-package-agreements # can't be installed globally
+winget install --id=voidtools.Everything -e -h --source "winget" --accept-package-agreements # can't be installed globally
 winget install --id=Xanashi.Icaros -e -h --scope "machine" --source "winget" --accept-package-agreements
 
 if ($DOT) {
 	choco install less --params "/DefaultPager" --limit-output
-	choco install bat filezilla rufus temurin --limit-output
+	choco install bat filezilla temurin cdburnerxp ripgrep ripgrep-all wget yt-dlp --limit-output
 	#winget install --id=AutoHotkey.AutoHotkey -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=Balena.Etcher -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=DelugeTeam.DelugeBeta -e -h --source "winget" --accept-package-agreements # can't be installed globally
+	#winget install --id=EpicGames.EpicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=HeroicGamesLauncher.HeroicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=Hugin.Hugin -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	#winget install --id=Hugo.Hugo -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=MoritzBunkus.MKVToolNix -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=OliverBetz.ExifTool -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=Peppy.Osu! -e -h --source "winget" --accept-package-agreements # can't be installed globally
+	#winget install --id=Python.Python.3.12 -v "3.12.0a1" -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=RabidViperProductions.AssaultCube -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=ShiningLight.OpenSSL -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=Unity.UnityHub -e -h --scope "machine" --source "winget" --accept-package-agreements
+	#winget install --id=Valve.Steam -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=AndreWiethoff.ExactAudioCopy -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=CrystalDewWorld.CrystalDiskInfo.ShizukuEdition -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=CrystalDewWorld.CrystalDiskMark.ShizukuEdition -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=DelugeTeam.DelugeBeta -e -h --source "winget" --accept-package-agreements # can't be installed globally
-	winget install --id=Discord.Discord -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=eloston.ungoogled-chromium -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=EpicGames.EpicGamesLauncher -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=eza-community.eza -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=GuinpinSoft.MakeMKV -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=HermannSchinagl.LinkShellExtension -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=M2Team.NanaZip -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=MediaArea.MediaInfo.GUI -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Meld.Meld -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Microsoft.VisualStudioCode -e --override "/verysilent /suppressmsgboxes /norestart /tasks=!runCode,desktopicon,quicklaunchicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath" -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=MoritzBunkus.MKVToolNix -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=OBSProject.OBSStudio -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=Peppy.Osu! -e -h --source "winget" --accept-package-agreements # can't be installed globally
-	winget install --id=Python.Python.3.12 -v "3.12.0a1" -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=RabidViperProductions.AssaultCube -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Rufus.Rufus -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=sharkdp.bat -e -h --source "winget" --accept-package-agreements # can't be installed globally
 	winget install --id=SyncTrayzor.SyncTrayzor -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=Unity.UnityHub -e -h --scope "machine" --source "winget" --accept-package-agreements
-	winget install --id=Valve.Steam -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Vencord.Vesktop -e -h --source "winget" --accept-package-agreements # can't be installed globally
 }
 else {
 	choco install temurinjre --limit-output
@@ -431,7 +437,7 @@ if ($DOT) {
 	}
 	
 }
-Remove-Item "$TMP\Fonts\static\" -Recurse -Force
+Remove-Item "$TMP\Fonts\static\" -Recurse -Force -ErrorAction SilentlyContinue
 
 wget -O "$TMP\Fonts\Gandhi Sans.zip" https://www.fontsquirrel.com/fonts/download/gandhi-sans
 Expand-Archive -Path "$TMP\Fonts\Gandhi Sans.zip" -DestinationPath $TMP\Fonts -Force

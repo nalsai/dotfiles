@@ -27,7 +27,7 @@ Switch ($key) {
 		$ProgressPreference = "SilentlyContinue"
 
 		Write-Host "Downloading dotfiles"
-		Invoke-WebRequest "https://github.com/Nalsai/dotfiles/archive/refs/heads/main.zip" -O $TMP\dotfiles.zip
+		Invoke-WebRequest "https://github.com/nalsai/dotfiles/archive/refs/heads/main.zip" -O $TMP\dotfiles.zip
 		if (-Not $?) { throw "Error downloading dotfiles" }
 		$DOT = "$HOME\.dotfiles"
 		Expand-Archive $TMP\dotfiles.zip $TMP

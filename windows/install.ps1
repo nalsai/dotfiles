@@ -90,7 +90,7 @@ if ($DOT) {
 	Set-Symlink -Path $HOME\AppData\Roaming\mpv -Target $DOT\mpv\mpv
 	
 	# Notepad2
-	Set-Symlink -Path $HOME\AppData\Roaming\Notepad2 -Target $DOT\windows\Notepad2
+	#Set-Symlink -Path $HOME\AppData\Roaming\Notepad2 -Target $DOT\windows\Notepad2
 	
 	# MediaInfo.NET
 	Set-Symlink -Path $HOME\AppData\Roaming\MediaInfo.NET -Target $DOT\windows\MediaInfo.NET
@@ -319,7 +319,6 @@ winget install --id=Microsoft.WindowsTerminal -e -h --accept-package-agreements
 winget install --id=Mozilla.Firefox -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=nomacs.nomacs -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=PDFArranger.PDFArranger -e -h --scope "machine" --source "winget" --accept-package-agreements
-winget install --id=rcmaehl.MSEdgeRedirect  -e
 winget install --id=rcmaehl.MSEdgeRedirect -e -h --scope "machine" --source "winget" --accept-package-agreements
 winget install --id=REALiX.HWiNFO -e -h --scope "machine" --source "winget" --accept-package-agreements; Get-Process | Where-Object -Property Name -Match 'HWiNFO\d{2}' | Stop-Process # Kill the HWiNFO process after it starts, there is no way to prevent autostart after install
 winget install --id=SumatraPDF.SumatraPDF -e -h --scope "machine" --source "winget" --accept-package-agreements
@@ -457,7 +456,9 @@ foreach ($File in $(Get-ChildItem -Path $TMP\Fonts -Include ('*.otf', '*.ttf') -
 
 Write-Host "Done Installing Fonts" -ForegroundColor Green
 
-Set-Symlink -Path "$HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState" -Target "$DOT\windows\WindowsTerminal"
+if ($DOT) {
+	Set-Symlink -Path "$HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState" -Target "$DOT\windows\WindowsTerminal"
+}
 
 $ProgressPreference = $OriginalPref
 Remove-Item $TMP -Recurse -Force -ErrorAction SilentlyContinue

@@ -5,22 +5,22 @@ function conv_jpeg --description 'Convert and/or compress images to JPEG format 
         set quality $argv[2]
         test -z "$quality"; and set quality 90
 
-        set filename $argv[1]
-        set filename_out (path change-extension '' $filename)-out.jpg
+        set file_out (path change-extension '' $file)-out.jpg
 
-        if not string match --quiet --regex '\.jpg$' $filename
-            set filename_out (path change-extension '' $filename).jpg
+        if not string match --quiet --regex '\.jpg$' $file
+            set file_out (path change-extension '' $file).jpg
             return
         end
 
-        echo "Compressing $filename to $filename_out with quality $quality"
+        echo "Compressing $file to $file_out with quality $quality"
 
-        distrobox_fallback convert $filename -auto-orient -quality $quality% -interlace Plane -define jpeg:dct-method=float -colorspace sRGB $argv[3..] $filename_out
+        distrobox_fallback magick $file -auto-orient -quality $quality% -interlace Plane -define jpeg:dct-method=float -colorspace sRGB $argv[3..] $file_out
+        # -resize 2000x2000\>
     else
         echo "Processing multiple files..."
         for file in $argv[1..]
             if test -f $file
-                compress_jpeg $file
+                conv_jpeg $file
             else
                 echo "$file is not an existing file. Skipping..."
             end

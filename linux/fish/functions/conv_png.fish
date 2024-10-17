@@ -2,23 +2,22 @@ function conv_png --description 'Convert and/or compress images to PNG format us
     if string match --quiet --regex '^-' "$argv[2]" || test -z "$argv[2]"
         # allow setting custom arguments like --strip safe
 
-        set filename $argv[1]
-        set filename_out $filename
-
-        if not string match --quiet --regex '\.png$' $filename
-            set filename_out (path change-extension '' $filename).png
-            echo "Converting $filename to $filename_out"
-            distrobox_fallback convert $filename -auto-orient $filename_out
+        set file $argv[1]
+        set file_out $file
+        if not string match --quiet --regex '\.png$' $file
+            set file_out (path change-extension '' $file).png
+            echo "Converting $file to $file_out"
+            distrobox_fallback magick $file -auto-orient $file_out
         end
 
-        echo "Compressing $filename_out"
+        echo "Compressing $file_out"
 
-        distrobox_fallback oxipng -o 6 $argv[2..] --alpha $filename_out
+        distrobox_fallback oxipng -o 6 $argv[2..] --alpha $file_out
     else
         echo "Processing multiple files..."
         for file in $argv[1..]
             if test -f $file
-                compress_png $filele
+                conv_png $file
             else
                 echo "$file is not an existing file. Skipping..."
             end

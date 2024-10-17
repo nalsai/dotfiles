@@ -44,7 +44,24 @@ Clean() {
   fi
 
   if type podman >/dev/null 2>&1; then
+    if type distrobox >/dev/null 2>&1; then
+      # Start all distroboxes so they don't get pruned
+      distrobox list | tail -n +2 | cut -d'|' -f2 | while read -r container; do
+          #echo "Starting $container"
+          distrobox enter "$container" -- echo "Container $container started" &
+      done
+      sleep 1
+    fi
+
     podman system prune -a
+
+    if type distrobox >/dev/null 2>&1; then
+      # Stop all distroboxes after pruning
+      distrobox list | tail -n +2 | cut -d'|' -f2 | while read -r container; do
+          #echo "Stopping $container"
+          distrobox stop "$container" -Y
+      done
+    fi
   fi
 }
 

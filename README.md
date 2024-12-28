@@ -2,96 +2,67 @@
 
 My dotfiles for Fedora Linux and Windows 10/11.  
 Fedora Workstation and Fedora Silverblue are both supported.  
-Arch Linux- and Debian-based distributions are partially supported.
+Arch Linux and Debian based distributions are partially supported.
 
 ## Installation
 
 Make sure to update and restart your system first.
 
-`Linux:` Run this command in bash:
+**Linux**: Run this command in bash:
 
 ```bash
-bash <(curl -Ss https://raw.githubusercontent.com/Nalsai/dotfiles/main/linux/install.sh)
+bash <(curl -Ss https://raw.githubusercontent.com/nalsai/dotfiles/main/linux/install.sh)
 ```
 
-`Windows:` Run this in PowerShell:
+**Windows**: Run this in PowerShell:
 
 ```ps1
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/install.ps1'))
+irm https://raw.githubusercontent.com/nalsai/dotfiles/main/windows/install.ps1 | iex
 ```
 
-### Windows Setup
+### Activating Windows
 
-1. Select your region & keyboard
-2. When presented the "Sign in with Microsoft" screen, select "Domain join instead" to avoid logging in.  
-    If you have Windows 11 Home, do the following:
-    - Press Shift+F10 to open the command prompt.
-    - Enter `OOBE\BYPASSNRO`
-    - Now you can select "I don't have internet" to setup a local account.
-3. Set your username. Set your password later if you want to avoid having to give recovery questions.
-4. Disable everything on the privacy screen and click "Accept".
 
-#### Activating Windows
+### Steps: Linux
 
-Buy a license from [Microsoft](https://www.microsoft.com/) and enter your product key in the settings.
-
-You can also use [Microsoft Activation Scripts](https://github.com/massgravel/Microsoft-Activation-Scripts/releases) (`iwr -useb https://massgrave.dev/get | iex`), [KMS_VL_ALL_AIO](https://pastebin.com/cpdmr6HZ) or [kms.nils.moe](https://kms.nils.moe).
-
-### Manual Steps - Linux
-
-- Setup GPG keys
-- Setup SSH keys
-- Disable system sounds
+- Setup GPG and SSH keys
 - Setup Firefox
-  - Sign in
   - Setup Extensions
     - Bitwarden: Sign in
-    - uBlock Origin: enable cloud storage support, import from cloud storage
+    - uBlock Origin, Violent Monkey: Sync from Google Drive
     - Translate Web Pages: disable popup and release notes
-    - Enhancer for YouTube: set theme, disable controls, set quality, disable autoplay
-    - Violent Monkey: Sync to Google Drive
-    - Web Scrobbler: Sign in
-  - Customize toolbar and shortcuts
+    - Enhancer for YouTube: set theme, hide extra controls, set quality, disable autoplay
   - `curl -s -o- https://raw.githubusercontent.com/rafaelmardojai/firefox-gnome-theme/master/scripts/install-by-curl.sh | bash`
 - Setup Steam
   - Install Adwaita-for-Steam (using AdwSteamGtk)
   - Enable Steam Play (Proton)
   - Disable "Notify me about ..."
   - Change default window to "Library"
-- Sign in to VSCode (with GitHub) to enable settings sync
-- Setup Deluge headless mode
-- Setup bookmarks in files
-- On Silverblue:
-  - reboot
-  - `systemctl --user enable syncthing.service`
-  - setup distrobox
+- Install "Disable unredirect fullscreen windows" GNOME extension if needed
+- On Silverblue: reboot, `systemctl --user enable syncthing.service`, setup distrobox
 - Setup Syncthing
 
-### Manual Steps - Windows
+### Steps: Windows
 
-- Setup GPG keys
-- Setup SSH keys
-- Disable system sounds
+- Create your installation media with Rufus to remove the Microsoft Account requirement
+- Install Windows without an internet connection
+- Connect to the internet and let Windows install drivers and updates
+- [Microsoft Activation Scripts](https://github.com/massgravel/Microsoft-Activation-Scripts): `irm https://get.activated.win | iex`
+- Install dotfiles
+- Reboot
+- Setup GPG and SSH keys if needed
 - Setup Firefox
-  - Sign in
   - Setup Extensions
     - Bitwarden: Sign in
-    - uBlock Origin: enable cloud storage support, import from cloud storage
+    - uBlock Origin, Violent Monkey: Sync from Google Drive
     - Translate Web Pages: disable popup and release notes
-    - Enhancer for YouTube: set theme, disable controls, set quality, disable autoplay
-    - Violent Monkey: Sync to Google Drive
-    - Web Scrobbler: Sign in
-  - Customize toolbar and shortcuts
+    - Enhancer for YouTube: set theme, hide extra controls, set quality, disable autoplay
 - Setup Steam
   - Disable "Notify me about ..."
   - Change default window to "Library"
-- Sign in to VSCode (with GitHub) to enable settings sync
-- Setup Deluge headless mode
-- Setup favorites in explorer
-- Setup FileZilla
 - Setup Syncthing
 
 ## Thanks to
 
-- ![LightArrowsEXE Profile Picture](https://avatars.githubusercontent.com/LightArrowsEXE?s=12) LightArrowsEXE's [dotfiles](https://github.com/LightArrowsEXE/dotfiles) (mpv config)
+- ![LightArrowsEXE Profile Picture](https://avatars.githubusercontent.com/LightArrowsEXE?s=12) LightArrowsEXE's [dotfiles](https://github.com/LightArrowsEXE/dotfiles)
 - I am Scum's [mpv.conf guide](https://iamscum.wordpress.com/guides/videoplayback-guide/mpv-conf/)

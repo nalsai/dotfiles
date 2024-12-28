@@ -5,8 +5,8 @@ if type docker >/dev/null 2>&1; then
 else
   ID=
   [[ -f /etc/os-release ]] && . /etc/os-release
-  if [[ "$ID" == "ol" ]]; then
-    echo Installing Docker manually on Oracle Linux
+  if [[ $ID == "rocky" || $ID == "ol" ]]; then
+    echo Installing Docker manually on Rocky Linux/Oracle Linux
     sudo dnf -y install dnf-plugins-core
     sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo  # CentOS
     sudo dnf -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin

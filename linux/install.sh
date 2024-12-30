@@ -215,21 +215,21 @@ FullInstall() {
   sudo flatpak remote-add --if-not-exists nalsai https://flatpak.nils.moe/repo/NilsFlatpakRepo.flatpakrepo
   sudo flatpak remote-add --if-not-exists launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
 
-  sudo flatpak -y install flathub com.github.tchx84.Flatseal io.mpv.Mpv org.gimp.GIMP org.gnome.TextEditor org.gnome.eog \
-    org.libreoffice.LibreOffice org.mozilla.firefox com.raggesilver.BlackBox
+  sudo flatpak -y install flathub com.github.tchx84.Flatseal io.mpv.Mpv org.gimp.GIMP org.gnome.Loupe org.gnome.TextEditor \
+    org.libreoffice.LibreOffice org.mozilla.firefox
 
   sudo flatpak -y install flathub com.anydesk.Anydesk com.calibre_ebook.calibre com.github.Eloston.UngoogledChromium \
     com.github.iwalton3.jellyfin-media-player com.github.jeromerobert.pdfarranger com.github.liferooter.textpieces com.github.qarmin.czkawka \
-    com.github.qarmin.szyszka com.leinardi.gst com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee \
-    com.skype.Client com.usebottles.bottles dev.vencord.Vesktop fr.romainvigier.MetadataCleaner io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk
+    com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee com.skype.Client com.usebottles.bottles dev.vencord.Vesktop \
+    io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk
 
-  sudo flatpak -y install flathub md.obsidian.Obsidian net.ankiweb.Anki net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
-    org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.baobab org.gnome.Firmware \
-    org.gnome.font-viewer org.gnome.meld org.gnome.SimpleScan org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit sh.ppy.osu
+  sudo flatpak -y install flathub gg.minion.Minion net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
+    org.aegisub.Aegisub org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.baobab org.gnome.Firmware \
+    org.gnome.meld org.gnome.SimpleScan org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit sh.ppy.osu
 
-  sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//22.08         # Required for net.sourceforge.gMKVExtractGUI
-  sudo flatpak -y install flathub org.freedesktop.Platform.Locale//23.08 --reinstall # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
-  sudo flatpak -y install nalsai org.wangqr.Aegisub cc.spek.Spek com.github.mkv-extractor-qt5 gg.minion.Minion net.sourceforge.gMKVExtractGUI
+  sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.mono6//23.08         # Required for net.sourceforge.gMKVExtractGUI
+  sudo flatpak -y install flathub org.freedesktop.Platform.Locale//24.08 --reinstall # Reinstall org.freedesktop.Platform.Locale for spell checking in different languages
+  sudo flatpak -y install nalsai cc.spek.Spek com.github.mkv-extractor-qt5 net.sourceforge.gMKVExtractGUI
   sudo flatpak -y install launcher.moe moe.launcher.an-anime-game-launcher
 
   sudo flatpak override com.usebottles.bottles --filesystem="$HOME/Apps/Bottles"        # Allow Bottles to access $HOME/Apps/Bottles
@@ -237,9 +237,7 @@ FullInstall() {
   sudo flatpak override --device=all org.mozilla.firefox                                # Firefox U2F access
 
   install_optional_flatpaks com.prusa3d.PrusaSlicer org.gnome.SoundJuicer org.musicbrainz.Picard \
-    com.unity.UnityHub com.github.johnfactotum.Foliate rocks.koreader.KOReader \
-    com.makemkv.MakeMKV  com.belmoussaoui.Decoder com.heroicgameslauncher.hgl \
-    org.gnome.seahorse.Application org.gnome.World.PikaBackup
+    com.unity.UnityHub com.makemkv.MakeMKV
 
   install_ensembles() {
     sudo flatpak remote-add --if-not-exists ElementaryAppCenter https://flatpak.elementary.io/repo.flatpakrepo
@@ -252,16 +250,15 @@ FullInstall() {
   if [[ $ID == "fedora" && $VARIANT_ID == "silverblue" ]]; then
     sudo rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     if rpm-ostree install fish; then sudo usermod --shell /bin/fish $USER; fi
-    rpm-ostree install bat distrobox eza gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect ripgrep steam-devices syncthing
-    sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim org.gnome.Boxes org.gnome.Cheese
+    rpm-ostree install distrobox eza gnome-shell-extension-appindicator gnome-shell-extension-caffeine steam-devices syncthing
+    sudo flatpak -y install flathub com.valvesoftware.Steam io.neovim.nvim
   else
     if type dnf >/dev/null 2>&1; then
       sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
       sudo dnf -y groupupdate core
 
-      sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine gnome-shell-extension-gsconnect
-      sudo dnf -y install cargo flatpak-builder gnome-tweaks mangohud steam syncthing yt-dlp
-      sudo dnf -y group install "Virtualization"
+      sudo dnf -y install gnome-shell-extension-appindicator gnome-shell-extension-caffeine
+      sudo dnf -y install gnome-tweaks mangohud steam syncthing yt-dlp
     fi
     install_pkgs bat curl dconf distrobox eza fastfetch fish git htop neovim ripgrep unzip
     install_pkgs ffmpeg
@@ -279,10 +276,8 @@ FullInstall() {
 
   # TODO: Needs to run after reboot on silverblue
   distrobox create -Y -n my-distrobox -i ghcr.io/nalsai/toolbox-fedora:latest --init-hooks "bash $DOT/linux/scripts/distrobox-fedora.sh"
-  distrobox create -Y -n arch -i archlinux --init-hooks "bash $DOT/linux/scripts/distrobox-arch.sh"
-  distrobox create -Y -n resolve -i registry.fedoraproject.org/fedora-toolbox:37 --init-hooks "bash $DOT/linux/scripts/distrobox-fedora-resolve.sh"
+  distrobox create -Y -n resolve -i registry.fedoraproject.org/fedora-toolbox:38 --init-hooks "bash $DOT/linux/scripts/distrobox-fedora-resolve.sh"
   distrobox enter my-distrobox -- sh -c exit
-  distrobox enter arch -- sh -c exit
 
   # TODO: Needs to run after reboot on silverblue
   if systemctl --user list-unit-files "syncthing.service" --state=disabled >/dev/null 2>&1; then
@@ -305,10 +300,8 @@ FullInstall() {
   dconf write /org/gnome/shell/keybindings/screenshot "['Print']"
   dconf write /org/gnome/desktop/wm/preferences/button-layout "'appmenu:minimize,close'"
   dconf write /org/gnome/mutter/center-new-windows "true"
-  dconf write /org/gnome/mutter/experimental-features "['scale-monitor-framebuffer']"
   dconf write /org/gnome/nautilus/preferences/default-folder-viewer "'list-view'"
-  dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop']"
-  dconf write /org/gtk/settings/file-chooser/sort-directories-first "true"
+  dconf write /org/gnome/shell/favorite-apps "['org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Ptyxis.desktop']"
   dconf write /org/gnome/desktop/input-sources/mru-sources "[('xkb', 'us'), ('ibus', 'anthy'), ('xkb', 'de'), ('xkb', 'jp')]"
   dconf write /org/gnome/desktop/session/idle-delay "uint32 900"                          # Blank screen after 15 minutes inactivity
   dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'suspend'" # Suspend after 2 hours idle
@@ -318,7 +311,7 @@ FullInstall() {
 
   # Extensions
   dconf write /org/gnome/shell/disabled-extensions "['background-logo@fedorahosted.org']"
-  dconf write /org/gnome/shell/enabled-extensions "['gsconnect@andyholmes.github.io', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info']"
+  dconf write /org/gnome/shell/enabled-extensions "['appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info']"
   dconf write /org/gnome/shell/extensions/caffeine/show-notifications "false"
   dconf write /org/gnome/shell/extensions/caffeine/enable-fullscreen "false"
 

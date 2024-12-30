@@ -263,7 +263,8 @@ FullInstall() {
       sudo dnf -y install cargo flatpak-builder gnome-tweaks mangohud steam syncthing yt-dlp
       sudo dnf -y group install "Virtualization"
     fi
-    install_pkgs bat curl dconf distrobox eza fastfetch ffmpeg fish git htop neovim ripgrep unzip
+    install_pkgs bat curl dconf distrobox eza fastfetch fish git htop neovim ripgrep unzip
+    install_pkgs ffmpeg
     if install_pkgs fish; then sudo usermod --shell /bin/fish $USER; fi
 
     echo "Uninstalling replaced packages..."

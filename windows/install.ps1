@@ -293,7 +293,7 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
 	choco feature enable -n=allowGlobalConfirmation
 	choco feature enable -n=useRememberedArgumentsForUpgrades
 }
-choco install curl czkawka ffmpeg mpvio wget --limit-output
+choco install curl ffmpeg mpvio wget --limit-output # czkawka
 winget install --id=AltSnap.AltSnap -e -h --source "winget" --accept-package-agreements # can't be installed globally
 winget install --id=AntibodySoftware.WizTree -e -h --source "winget" --accept-package-agreements # can't be installed globally
 winget install --id=GIMP.GIMP -e -h --scope "machine" --source "winget" --accept-package-agreements

@@ -214,10 +214,10 @@ Set-ItemProperty "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windo
 Write-Output "Hiding stuff in the SysTray"
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" 0	# Task view
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" "SearchboxTaskbarMode" 0			# Search
-Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" "ShellFeedsTaskbarViewMode" 2		# News and weather (Windows 10)
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" "ShellFeedsTaskbarViewMode" 2 -ErrorAction SilentlyContinue	# News and weather (Windows 10)
 Set-ItemProperty "HKLM:\Software\Policies\Microsoft\Windows\System" "EnableActivityFeed" 0					# Timeline (Windows 10)
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" 0	# People (Windows 10)
-Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "TaskbarDa" 0			# Widgets (Windows 11)
+Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "TaskbarDa" 0 -ErrorAction SilentlyContinue		# Widgets (Windows 11)
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "TaskbarMn" 0			# Chat (Windows 11)
 
 Write-Host "Configuring Windows Update"

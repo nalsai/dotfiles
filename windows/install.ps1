@@ -341,7 +341,7 @@ if ($DOT) {
 	#winget install --id=OBSProject.OBSStudio -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Rufus.Rufus -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=sharkdp.bat -e -h --source "winget" --accept-package-agreements # can't be installed globally
-	winget install --id=SyncTrayzor.SyncTrayzor -e -h --scope "machine" --source "winget" --accept-package-agreements
+	winget install --id=Martchus.syncthingtray -e -h --scope "machine" --source "winget" --accept-package-agreements
 	#winget install --id=TenacityTeam.Tenacity -e -h --scope "machine" --source "winget" --accept-package-agreements
 	winget install --id=Vencord.Vesktop -e -h --source "winget" --accept-package-agreements # can't be installed globally
 }

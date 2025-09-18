@@ -360,7 +360,7 @@ if (!$DOT) {
 	# PowerShell
 	$documents = [Environment]::GetFolderPath("MyDocuments")
 	New-Item -ItemType directory -Force -Path "$documents\PowerShell" -ErrorAction SilentlyContinue > $null
-	New-Item -ItemType SymbolicLink -Force -Path "$documents\WindowsPowerShell" -Target "$documents\PowerShell"  > $null
+	Set-Symlink -Path $documents\WindowsPowerShell -Target $DOT\windows\PowerShell
 	wget -O "$documents\PowerShell\Microsoft.PowerShell_profile.ps1" "https://raw.githubusercontent.com/Nalsai/dotfiles/main/windows/PowerShell/Microsoft.PowerShell_profile.ps1"
 
 	# mpv

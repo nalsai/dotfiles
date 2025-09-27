@@ -220,10 +220,10 @@ FullInstall() {
 
   sudo flatpak -y install flathub com.anydesk.Anydesk com.calibre_ebook.calibre com.github.Eloston.UngoogledChromium \
     com.github.iwalton3.jellyfin-media-player com.github.jeromerobert.pdfarranger com.github.liferooter.textpieces com.github.qarmin.czkawka \
-    com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee com.skype.Client com.usebottles.bottles dev.vencord.Vesktop \
+    com.mattjakeman.ExtensionManager com.rawtherapee.RawTherapee com.skype.Client com.usebottles.bottles cz.krupkat.Xpano dev.vencord.Vesktop \
     io.github.f3d_app.f3d io.github.Foldex.AdwSteamGtk
 
-  sudo flatpak -y install flathub gg.minion.Minion net.mediaarea.MediaInfo net.sourceforge.Hugin nl.hjdskes.gcolor3 \
+  sudo flatpak -y install flathub gg.minion.Minion net.mediaarea.MediaInfo nl.hjdskes.gcolor3 \
     org.aegisub.Aegisub org.blender.Blender org.bunkus.mkvtoolnix-gui org.deluge_torrent.deluge org.gnome.baobab org.gnome.Firmware \
     org.gnome.meld org.gnome.SimpleScan org.inkscape.Inkscape org.nomacs.ImageLounge re.sonny.Commit sh.ppy.osu
 
